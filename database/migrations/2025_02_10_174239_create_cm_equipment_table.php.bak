@@ -1,0 +1,43 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    /**
+     * Run the migrations.
+     */
+    public function up(): void
+    {
+        Schema::create('cm_equipment', function (Blueprint $table) {
+            //Copy dari migration sedia ada
+            $table->uuid('id');
+            $table->primary('id');
+
+            //Data - refer Model
+            $table->string('equipment_name');   //Nama Peralatan
+            $table->integer('equipment_type');  //1 = komersial, 2 = tradisi
+            $table->integer('fisherman_type');  //1 = marin, 2 = darat
+            $table->uuid('entity_id')->nullable();   //Jabatan Perikanan Negeri - Nelayan Darat Shj
+            $table->decimal('amount',8,2)->nullable();  //Caj peralatan - Nelayan Darat Shj
+            $table->boolean('is_active');   
+
+            //Copy dari migration sedia ada
+            $table->uuid('created_by')->nullable();
+            $table->uuid('updated_by')->nullable();
+            $table->uuid('deleted_by')->nullable();
+            $table->timestamps();
+            $table->softDeletes();
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
+    {
+        Schema::dropIfExists('cm_equipment');
+    }
+};

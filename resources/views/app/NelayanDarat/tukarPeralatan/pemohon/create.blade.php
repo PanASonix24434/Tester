@@ -1,0 +1,1004 @@
+@extends('layouts.app')
+
+@push('styles')
+<style type="text/css">
+</style>
+
+<style>
+    .nav-link {
+        border-bottom: none !important;
+    }
+
+    .nav.nav-tabs {
+        border-bottom: none !important;
+    }
+
+    .nav-link.active {
+        background-color: white !important;
+    }
+
+    /* Disable hover effect and interaction for custom nav links */
+    .custom-nav-link:hover {
+        background-color: white !important;
+        /* Keep the background color as is during hover */
+    }
+
+    /* Disable all interactions with custom nav links */
+    .custom-nav-link {
+        pointer-events: none;
+        /* Disable all interactions with the nav link */
+    }
+
+    /* Override the default btn-primary color */
+    .btn-primary {
+        background-color: #007bff !important;
+        /* Set background color to #007bff */
+        border-color: #007bff !important;
+        /* Set border color to #007bff */
+        color: white !important;
+        /* Ensure text is white */
+    }
+
+    /* Optional: Change hover effect */
+    .btn-primary:hover {
+        background-color: #0056b3 !important;
+        /* Darker blue on hover */
+        border-color: #0056b3 !important;
+        /* Darker border on hover */
+    }
+</style>
+
+</style>
+@endpush
+
+@section('content')
+<!-- Page Content -->
+<div id="app-content">
+
+    <!-- Container fluid -->
+    <div class="app-content-area">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md">
+
+                    <div class="mb-5">
+                        <h3 class="mb-0">{{ $applicationType->name_ms }}</h3>
+                        <small>{{ $moduleName->name }} - {{ $roleName }}</small>
+                    </div>
+
+                </div>
+                <div class="col-md-3 align-content-center">
+                    <nav aria-label="breadcrumb" class="d-flex justify-content-end">
+                        <ol class="breadcrumb text-center">
+                            <li class="breadcrumb-item">
+                                <a href="http://127.0.0.1:8000/tukarPeralatan/permohonan-04">{{
+                                    \Illuminate\Support\Str::ucfirst(strtolower($applicationType->name)) }}</a>
+                            </li>
+                            <li class="breadcrumb-item active" aria-current="page">{{ $moduleName->name }}</a></li>
+                            {{-- <li class="breadcrumb-item active" aria-current="page">Permohonan</a></li> --}}
+
+                        </ol>
+                    </nav>
+                </div>
+            </div>
+            <div>
+
+                <div class="card card-primary card-tabs">
+
+                    <div class="card-header pb-0">
+                        <ul class="nav nav-tabs" id="pills-tab" role="tablist">
+                            <li class="nav-item">
+                                <a class="nav-link custom-nav-link  " id="tab1-link" aria-disabled="true">Maklumat
+                                    Pemohon</a>
+                            </li>
+
+                            <li class="nav-item">
+                                <a class="nav-link custom-nav-link" id="tab2-link" aria-disabled="true">Maklumat
+                                    Tambahan</a>
+                            </li>
+
+                            <li class="nav-item">
+                                <a class="nav-link custom-nav-link" id="tab3-link" aria-disabled="true">Maklumat
+                                    Pangkalan</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link custom-nav-link" id="tab4-link" aria-disabled="true">Maklumat
+                                    Peralatan</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link custom-nav-link" id="tab5-link" aria-disabled="true">Maklumat
+                                    Vesel</a>
+                            </li>
+                            {{-- <li class="nav-item">
+                                <a class="nav-link custom-nav-link" id="tab6-link" aria-disabled="true">Dokumen
+                                    Sokongan</a>
+                            </li> --}}
+
+                            {{-- <li class="nav-item">
+                                <a class="nav-link custom-nav-link" id="tab7-link" aria-disabled="true">Perakuan</a>
+
+                            </li> --}}
+                            <li class="nav-item">
+                                <a class="nav-link custom-nav-link" id="tab6-link" aria-disabled="true">Perakuan</a>
+
+                            </li>
+                        </ul>
+
+                    </div>
+
+                    <div class="card-body">
+
+                        <div class="tab-content" id="pills-tabContent">
+
+                            <div class="tab-pane fade show active" id="content-tab1" role="tabpanel"
+                                aria-labelledby="tab1-link">
+
+                                <div class="mb-4">
+                                    <div class="mb-3">
+                                        <h5 class="fw-bold mb-0">Maklumat Peribadi</h5>
+                                        <small class="text-muted">Maklumat peribadi yang telah direkodkan dipaparkan
+                                            untuk semakan sahaja.</small>
+                                        <hr>
+                                    </div>
+
+                                    <div class="row mt-3">
+                                        <div class="col-md-6 mb-3">
+                                            <label for="name" class="form-label">Nama</label>
+                                            <input type="text" class="form-control" id="name" name="name"
+                                                value="{{ old('name', $userDetail->name ?? '') }}"
+                                                placeholder="Masukkan Nama Penuh" readonly>
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label for="icno" class="form-label">Nombor Kad
+                                                Pengenalan</label>
+                                            <input type="text" class="form-control" id="icno" name="icno"
+                                                value="{{ old('icno', $userDetail->icno ?? '') }}"
+                                                placeholder="Masukkan Nombor Kad Pengenalan" readonly>
+                                        </div>
+                                    </div>
+
+                                    <div class="row mt-3">
+                                        <div class="col-md-6 mb-3">
+                                            <label for="phone_number" class="form-label">Nombor Telefon</label>
+                                            <input type="text" class="form-control" id="phone_number"
+                                                name="phone_number"
+                                                value="{{ old('phone_number', $userDetail->no_phone ?? '') }}"
+                                                placeholder="Masukkan Nombor Telefon" readonly>
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label for="secondary_phone_number" class="form-label">Nombor Telefon
+                                                (Kedua)</label>
+                                            <input type="text" class="form-control" id="secondary_phone_number"
+                                                name="secondary_phone_number"
+                                                value="{{ old('secondary_phone_number', $userDetail->secondary_phone_number ?? '') }}"
+                                                placeholder="Masukkan Nombor Telefon Kedua" readonly>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <br>
+
+                                <div class="mb-4">
+                                    <div class="mb-3">
+                                        <h5 class="fw-bold mb-0">Alamat Kediaman</h5>
+                                        <small class="text-muted">Maklumat alamat kediaman yang telah direkodkan
+                                            dipaparkan untuk semakan sahaja.</small>
+                                        <hr>
+                                    </div>
+
+                                    <div class="row mt-3">
+                                        <div class="col-md mb-3">
+                                            <label for="address" class="form-label">Alamat</label>
+                                            <input type="text" class="form-control" id="address" name="address"
+                                                value="{{ old('address', trim(($userDetail->secondary_address_1 ?? '') . ' ' . ($userDetail->secondary_address_2 ?? '') . ' ' . ($userDetail->secondary_address_3 ?? ''))) }}"
+                                                placeholder="Masukkan Alamat Anda" readonly>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-md-4 mb-3">
+                                            <label for="poskod" class="form-label">Poskod</label>
+                                            <input type="text" class="form-control" id="poskod" name="poskod"
+                                                value="{{ old('poskod', $userDetail->secondary_poskod ?? '') }}"
+                                                placeholder="Masukkan Poskod" readonly>
+                                        </div>
+                                        <div class="col-md-4 mb-3">
+                                            <label for="district" class="form-label">Daerah</label>
+                                            <input type="text" class="form-control" id="district" name="district"
+                                                value="{{ old('district', $userDetail->secondary_district ?? '') }}"
+                                                placeholder="Masukkan Daerah" readonly>
+                                        </div>
+                                        <div class="col-md-4 mb-3">
+                                            <label for="state" class="form-label">Negeri</label>
+                                            <input type="text" class="form-control" id="state" name="state"
+                                                value="{{ old('state', $userDetail->secondary_state ?? '') }}"
+                                                placeholder="Masukkan Negeri" readonly>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <br>
+
+                                <div class="mb-4">
+                                    <div class="mb-3">
+                                        <h5 class="fw-bold mb-0">Alamat Surat-Menyurat</h5>
+                                        <small class="text-muted">Maklumat alamat surat-menyurat yang telah direkodkan
+                                            dipaparkan untuk semakan sahaja.</small>
+                                        <hr>
+                                    </div>
+
+                                    <div class="row mt-3">
+                                        <div class="col-md mb-3">
+                                            <label for="mailing_address" class="form-label">Alamat</label>
+                                            <input type="text" class="form-control" id="address" name="address"
+                                                value="{{ old('address', trim(($userDetail->address1 ?? '') . ' ' . ($userDetail->address2 ?? '') . ' ' . ($userDetail->address3 ?? ''))) }}"
+                                                placeholder="Masukkan Alamat Anda" readonly>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-md-4 mb-3">
+                                            <label for="secondary_postcode " class="form-label">Poskod</label>
+                                            <input type="text" class="form-control" id="secondary_postcode "
+                                                name="secondary_postcode "
+                                                value="{{ old('secondary_postcode ', $userDetail->poskod ?? '') }}"
+                                                placeholder="Masukkan Poskod" readonly>
+                                        </div>
+                                        <div class="col-md-4 mb-3">
+                                            <label for="secondary_district" class="form-label">Daerah</label>
+                                            <input type="text" class="form-control" id="secondary_district"
+                                                name="secondary_district"
+                                                value="{{ old('secondary_district', $userDetail->district ?? '') }}"
+                                                placeholder="Masukkan Daerah" readonly>
+                                        </div>
+                                        <div class="col-md-4 mb-3">
+                                            <label for="secondary_state  " class="form-label">Negeri</label>
+                                            <input type="text" class="form-control" id="secondary_state  "
+                                                name="secondary_state  "
+                                                value="{{ old('secondary_state  ', $userDetail->state ?? '') }}"
+                                                placeholder="Masukkan Negeri" readonly>
+                                        </div>
+                                    </div>
+                                </div>
+                                <br>
+
+                            </div>
+                            <div class="tab-pane fade" id="content-tab2" role="tabpanel" aria-labelledby="tab2-link">
+                                <div class="mb-4">
+                                    <div class="mb-3">
+                                        <h5 class="fw-bold mb-0">Maklumat Sebagai Nelayan</h5>
+                                        <small class="text-muted">Maklumat berkaitan pengalaman dan aktiviti sebagai
+                                            nelayan yang telah direkodkan dipaparkan untuk semakan sahaja.</small>
+                                        <hr>
+                                    </div>
+
+                                    <div class="row mt-3">
+                                        <div class="col-md-6 mb-3">
+                                            <label class="form-label">Tahun Menjadi Nelayan</label>
+                                            <input type="text" class="form-control"
+                                                value="{{ $fishermanDetail->year_become_fisherman ?? '-' }}" readonly>
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label class="form-label">Tempoh Menjadi Nelayan (Tahun)</label>
+                                            <input type="text" class="form-control"
+                                                value="{{ $fishermanDetail->becoming_fisherman_duration ?? '-' }}"
+                                                readonly>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-md-6 mb-3">
+                                            <label class="form-label">Hari Bekerja Menangkap Ikan Sebulan</label>
+                                            <input type="text" class="form-control"
+                                                value="{{ $fishermanDetail->working_days_fishing_per_month ?? '-' }}"
+                                                readonly>
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label class="form-label">Pendapatan Tahunan Dari Menangkap Ikan
+                                                (RM)</label>
+                                            <input type="text" class="form-control"
+                                                value="{{ $fishermanDetail->estimated_income_yearly_fishing ?? '-' }}"
+                                                readonly>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <br>
+
+                                <div class="mb-4">
+                                    <div class="mb-3">
+                                        <h5 class="fw-bold mb-0">Maklumat Pekerjaan Lain</h5>
+                                        <small class="text-muted">Maklumat berkaitan pekerjaan lain (jika ada) yang
+                                            telah direkodkan dipaparkan untuk semakan sahaja.</small>
+                                        <hr>
+                                    </div>
+
+                                    <div class="row mt-3">
+                                        <div class="col-md-6 mb-3">
+                                            <label class="form-label">Pendapatan Dari Pekerjaan Lain (RM)</label>
+                                            <input type="text" class="form-control"
+                                                value="{{ $fishermanDetail->estimated_income_other_job ?? '-' }}"
+                                                readonly>
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label class="form-label">Hari Bekerja Di Pekerjaan Lain Sebulan</label>
+                                            <input type="text" class="form-control"
+                                                value="{{ $fishermanDetail->days_working_other_job_per_month ?? '-' }}"
+                                                readonly>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <br>
+
+                                <div class="mb-4">
+                                    <div class="mb-3">
+                                        <h5 class="fw-bold mb-0">Maklumat Kewangan</h5>
+                                        <small class="text-muted">Maklumat bantuan dan pencen yang telah direkodkan
+                                            dipaparkan untuk semakan sahaja.</small>
+                                        <hr>
+                                    </div>
+
+                                    <div class="row mt-3">
+                                        <div class="col-md-4 mb-3">
+                                            <label class="form-label">Menerima Pencen</label>
+                                            <input type="text" class="form-control"
+                                                value="{{ $fishermanDetail->receive_pension == 1 ? 'Ya' : 'Tidak' }}"
+                                                readonly>
+                                        </div>
+                                        <div class="col-md-4 mb-3">
+                                            <label class="form-label">Pencarum KWSP</label>
+                                            <input type="text" class="form-control"
+                                                value="{{ $fishermanDetail->epf_contributor == 1 ? 'Ya' : 'Tidak' }}"
+                                                readonly>
+                                        </div>
+                                        <div class="col-md-4 mb-3">
+                                            <label class="form-label">Jenis Caruman KWSP</label>
+                                            <input type="text" class="form-control"
+                                                value="{{ $fishermanDetail->epf_type ?? '-' }}" readonly>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-md-6 mb-3">
+                                            <label class="form-label">Menerima Bantuan Kewangan</label>
+                                            <input type="text" class="form-control"
+                                                value="{{ $fishermanDetail->receive_financial_aid == 1 ? 'Ya' : 'Tidak' }}"
+                                                readonly>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-md mb-3">
+                                            <label class="form-label">Agensi Memberi Bantuan Kewangan</label>
+                                            @forelse ($aidAgencies as $agency)
+                                            <input type="text" class="form-control mb-2"
+                                                value="{{ $agency->agency_name ?? '-' }}" readonly>
+                                            @empty
+                                            <input type="text" class="form-control" value="Tiada agensi direkodkan"
+                                                readonly>
+                                            @endforelse
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="tab-pane fade" id="content-tab3" role="tabpanel" aria-labelledby="tab3-link">
+                                <div class="mb-3">
+                                    <h5 class="fw-bold mb-0">Maklumat Jeti / Pangkalan</h5>
+                                    <small class="text-muted">Maklumat lokasi atau kawasan jeti tempat beroperasi yang
+                                        telah direkodkan dipaparkan untuk semakan sahaja.</small>
+                                    <hr>
+                                </div>
+
+                                <div class="mt-3">
+                                    <!-- Negeri -->
+                                    <div class="mb-3">
+                                        <label class="form-label">Negeri</label>
+                                        <input type="text" class="form-control"
+                                            value="{{ $baseDetail?->state?->name ?? 'Tiada Maklumat' }}" readonly>
+                                    </div>
+
+                                    <!-- Daerah -->
+                                    <div class="mb-3">
+                                        <label class="form-label">Daerah</label>
+                                        <input type="text" class="form-control"
+                                            value="{{ $baseDetail?->district?->name ?? 'Tiada Maklumat' }}" readonly>
+                                    </div>
+
+                                    <!-- Jeti -->
+                                    <div class="mb-3">
+                                        <label class="form-label">Jeti / Pangkalan</label>
+                                        <input type="text" class="form-control"
+                                            value="{{ $baseDetail?->jetty?->name ?? 'Tiada Maklumat' }}" readonly>
+                                    </div>
+
+                                    <!-- Sungai -->
+                                    <div class="mb-3">
+                                        <label class="form-label">Sungai</label>
+                                        <input type="text" class="form-control"
+                                            value="{{ $baseDetail?->river?->name ?? 'Tiada Maklumat' }}" readonly>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="tab-pane fade" id="content-tab4" role="tabpanel" aria-labelledby="tab4-link">
+                                <form id="store_tab4" method="POST" enctype="multipart/form-data"
+                                    action="{{ route('tukarPeralatan.permohonan-04.store_tab4') }}">
+                                    @csrf
+
+                                    <div class="mb-3">
+                                        <h4>Maklumat Peralatan Menangkap Ikan</h4>
+                                        <small>Sila isi kan bahagian yang kosong dengan maklumat peralatan
+                                            baharu</small>
+                                        <hr>
+                                    </div>
+
+                                    <!-- Peralatan Utama -->
+                                    <section>
+                                        <div class="mb-3">
+                                            <h5 class="fw-bold mb-0">Peralatan Utama</h5>
+                                            <small class="text-muted">Maklumat peralatan utama yang digunakan</small>
+
+                                        </div>
+
+                                        <div class="form-group">
+                                            @php
+                                            $main = $mainEquipment[0] ?? ['name' => '', 'quantity' => '', 'file_path' =>
+                                            null, 'original_name' => null];
+                                            @endphp
+
+                                            <div class="row mb-3 align-items-start">
+
+                                                <!-- Equipment Dropdown -->
+                                                <div class="col-md-4">
+                                                    <label for="main_0_name" class="form-label">Peralatan <span
+                                                            class="text-danger">*</span></label>
+                                                    <select class="form-select" id="main_0_name" name="main[0][name]"
+                                                        required>
+                                                        <option value="">Sila Pilih</option>
+                                                        @foreach ($equipmentList as $id => $name)
+                                                        <option value="{{ $name }}" {{ old('main.0.name',
+                                                            $main['name'])==$name ? 'selected' : '' }}>
+                                                            {{ $name }}
+                                                        </option>
+                                                        @endforeach
+                                                    </select>
+                                                </div>
+
+                                                <!-- Quantity Input -->
+                                                <div class="col-md-1">
+                                                    <label for="main_0_quantity" class="form-label">Kuantiti <span
+                                                            class="text-danger">*</span></label>
+                                                    <input type="number" name="main[0][quantity]" id="main_0_quantity"
+                                                        class="form-control" min="1"
+                                                        value="{{ old('main.0.quantity', $main['quantity']) }}"
+                                                        required>
+                                                </div>
+
+                                                <!-- File Upload Input -->
+                                                <div class="col-md">
+                                                    <label for="main_0_file" class="form-label">Gambar Peralatan <span
+                                                            class="text-danger"></span>
+                                                        @if (empty($main['file_path']))
+                                                        <span class="text-danger">*</span>
+                                                        @endif
+                                                    </label>
+
+                                                    <div class="custom-file">
+                                                        <input type="file" class="custom-file-input" id="main_0_file"
+                                                            name="main[0][file]" accept=".jpg,.jpeg,.png,.pdf"
+                                                            @if(empty($main['file_path'])) required @endif>
+
+                                                        <label class="custom-file-label" for="main_0_file">
+                                                            {{ $main['original_name'] ?? 'Pilih Fail' }}
+                                                        </label>
+                                                    </div>
+
+                                                    <small class="text-muted">
+                                                        Format dibenarkan: JPG, JPEG, PNG, PDF. Saiz maksimum: 5MB.
+                                                    </small>
+
+                                                </div>
+
+                                                @if (!empty($main['file_path']))
+                                                <div class="col-md-auto text-center">
+                                                    <label class="form-label d-none d-md-block">&nbsp;</label>
+                                                    <a type="button" class="btn btn-primary"
+                                                        onclick="window.open('{{ route('tukarPeralatan.permohonan-04.viewTempEquipment', ['type' => 'UTAMA', 'index' => 0]) }}', '_blank')">
+                                                        <i class="fa fa-search p-1"></i>
+                                                    </a>
+                                                </div>
+                                                @endif
+
+                                            </div>
+                                        </div>
+
+                                        @push('scripts')
+                                        <script>
+                                            document.addEventListener('DOMContentLoaded', function () {
+                                            const fileInput = document.getElementById('main_0_file');
+                                            const fileLabel = fileInput.nextElementSibling;
+
+                                            fileInput.addEventListener('change', function () {
+                                                fileLabel.textContent = this.files.length > 0 ? this.files[0].name : 'Pilih Fail';
+                                            });
+                                        });
+                                        </script>
+                                        @endpush
+                                    </section>
+
+                                    <!-- Peralatan Tambahan -->
+                                    <section>
+                                        <div class="mb-3">
+                                            <h5 class="fw-bold mb-0">Peralatan Tambahan</h5>
+                                            <small class="text-muted">Maklumat peralatan tambahan yang digunakan
+                                                (pilihan)</small>
+
+                                        </div>
+
+                                        <div class="form-group">
+                                            @for ($i = 0; $i < 5; $i++) @php $item=$additionalEquipments[$i] ??
+                                                ['name'=> '', 'quantity' => '', 'file_path' => null, 'original_name' =>
+                                                null];
+                                                @endphp
+
+                                                <div class="row mb-3 align-items-start">
+
+                                                    <!-- Equipment Dropdown -->
+                                                    <div class="col-md-4">
+                                                        <label for="additional_{{ $i }}_name"
+                                                            class="form-label">Peralatan</label>
+                                                        <select class="form-select" id="additional_{{ $i }}_name"
+                                                            name="additional[{{ $i }}][name]">
+                                                            <option value="">Sila Pilih (Optional)</option>
+                                                            @foreach ($equipmentList as $id => $name)
+                                                            <option value="{{ $name }}" {{ old("additional.$i.name",
+                                                                $item['name'])==$name ? 'selected' : '' }}>
+                                                                {{ $name }}
+                                                            </option>
+                                                            @endforeach
+                                                        </select>
+                                                    </div>
+
+                                                    <!-- Quantity Input -->
+                                                    <div class="col-md-1">
+                                                        <label for="additional_{{ $i }}_quantity"
+                                                            class="form-label">Kuantiti</label>
+                                                        <input type="number" name="additional[{{ $i }}][quantity]"
+                                                            id="additional_{{ $i }}_quantity" class="form-control"
+                                                            min="1" value="{{ old(" additional.$i.quantity",
+                                                            $item['quantity']) }}">
+                                                    </div>
+
+                                                    <!-- File Upload Input -->
+                                                    <div class="col-md">
+                                                        <label for="additional_{{ $i }}_file" class="form-label">Gambar
+                                                            Peralatan</label>
+
+                                                        <div class="custom-file">
+                                                            <input type="file" class="custom-file-input"
+                                                                id="additional_{{ $i }}_file"
+                                                                name="additional[{{ $i }}][file]"
+                                                                accept=".jpg,.jpeg,.png,.pdf">
+                                                            <label class="custom-file-label"
+                                                                for="additional_{{ $i }}_file">
+                                                                {{ $item['original_name'] ?? 'Pilih Fail' }}
+                                                            </label>
+                                                        </div>
+
+                                                        <small class="text-muted">
+                                                            Format dibenarkan: JPG, JPEG, PNG, PDF. Saiz maksimum: 5MB.
+                                                        </small>
+                                                    </div>
+
+                                                    @if (!empty($item['file_path']))
+                                                    <div class="col-md-auto text-center">
+
+                                                        <label class="form-label d-none d-md-block">&nbsp;</label>
+                                                        <button type="button" class="btn btn-primary"
+                                                            onclick="window.open('{{ route('tukarPeralatan.permohonan-04.viewTempEquipment', ['type' => 'TAMBAHAN', 'index' => $i]) }}', '_blank')">
+                                                            <i class="fa fa-search p-1"></i>
+                                                        </button>
+                                                    </div>
+
+                                                    @endif
+                                                </div>
+                                                @endfor
+                                        </div>
+
+                                        @push('scripts')
+                                        <script>
+                                            document.addEventListener('DOMContentLoaded', function () {
+                                            // Attach file input change listener for each additional field
+                                            for (let i = 0; i < 5; i++) {
+                                                const fileInput = document.getElementById(`additional_${i}_file`);
+                                                const fileLabel = fileInput?.nextElementSibling;
+
+                                                if (fileInput && fileLabel) {
+                                                    fileInput.addEventListener('change', function () {
+                                                        fileLabel.textContent = this.files.length > 0 ? this.files[0].name : 'Pilih Fail';
+                                                    });
+                                                }
+                                            }
+                                        });
+                                        </script>
+                                        @endpush
+                                    </section>
+
+                                </form>
+                            </div>
+
+                            <div class="tab-pane fade" id="content-tab5" role="tabpanel" aria-labelledby="tab5-link">
+                                <div class="mb-3">
+                                    <h5 class="fw-bold mb-0">Maklumat Pemilikan Vesel</h5>
+                                    <small class="text-muted">Maklumat pemilikan vesel yang telah direkodkan dipaparkan
+                                        untuk semakan sahaja.</small>
+                                    <hr>
+                                </div>
+
+                                <section class="mb-4">
+                                    <div class="mb-4">
+                                        <label class="form-label">Adakah anda mempunyai vesel?</label>
+                                        <select class="form-select" disabled>
+                                            <option value="1" {{ ($vessel->own_vessel ?? null) == 1 ? 'selected' : ''
+                                                }}>YA</option>
+                                            <option value="0" {{ ($vessel->own_vessel ?? null) == 0 ? 'selected' : ''
+                                                }}>TIDAK</option>
+                                        </select>
+                                    </div>
+
+                                    @if (($vessel->own_vessel ?? null) == 0 || !empty($vessel->transport_type))
+                                    <div class="mb-3">
+                                        <label class="form-label">Jenis Pengangkutan Digunakan</label>
+                                        <input type="text" class="form-control"
+                                            value="{{ $vessel->transport_type ?? '-' }}" readonly>
+                                    </div>
+                                    @endif
+
+                                    <div class="mb-3">
+                                        <label class="form-label">Nombor Pendaftaran Vesel</label>
+                                        <input type="text" class="form-control"
+                                            value="{{ $vessel->registration_number ?? '-' }}" readonly>
+                                    </div>
+                                </section>
+
+                                @if (($vessel->own_vessel ?? null) == 1)
+
+                                <section class="mb-4">
+                                    <div class="mb-3">
+                                        <h5 class="fw-bold mb-0">Maklumat Kulit Vesel</h5>
+                                        <small class="text-muted">Maklumat berkaitan jenis dan dimensi kulit vesel yang
+                                            telah direkodkan dipaparkan untuk semakan sahaja.</small>
+                                        <hr>
+                                    </div>
+
+                                    @if ($hull = $user->hull ?? null)
+                                    <div class="mb-3">
+                                        <label class="form-label">Jenis Kulit</label>
+                                        <input type="text" class="form-control" value="{{ $hull->hull_type ?? '-' }}"
+                                            readonly>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-md-4 mb-3">
+                                            <label class="form-label">Panjang (m)</label>
+                                            <input type="text" class="form-control" value="{{ $hull->length ?? '-' }}"
+                                                readonly>
+                                        </div>
+                                        <div class="col-md-4 mb-3">
+                                            <label class="form-label">Lebar (m)</label>
+                                            <input type="text" class="form-control" value="{{ $hull->width ?? '-' }}"
+                                                readonly>
+                                        </div>
+                                        <div class="col-md-4 mb-3">
+                                            <label class="form-label">Dalam (m)</label>
+                                            <input type="text" class="form-control" value="{{ $hull->depth ?? '-' }}"
+                                                readonly>
+                                        </div>
+                                    </div>
+                                    @else
+                                    <div class="alert text-center">Maklumat tidak diketahui.</div>
+                                    @endif
+                                </section>
+
+                                <section class="mb-4">
+                                    <div class="mb-3">
+                                        <h5 class="fw-bold mb-0">Maklumat Enjin Vesel</h5>
+                                        <small class="text-muted">Maklumat berkaitan enjin vesel yang telah direkodkan
+                                            dipaparkan untuk semakan sahaja.</small>
+                                        <hr>
+                                    </div>
+
+                                    @if ($engine = $user->engine ?? null)
+                                    <div class="row">
+                                        <div class="col-md-4 mb-3">
+                                            <label class="form-label">Jenama Enjin</label>
+                                            <input type="text" class="form-control" value="{{ $engine->brand ?? '-' }}"
+                                                readonly>
+                                        </div>
+                                        <div class="col-md-4 mb-3">
+                                            <label class="form-label">Model Enjin</label>
+                                            <input type="text" class="form-control" value="{{ $engine->model ?? '-' }}"
+                                                readonly>
+                                        </div>
+                                        <div class="col-md-4 mb-3">
+                                            <label class="form-label">Kuasa Kuda (KK)</label>
+                                            <input type="text" class="form-control"
+                                                value="{{ $engine->horsepower ?? '-' }}" readonly>
+                                        </div>
+                                    </div>
+                                    @else
+                                    <div class="alert text-center">Maklumat tidak diketahui.</div>
+                                    @endif
+                                </section>
+                                @endif
+
+                            </div>
+
+                            {{-- <div class="tab-pane fade" id="content-tab6" role="tabpanel"
+                                aria-labelledby="tab6-link">
+                                <form method="POST" id="store_tab6"
+                                    action="{{ route('tukarPeralatan.permohonan-04.store_tab6') }}"
+                                    enctype="multipart/form-data">
+                                    @csrf
+
+                                    <!-- Dokumen Tunjuk Sebab Section -->
+                                    <section>
+                                        <div class="mb-3">
+                                            <h5 class="fw-bold m-0">Dokumen Sokongan</h5>
+                                            <small class="text-muted d-block mb-3">
+                                                Sila muat naik salinan dokumen tunjuk sebab yang lengkap dan sah.
+                                            </small>
+                                            <hr>
+                                        </div>
+
+                                        <div class="alert alert-warning" role="alert">
+                                            <strong>Perhatian:</strong> Hanya dokumen <strong>Tunjuk Sebab</strong>
+                                            diperlukan
+                                            untuk dimuat naik dalam medan di bawah.
+                                        </div>
+
+                                        <div class="mb-4">
+                                            <label for="justification_doc" class="form-label">
+                                                Dokumen Tunjuk Sebab <span class="text-danger">*</span>
+                                            </label>
+
+                                            <div class="d-flex align-items-center gap-2">
+                                                <div style="flex-grow: 1;">
+                                                    <div class="custom-file">
+                                                        <input type="file" class="custom-file-input"
+                                                            id="justification_doc" name="justification_doc"
+                                                            accept=".pdf,.jpg,.jpeg,.png">
+
+                                                        <label class="custom-file-label" for="justification_doc">
+                                                            @php
+                                                            $originalName = 'Pilih Fail';
+                                                            $justificationIndex = null;
+                                                            @endphp
+                                                            @foreach(($documentsData ?? []) as $index => $doc)
+                                                            @if(($doc['title'] ?? '') === 'Dokumen Tunjuk Sebab')
+                                                            @php
+                                                            $originalName = $doc['original_name'] ?? 'Pilih Fail';
+                                                            $justificationIndex = $index;
+                                                            @endphp
+                                                            @break
+                                                            @endif
+                                                            @endforeach
+                                                            {{ $originalName }}
+                                                        </label>
+                                                    </div>
+                                                </div>
+
+                                                @if(!is_null($justificationIndex))
+                                                <a class="btn btn-primary"
+                                                    href="{{ route('tukarPeralatan.permohonan-04.viewDocument', ['type' => 'required', 'index' => $justificationIndex]) }}"
+                                                    target="_blank">
+                                                    <i class="fa fa-search p-1"></i>
+                                                </a>
+                                                @endif
+                                            </div>
+
+                                            <small class="text-muted">
+                                                Format dibenarkan: PDF, JPG, JPEG, PNG. Saiz maksimum: 2MB.
+                                            </small>
+                                        </div>
+                                    </section>
+                                </form>
+
+                                @push('scripts')
+                                <script>
+                                    document.addEventListener('DOMContentLoaded', function () {
+            const input = document.getElementById('justification_doc');
+            const label = input?.nextElementSibling;
+
+            if (input && label) {
+                input.addEventListener('change', function () {
+                    label.textContent = this.files.length > 0 ? this.files[0].name : 'Pilih Fail';
+                });
+            }
+        });
+                                </script>
+                                @endpush
+                            </div> --}}
+
+                            {{-- <div class="tab-pane fade" id="content-tab7" role="tabpanel"
+                                aria-labelledby="tab7-link"> --}}
+                                <div class="tab-pane fade" id="content-tab6" role="tabpanel"
+                                    aria-labelledby="tab6-link">
+                                    <form id="submitPermohonan" method="POST" enctype="multipart/form-data"
+                                        action="{{ route('tukarPeralatan.permohonan-04.store') }}"
+                                        onsubmit="sessionStorage.clear();">
+                                        @csrf
+
+                                        <!-- Perakuan Checkbox -->
+                                        <div class="form-check mt-4 mb-4 text-center">
+                                            <input class="form-check-input" type="checkbox" id="declarationCheckbox"
+                                                name="declaration">
+                                            <label class="form-check-label fw-semibold text-secondary"
+                                                for="declarationCheckbox">
+                                                Saya dengan ini mengakui dan mengesahkan bahawa semua maklumat yang
+                                                diberikan oleh saya adalah benar.
+                                                Sekiranya terdapat maklumat yang tidak benar, pihak Jabatan boleh
+                                                menolak
+                                                permohonan saya dan tindakan
+                                                undang-undang boleh dikenakan ke atas saya.
+                                            </label>
+                                        </div>
+
+                                        <!-- Button Row -->
+                                        <div class="text-center">
+
+                                            <button type="submit" id="hantarBtn" class="btn btn-success" disabled>
+                                                <i class="fa fa-paper-plane"></i> Hantar Permohonan
+                                            </button>
+                                        </div>
+                                    </form>
+
+                                    @push('scripts')
+                                    <script>
+                                        document.addEventListener('DOMContentLoaded', function () {
+                                const checkbox = document.getElementById('declarationCheckbox');
+                                const hantarBtn = document.getElementById('hantarBtn');
+
+                                checkbox.addEventListener('change', function () {
+                                    hantarBtn.disabled = !this.checked;
+                                });
+                            });
+                                    </script>
+                                    @endpush
+                                    <br>
+                                </div>
+
+                                <div class="card-footer pl-0 pr-0">
+                                    <div class="d-flex justify-content-between align-items-start flex-wrap">
+                                        <!-- Left: Print Button -->
+                                        <div class="m-0 mb-2">
+
+                                        </div>
+
+                                        <!-- Right: Navigation Buttons -->
+                                        <div class="d-flex justify-content-end mb-2 flex-wrap gap-2">
+                                            <button id="backTabBtn" type="button" class="btn btn-light"
+                                                style="width: 120px;">Kembali</button>
+
+                                            {{-- <button id="saveBtn2" type="submit" form="store_tab2"
+                                                class="btn btn-warning" style="width: 120px;">Simpan</button> --}}
+                                            {{-- <button id="saveBtn3" type="submit" form="store_tab3"
+                                                class="btn btn-warning" style="width: 120px;">Simpan</button> --}}
+                                            <button id="saveBtn4" type="submit" form="store_tab4"
+                                                class="btn btn-warning" style="width: 120px;">Simpan</button>
+                                            {{-- <button id="saveBtn5" type="submit" form="store_tab5"
+                                                class="btn btn-warning" style="width: 120px;">Simpan</button> --}}
+                                            {{-- <button id="saveBtn6" type="submit" form="store_tab6"
+                                                class="btn btn-warning" style="width: 120px;">Simpan</button> --}}
+
+                                            <button id="nextTabBtn" type="button" class="btn btn-light"
+                                                style="width: 120px;">Seterusnya</button>
+
+                                            <button id="submitBtn" type="button" class="btn btn-success"
+                                                style="display: none; width: 120px;">Hantar</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        @endsection
+
+                        @push('scripts')
+
+                        <script type="text/javascript">
+                            $(document).ready(function() {
+                                                $("input[type=text], textarea").each(function() {
+                                                    const currentVal = $(this).val();
+                                                    if (currentVal && typeof currentVal === "string") {
+                                                        $(this).val(currentVal.toUpperCase());
+                                                    }
+                                                });
+
+                                                $(document).on('input', "input[type=text], textarea", function() {
+                                                    $(this).val(function(_, val) {
+                                                        return val.toUpperCase();
+                                                    });
+                                                });
+                                            });
+                        </script>
+
+                        <script>
+                            document.addEventListener("DOMContentLoaded", function() {
+                                                var msgSuccess = @json(Session::get('success'));
+                                                if (msgSuccess) {
+                                                    alert(msgSuccess);
+                                                }
+
+                                                var msgError = @json(Session::get('error'));
+                                                if (msgError) {
+                                                    alert(msgError);
+                                                }
+                                            });
+                        </script>
+
+                        <script>
+    let currentTab = 1;
+    const totalTabs = 6;
+
+    document.addEventListener("DOMContentLoaded", () => {
+        const storedTab = parseInt(sessionStorage.getItem("lastSavedTab"));
+        if (storedTab >= 1 && storedTab <= totalTabs) {
+            currentTab = storedTab;
+        }
+
+        activateCurrentTab();
+        updateButtonVisibility();
+
+        document.getElementById("nextTabBtn").onclick = () => switchTab(1);
+        document.getElementById("backTabBtn").onclick = () => switchTab(-1);
+    });
+
+    const switchTab = (direction) => {
+        const newTab = currentTab + direction;
+        if (newTab < 1 || newTab > totalTabs) return;
+
+        currentTab = newTab;
+        sessionStorage.setItem("lastSavedTab", currentTab);
+
+        activateCurrentTab();
+        updateButtonVisibility();
+    };
+
+    const activateCurrentTab = () => {
+        for (let i = 1; i <= totalTabs; i++) {
+            const link = document.getElementById(`tab${i}-link`);
+            const content = document.getElementById(`content-tab${i}`);
+
+            const isActive = (i === currentTab);
+            link?.classList.toggle("active", isActive);
+            content?.classList.toggle("show", isActive);
+            content?.classList.toggle("active", isActive);
+        }
+    };
+
+    const updateButtonVisibility = () => {
+        document.getElementById('backTabBtn').style.display = (currentTab === 1) ? 'none' : 'inline-block';
+        document.getElementById('nextTabBtn').style.display = (currentTab === totalTabs) ? 'none' : 'inline-block';
+
+        const saveBtnIds = ['saveBtn2', 'saveBtn3', 'saveBtn4', 'saveBtn5'];
+        saveBtnIds.forEach(id => {
+            const btn = document.getElementById(id);
+            if (btn) btn.style.display = (id === `saveBtn${currentTab}`) ? 'inline-block' : 'none';
+        });
+
+        // Explicitly hide saveBtn6 (or any save button for last tab)
+        const lastTabSaveBtn = document.getElementById(`saveBtn${totalTabs}`);
+        if (lastTabSaveBtn) lastTabSaveBtn.style.display = 'none';
+    };
+</script>
+
+
+
+                        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+                        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+                        @endpush

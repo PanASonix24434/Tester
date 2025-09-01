@@ -1,0 +1,40 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    /**
+     * Run the migrations.
+     */
+    public function up(): void
+    {
+        //to generate nombor rujukan
+        Schema::create('receipt_items', function (Blueprint $table) {
+            $table->uuid('id')->primary();
+            $table->uuid('receipts_id');
+			$table->foreign('receipts_id')->references('id')->on('receipts');
+            
+            $table->uuid('payment_item_id');
+			$table->foreign('payment_item_id')->references('id')->on('code_masters');
+            $table->integer('quantity')->default(1);
+            $table->float('fee');
+
+            $table->uuid('created_by')->nullable();
+            $table->foreign('created_by')->references('id')->on('users');
+            $table->uuid('updated_by')->nullable();
+            $table->foreign('updated_by')->references('id')->on('users');
+            $table->timestamps();
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
+    {
+        Schema::dropIfExists('receipt_items');
+    }
+};

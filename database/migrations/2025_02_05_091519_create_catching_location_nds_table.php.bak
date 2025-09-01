@@ -1,0 +1,55 @@
+<?php
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    /**
+     * Run the migrations.
+     */
+    public function up(): void
+    {
+        // Check if the 'catching_location_nds' table already exists
+        if (!Schema::hasTable('catching_location_nds')) {
+            Schema::create('catching_location_nds', function (Blueprint $table) {
+                $table->uuid('catching_location_id')->primary(); // Primary key as UUID
+                $table->uuid('fishing_log_id'); // Foreign key to fishing logs
+
+                // Location details
+                $table->string('state_name'); // State where fishing occurred
+                $table->string('district_name'); // District
+                $table->string('river_name'); // River where fishing happened
+                $table->string('location_name'); // Specific point (e.g., "Hulu Sungai Pahang")
+                $table->decimal('latitude', 10, 6)->nullable(); // GPS latitude
+                $table->decimal('longitude', 10, 6)->nullable(); // GPS longitude
+
+                // Tracking fields
+                $table->uuid('created_by')->nullable();
+                $table->uuid('updated_by')->nullable();
+                $table->uuid('deleted_by')->nullable();
+                $table->boolean('is_active')->default(true); // 1 = Active, 0 = Inactive
+
+                $table->timestamps(); // Created at & Updated at
+                $table->softDeletes(); // Adds deleted_at column for soft deletes
+
+                // Foreign Key Constraints
+                $table->foreign('fishing_log_id')
+                      ->references('fishing_log_id')
+                      ->on('fishing_log_nds')
+                      ->onDelete('cascade');
+                $table->foreign('created_by')->references('id')->on('users')->onDelete('set null');
+                $table->foreign('updated_by')->references('id')->on('users')->onDelete('set null');
+                $table->foreign('deleted_by')->references('id')->on('users')->onDelete('set null');
+            });
+        }
+    }
+
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
+    {
+        Schema::dropIfExists('catching_location_nds');
+    }
+};

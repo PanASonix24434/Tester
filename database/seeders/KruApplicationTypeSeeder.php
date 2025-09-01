@@ -1,0 +1,28 @@
+<?php
+
+namespace Database\Seeders;
+
+use Illuminate\Database\Seeder;
+use App\Models\Kru\KruApplicationType;
+
+class KruApplicationTypeSeeder extends Seeder
+{
+    /**
+     * Run the database seeds.
+     *
+     * @return void
+     */
+    public function run()
+    {
+        KruApplicationType::seed('KRU01', 'PERMOHONAN KAD PENDAFTARAN NELAYAN (TEMPATAN / PEMASTAUTIN TETAP)', 1);
+        KruApplicationType::seed('KRU02', 'PERMOHONAN PEMBAHARUAN KAD PENDAFTARAN NELAYAN (TEMPATAN / PEMASTAUTIN TETAP)', 2);
+        KruApplicationType::seed('KRU03', 'PERMOHONAN GANTIAN KAD PENDAFTARAN NELAYAN (TEMPATAN / PEMSTAUTIN TETAP)', 3);
+        KruApplicationType::seed('KRU04', 'PERMOHONAN PEMBATALAN PENDAFTARAN NELAYAN (TEMPATAN / PEMASTAUTIN TETAP)', 4);
+        
+        //kru asing
+        KruApplicationType::seed('KRU05', 'PERMOHONAN KEBENARAN PENGGUNAAN KRU BUKAN WARGANEGARA UNTUK BEKERJA DI ATAS VESEL PENANGKAPAN IKAN TEMPATAN', 5);
+        KruApplicationType::seed('KRU06', 'PERMOHONAN KELULUSAN PENGGUNAAN KRU BUKAN WARGANEGARA UNTUK BEKERJA DI ATAS VESEL PENANGKAPAN IKAN TEMPATAN', 6);
+        KruApplicationType::seed('KRU07', 'PERMOHONAN PEMBAHARUAN PENGGUNAAN KRU BUKAN WARGANEGARA UNTUK BEKERJA DI ATAS VESEL PENANGKAPAN IKAN TEMPATAN', 7);
+        KruApplicationType::seed('KRU08', 'PERMOHONAN PEMBATALAN PENGGUNAAN KRU BUKAN WARGANEGARA UNTUK BEKERJA DI ATAS VESEL PENANGKAPAN IKAN TEMPATAN', 8);
+    }
+}

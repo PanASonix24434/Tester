@@ -1,0 +1,67 @@
+<?php
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    public function up(): void
+    {
+        // Check if the 'kru01_applications' table already exists before trying to create it
+        if (!Schema::hasTable('kru01_applications')) {
+            Schema::create('kru01_applications', function (Blueprint $table) {
+                // Primary key (UUID)
+                $table->uuid('id')->primary();
+                
+                // Foreign key reference to 'kru_applications'
+                $table->uuid('kru_application_id');
+                $table->foreign('kru_application_id')->references('id')->on('kru_applications')->onDelete('cascade');
+                
+                // Application details
+                $table->string('application_type');
+                $table->uuid('vessel_id')->nullable();  // Ensure it's a UUID
+                $table->foreign('vessel_id')->references('id')->on('vesels')->onDelete('set null'); // Adjust deletion behavior as needed
+                $table->string('ic_number', 12);
+                $table->string('name');
+                $table->uuid('kru_position_id');
+                $table->foreign('kru_position_id')->references('id')->on('code_masters')->onDelete('cascade');
+                
+                // Address fields
+                $table->string('address1')->nullable();
+                $table->string('address2')->nullable();
+                $table->string('address3')->nullable();
+                $table->string('postcode', 5)->nullable();
+                $table->string('city')->nullable();
+                $table->uuid('district_id')->nullable();
+                $table->uuid('state_id')->nullable();
+                
+                // Contact details
+                $table->string('home_contact_number')->nullable();
+                $table->string('mobile_contact_number')->nullable();
+                $table->string('email')->nullable();
+                
+                // Health ID and user-related fields
+                $table->uuid('kru_health_id')->nullable();
+                $table->foreign('kru_health_id')->references('id')->on('code_masters')->onDelete('set null');
+                
+                // User references (created_by, updated_by, deleted_by)
+                $table->uuid('created_by')->nullable();
+                $table->foreign('created_by')->references('id')->on('users')->onDelete('set null');
+                $table->uuid('updated_by')->nullable();
+                $table->foreign('updated_by')->references('id')->on('users')->onDelete('set null');
+                $table->uuid('deleted_by')->nullable();
+                $table->foreign('deleted_by')->references('id')->on('users')->onDelete('set null');
+                
+                // Timestamps and soft deletes
+                $table->timestamps();
+                $table->softDeletes();
+            });
+        }
+    }
+
+    public function down(): void
+    {
+        // Drop the 'kru01_applications' table if rolling back
+        Schema::dropIfExists('kru01_applications');
+    }
+};

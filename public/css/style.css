@@ -1,0 +1,136 @@
+html {
+    scroll-behavior: auto !important;
+}
+
+body {
+    overflow-y: scroll !important;
+    padding-right: 0 !important;
+}
+
+.navbar-dark {
+    border-color: transparent;
+}
+
+.profile-user-img {
+    width: 100%;
+}
+
+.dropdown-menu-sm {
+    padding: 0;
+}
+
+.dropdown-menu-sm .dropdown-item {
+    padding: .5rem 1rem;
+}
+
+.dropdown-menu-sm .dropdown-divider {
+    margin: 0;
+}
+
+.dark-mode .table > thead > tr > th a {
+    color: #ffffff !important;
+}
+
+.table > thead > tr > th a {
+    color: #212529 !important;
+}
+
+.dark-mode .daterangepicker {
+    background-color: #454d55 !important;
+}
+
+.dark-mode .daterangepicker .ranges li:hover {
+    color: #454d55 !important;
+}
+
+.dark-mode .border-right {
+    border-right: 1px solid #454d55 !important;
+}
+
+.table > thead > tr > th {
+    white-space: nowrap;
+    vertical-align: middle;
+}
+
+.form-group .control-label {
+    text-align: right;
+}
+
+.text-sm .btn.btn-xs {
+    font-size: .75rem !important;
+}
+
+.alert a {
+    text-decoration: none;
+}
+
+.hidden {
+    display: none !important;
+}
+
+.select2-container .select2-selection--single {
+    height: calc(2.25rem + 2px);
+}
+.select2-container .select2-selection--single .select2-selection__rendered {
+    padding-left: 0 !important;
+}
+.select2-container--default .select2-selection--single .select2-selection__arrow b {
+    margin-top: 2px !important;
+}
+
+.custom-checkbox .custom-control-input,
+.custom-checkbox .custom-control-label,
+.custom-radio .custom-control-input,
+.custom-radio .custom-control-label,
+.custom-file .custom-file-input,
+.custom-file .custom-file-label,
+input[type="file"] {
+    cursor: pointer;
+}
+
+.modal.fade .modal-dialog.modal-dialog-zoom {
+    -webkit-transform: translate(0,0) scale(.8);
+    transform: translate(0,0) scale(.8);
+}
+.modal.show .modal-dialog.modal-dialog-zoom {
+    -webkit-transform: translate(0,0) scale(1);
+    transform: translate(0,0) scale(1);
+}
+
+@media (min-width: 576px) {
+    .modal-delete {
+        max-width: 400px;
+    }
+}
+
+@media (min-width:1200px) {
+    .hidden-lg {
+        display: none !important;
+    }
+}
+
+@media (min-width:992px) and (max-width:1199px) {
+    .hidden-md {
+        display: none !important;
+    }
+}
+
+@media (min-width:768px) and (max-width:991px) {
+    .hidden-sm {
+        display: none !important;
+    }
+}
+
+@media (max-width:767px) {
+    .hidden-xs {
+        display: none !important
+    }
+
+    .form-group .control-label {
+        text-align: left;
+    }
+    
+    .marginBottomXs {
+        margin-bottom: 15px;
+    }
+}

@@ -1,0 +1,53 @@
+<?php
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    /**
+     * Run the migrations.
+     */
+    public function up(): void
+    {
+        Schema::table('cm_equipment', function (Blueprint $table) {
+            // Check if 'vessel_id' column exists before adding it
+            if (!Schema::hasColumn('cm_equipment', 'vessel_id')) {
+                $table->string('vessel_id')->after('id');  // Ensure 'vessel_id' is a string if 'no_pendaftaran' is a string
+            }
+
+            // Add other new columns if they do not exist
+            if (!Schema::hasColumn('cm_equipment', 'date_licensed')) {
+                $table->date('date_licensed')->nullable()->after('equipment_type');
+            }
+
+            if (!Schema::hasColumn('cm_equipment', 'notes')) {
+                $table->string('notes')->nullable()->after('amount');
+            }
+
+            // Foreign key constraint for 'vessel_id' if it does not already exist
+            if (!Schema::hasColumn('cm_equipment', 'vessel_id')) {
+                $table->foreign('vessel_id')
+                    ->references('no_pendaftaran')  // 'no_pendaftaran' should be the same data type as 'vessel_id'
+                    ->on('vessels')
+                    ->onDelete('cascade');  // If a vessel is deleted, the related equipment is also deleted
+            }
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
+    {
+        Schema::table('cm_equipment', function (Blueprint $table) {
+            // Drop the new columns if they exist
+            $table->dropColumn('vessel_id');
+            $table->dropColumn('date_licensed');
+            $table->dropColumn('notes');
+
+            // Drop the foreign key constraint if it exists
+            $table->dropForeign(['vessel_id']);
+        });
+    }
+};
