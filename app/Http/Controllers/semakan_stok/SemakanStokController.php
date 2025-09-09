@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\StatusStock;
 use App\Models\FishType;
-use App\Models\LicensingQuota;
 
 class SemakanStokController extends Controller
 {
@@ -26,7 +25,7 @@ class SemakanStokController extends Controller
         $statusStocks = collect();
         $fmas = collect();
         if ($selectedYear) {
-            $statusStocks = \App\Models\StatusStock::with('fishType')->where('tahun', $selectedYear)->get();
+            $statusStocks = \App\Models\StatusStock::with('fishType')->where('tahun', $selectedYear)->orderBy('fish_type_id')->get();
             $fmas = \App\Models\StatusStock::where('tahun', $selectedYear)->distinct()->orderBy('fma')->pluck('fma');
         }
 
@@ -53,23 +52,9 @@ class SemakanStokController extends Controller
         $selectedYear = request('tahun');
         $statusStocks = collect();
         $fmas = collect();
-        $licensingQuotas = collect();
-        
         if ($selectedYear) {
-            $statusStocks = \App\Models\StatusStock::with('fishType')->where('tahun', $selectedYear)->get();
+            $statusStocks = \App\Models\StatusStock::with('fishType')->where('tahun', $selectedYear)->orderBy('fish_type_id')->get();
             $fmas = \App\Models\StatusStock::where('tahun', $selectedYear)->distinct()->orderBy('fma')->pluck('fma');
-            
-            // Get licensing quotas for the selected year
-            try {
-                $licensingQuotas = LicensingQuota::where('tahun', $selectedYear)
-                    ->where('is_active', true)
-                    ->orderBy('category')
-                    ->orderBy('sub_category')
-                    ->get();
-            } catch (\Exception $e) {
-                \Log::error('Error fetching licensing quotas: ' . $e->getMessage());
-                $licensingQuotas = collect();
-            }
         }
 
         // Get all fish types from database
@@ -81,7 +66,6 @@ class SemakanStokController extends Controller
             'statusStocks' => $statusStocks,
             'fmas' => $fmas,
             'fishTypes' => $fishTypes,
-            'licensingQuotas' => $licensingQuotas,
         ]);
     }
 

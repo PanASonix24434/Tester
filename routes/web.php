@@ -38,6 +38,7 @@ use App\Http\Controllers\NelayanDarat\lebihTahun;
 use App\Http\Controllers\StatusStockController;
 use App\Http\Controllers\semakan_stok\SemakanStokController;
 use App\Http\Controllers\keputusan_status\KeputusanStatusController;
+use App\Http\Controllers\SsdStockController;
 
 /*
 |--------------------------------------------------------------------------
@@ -2952,6 +2953,31 @@ Route::get('/keputusan_status/download_dokumen_kelulusan_kpp', [KeputusanStatusC
     Route::get('/semakan_stok/get-current-status', [SemakanStokController::class, 'getCurrentApprovalStatus'])->name('semakan-stok.get-current-status');
     Route::post('/semakan_stok/final-submission', [SemakanStokController::class, 'finalSubmission'])->name('semakan-stok.final-submission');
     Route::post('/semakan_stok/update-semakan-status', [SemakanStokController::class, 'updateSemakanStatus'])->name('semakan-stok.update-semakan-status');
+    
+    //SSD STOCK MANAGEMENT ROUTES
+    Route::prefix('ssd-stock')->name('ssd-stock.')->group(function () {
+        Route::get('/', [SsdStockController::class, 'index'])->name('dashboard');
+        Route::post('/store', [SsdStockController::class, 'store'])->name('store');
+        Route::post('/submit', [SsdStockController::class, 'submit'])->name('submit');
+        Route::get('/semakan-sokongan', [SsdStockController::class, 'semakanSokongan'])->name('semakan-sokongan');
+        Route::get('/semakan-keputusan', [SsdStockController::class, 'semakanKeputusan'])->name('semakan-keputusan');
+        Route::get('/semakan-key-out', [SsdStockController::class, 'semakanKeyOut'])->name('semakan-key-out');
+        Route::get('/semakan-key-out-kcspt', [SsdStockController::class, 'semakanKeyOutKcspt'])->name('semakan-key-out-kcspt');
+        Route::get('/semakan-key-out-ppn', [SsdStockController::class, 'semakanKeyOutPpn'])->name('semakan-key-out-ppn');
+        Route::get('/semakan-key-in', [SsdStockController::class, 'semakanKeyIn'])->name('semakan-key-in');
+        Route::get('/semakan-key-in-kdp', [SsdStockController::class, 'semakanKeyInKdp'])->name('semakan-key-in-kdp');
+        Route::get('/pelupusan-ssd-kdp', [SsdStockController::class, 'pelupusanSsdKdp'])->name('pelupusan-ssd-kdp');
+        Route::get('/inventory', [SsdStockController::class, 'inventory'])->name('inventory');
+        Route::get('/request', [SsdStockController::class, 'request'])->name('request');
+        Route::get('/key-in', [SsdStockController::class, 'keyIn'])->name('key-in');
+        Route::get('/key-out', [SsdStockController::class, 'keyOut'])->name('key-out');
+        Route::get('/transfer', [SsdStockController::class, 'transfer'])->name('transfer');
+        Route::get('/monthly-transfer', [SsdStockController::class, 'monthlyTransfer'])->name('monthly-transfer');
+        Route::get('/disposal', [SsdStockController::class, 'disposal'])->name('disposal');
+        Route::get('/assignment', [SsdStockController::class, 'assignment'])->name('assignment');
+        Route::get('/reports', [SsdStockController::class, 'reports'])->name('reports');
+    });
+    
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     //Get Entity By Level

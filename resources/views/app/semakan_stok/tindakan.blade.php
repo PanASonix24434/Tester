@@ -5,11 +5,6 @@
 @if($selectedYear)
 <div class="mb-3">
     <div style="padding-left:16px; padding-right:16px;">
-        <div class="alert alert-info">
-            <i class="fas fa-info-circle"></i>
-            <strong>Semakan Selesai!</strong><br>
-            Sila tandakan "Disemak" dan klik "Hantar" untuk melengkapkan proses semakan.
-        </div>
         <div class="mb-3">
             <label class="fw-bold mb-2">Status Semakan:</label>
             <div class="form-check">

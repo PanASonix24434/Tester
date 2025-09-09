@@ -28,7 +28,7 @@ class StatusStockController extends Controller
         } else {
             abort(403, 'Unauthorized');
         }
-        $fishTypes = FishType::all();
+        $fishTypes = FishType::orderBy('name')->get();
         $selectedYear = request('tahun');
         $statusStocks = $selectedYear
             ? StatusStock::with('fishType')->where('tahun', $selectedYear)->whereNotNull('fish_type_id')->get()
@@ -128,29 +128,26 @@ class StatusStockController extends Controller
                 \Log::warning('No valid dokumen KPP file found in request');
             }
 
-            // Update all items for the given year to set dokumen_kelulusan_kpp
-            $updateData = [];
+            // Update all items for the given year to set dokumen_kelulusan_kpp and status to submitted
+            $updateData = [
+                'status' => 'submitted'
+            ];
             if ($dokumenKppPath) {
                 $updateData['dokumen_kelulusan_kpp'] = $dokumenKppPath;
             }
             
-            if (!empty($updateData)) {
-                $updated = StatusStock::where('tahun', $request->tahun)->update($updateData);
-                \Log::info('Updated ' . $updated . ' records with dokumen_kelulusan_kpp for year ' . $request->tahun);
-            } else {
-                $updated = 0;
-                \Log::warning('No dokumen_kelulusan_kpp path to update');
-            }
+            $updated = StatusStock::where('tahun', $request->tahun)->update($updateData);
+            \Log::info('Updated ' . $updated . ' records with status=submitted and dokumen_kelulusan_kpp for year ' . $request->tahun);
 
             // Return JSON response for AJAX requests
             if ($request->ajax() || $request->wantsJson()) {
                 return response()->json([
                     'success' => true,
-                    'message' => 'Semua item telah dikemaskini! ' . $updated . ' rekod telah dikemaskini.'
+                    'message' => 'Status stok berjaya dihantar! ' . $updated . ' rekod telah dikemaskini dengan status "Dihantar".'
                 ]);
             }
 
-            return back()->with('success', 'Semua item telah dikemaskini! ' . $updated . ' rekod telah dikemaskini.');
+            return back()->with('success', 'Status stok berjaya dihantar! ' . $updated . ' rekod telah dikemaskini dengan status "Dihantar".');
             
         } catch (\Illuminate\Validation\ValidationException $e) {
             \Log::error('Validation error: ' . json_encode($e->errors()));
@@ -259,8 +256,17 @@ class StatusStockController extends Controller
         $validationRules = [
             'kumpulanIkan' => 'required|exists:fish_types,id',
             'fma' => 'required|in:FMA01,FMA02,FMA03,FMA04,FMA05,FMA06,FMA07',
+            'selection_type' => 'required|in:vesel,zon',
+            'jenis_sumber' => 'required|in:Pelagik,Demersal',
             'bilanganStok' => 'required|integer|min:0',
         ];
+        
+        // Add conditional validation based on selection_type
+        if ($request->selection_type === 'vesel') {
+            $validationRules['vesel_type'] = 'required|in:Sampan,Jerut Bilis,PTMT,Kenka 2 bot,Siput retak seribu';
+        } elseif ($request->selection_type === 'zon') {
+            $validationRules['zon_type'] = 'required|in:A,B,C,C2';
+        }
         
         // Only validate file if it's actually a valid uploaded file
         if ($hasDokumenSenaraiStok) {
@@ -313,6 +319,10 @@ class StatusStockController extends Controller
                 'dokumen_kelulusan_kpp' => $request->dokumen_kelulusan_kpp,
                 'fish_type_id' => $request->kumpulanIkan,
                 'fma' => $request->fma,
+                'selection_type' => $request->selection_type,
+                'vesel_type' => $request->selection_type === 'vesel' ? $request->vesel_type : null,
+                'zon_type' => $request->selection_type === 'zon' ? $request->zon_type : null,
+                'jenis_sumber' => $request->jenis_sumber,
                 'bilangan_stok' => $request->bilanganStok,
                 'dokumen_senarai_stok' => $dokumenPath,
                 'status' => 'draft',

@@ -1,208 +1,211 @@
-@extends('layouts.app')
 
-@section('content')
-<div id="app-content">
-    <div class="app-content-area">
-        <div class="container-fluid">
-            @if(session('success'))
-                <div class="alert alert-success alert-dismissible fade show mt-3" role="alert">
-                    {{ session('success') }}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
-            @endif
-            @if(session('error'))
-                <div class="alert alert-danger alert-dismissible fade show mt-3" role="alert">
-                    {{ session('error') }}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
-            @endif
+<div class="mb-2" style="border-bottom: 3px solid #007bff; width: fit-content; margin-left:16px;">
+    <span class="fw-bold" style="color:#007bff;">Senarai Status Stok Semasa</span>
+</div>
 
-            <div class="row">
-                <div class="col-12">
-                    <h2 class="mt-3 mb-4">Semakan Stok - Senarai Status</h2>
-                    
-                    <!-- Year Selection -->
-                    <div class="card mb-4">
-                        <div class="card-header text-white" style="background-color: #007bff;">
-                            <h5 class="mb-0">Pilih Tahun</h5>
-                        </div>
-                        <div class="card-body">
-                            <form method="GET" action="{{ route('semakan-stok.senarai-status') }}" class="row align-items-end">
-                                <div class="col-md-4">
-                                    <label for="tahun" class="form-label">Tahun:</label>
-                                    <select class="form-control" id="tahun" name="tahun" onchange="this.form.submit()">
-                                        <option value="">-- Pilih Tahun --</option>
-                                        @foreach($years as $year)
-                                            <option value="{{ $year }}" {{ $selectedYear == $year ? 'selected' : '' }}>
-                                                {{ $year }}
-                                            </option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                                <div class="col-md-4">
-                                    <button type="submit" class="btn btn-primary">Tunjuk Data</button>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-
-                    @if($selectedYear)
-                        <!-- Licensing Quota Table -->
-                        <div class="card">
-                            <div class="card-header text-white" style="background-color: #28a745;">
-                                <h5 class="mb-0">
-                                    <i class="fas fa-table me-2"></i>
-                                    Kuota Pelesenan Mengikut FMA - Tahun {{ $selectedYear }}
-                                </h5>
-                            </div>
-                            <div class="card-body">
-                                @if($licensingQuotas && $licensingQuotas->count() > 0)
-                                    <div class="table-responsive">
-                                        <table class="table table-bordered table-hover">
-                                            <thead class="table-light">
-                                                <tr>
-                                                    <th style="width: 200px; background-color: #ffc107;">FMA</th>
-                                                    <th class="text-center" style="background-color: #ffc107;">01</th>
-                                                    <th class="text-center" style="background-color: #ffc107;">02</th>
-                                                    <th class="text-center" style="background-color: #ffc107;">03</th>
-                                                    <th class="text-center" style="background-color: #ffc107;">04</th>
-                                                    <th class="text-center" style="background-color: #ffc107;">05</th>
-                                                    <th class="text-center" style="background-color: #ffc107;">06</th>
-                                                    <th class="text-center" style="background-color: #ffc107;">07</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                @foreach($licensingQuotas as $quota)
-                                                    <tr>
-                                                        <td class="fw-bold">
-                                                            @if($quota->sub_category)
-                                                                {{ $quota->category }} {{ $quota->sub_category }}
-                                                            @else
-                                                                {{ $quota->category }}
-                                                            @endif
-                                                        </td>
-                                                        <td class="text-center {{ $quota->fma_01 > 0 ? 'table-primary' : 'table-secondary' }}">
-                                                            {{ $quota->fma_01 > 0 ? $quota->fma_01 : '-' }}
-                                                        </td>
-                                                        <td class="text-center {{ $quota->fma_02 > 0 ? 'table-primary' : 'table-secondary' }}">
-                                                            {{ $quota->fma_02 > 0 ? $quota->fma_02 : '-' }}
-                                                        </td>
-                                                        <td class="text-center {{ $quota->fma_03 > 0 ? 'table-primary' : 'table-secondary' }}">
-                                                            {{ $quota->fma_03 > 0 ? $quota->fma_03 : '-' }}
-                                                        </td>
-                                                        <td class="text-center {{ $quota->fma_04 > 0 ? 'table-primary' : 'table-secondary' }}">
-                                                            {{ $quota->fma_04 > 0 ? $quota->fma_04 : '-' }}
-                                                        </td>
-                                                        <td class="text-center {{ $quota->fma_05 > 0 ? 'table-primary' : 'table-secondary' }}">
-                                                            {{ $quota->fma_05 > 0 ? $quota->fma_05 : '-' }}
-                                                        </td>
-                                                        <td class="text-center {{ $quota->fma_06 > 0 ? 'table-primary' : 'table-secondary' }}">
-                                                            {{ $quota->fma_06 > 0 ? $quota->fma_06 : '-' }}
-                                                        </td>
-                                                        <td class="text-center {{ $quota->fma_07 > 0 ? 'table-primary' : 'table-secondary' }}">
-                                                            {{ $quota->fma_07 > 0 ? $quota->fma_07 : '-' }}
-                                                        </td>
-                                                    </tr>
-                                                @endforeach
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                    
-                                    <!-- Legend -->
-                                    <div class="mt-3">
-                                        <div class="row">
-                                            <div class="col-md-6">
-                                                <h6 class="fw-bold">Keterangan:</h6>
-                                                <ul class="list-unstyled">
-                                                    <li><span class="badge bg-primary me-2">Biru</span> - Ada kuota</li>
-                                                    <li><span class="badge bg-secondary me-2">Kelabu</span> - Tiada kuota</li>
-                                                </ul>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <h6 class="fw-bold">FMA Areas:</h6>
-                                                <ul class="list-unstyled small">
-                                                    <li><strong>FMA01:</strong> Perlis, Kedah, Pulau Pinang, Perak & Selangor</li>
-                                                    <li><strong>FMA02:</strong> Negeri Sembilan, Melaka & Johor Barat</li>
-                                                    <li><strong>FMA03:</strong> Kelantan & Terengganu</li>
-                                                    <li><strong>FMA04:</strong> Pahang & Johor Timur</li>
-                                                    <li><strong>FMA05:</strong> Sarawak</li>
-                                                    <li><strong>FMA06:</strong> Limbang Lawas</li>
-                                                    <li><strong>FMA07:</strong> Labuan</li>
-                                                </ul>
-                                            </div>
-                                        </div>
-                                    </div>
-                                @else
-                                    <div class="alert alert-info">
-                                        <i class="fas fa-info-circle me-2"></i>
-                                        Tiada data kuota pelesenan dijumpai untuk tahun {{ $selectedYear }}.
-                                    </div>
+@if($selectedYear)
+<div class="table-responsive" style="padding-left:16px; padding-right:16px;">
+    <style>
+        .grouped-table {
+            border-collapse: collapse;
+        }
+        .grouped-table th {
+            background-color: #007bff;
+            color: white;
+            text-align: center;
+            padding: 12px 8px;
+            font-weight: bold;
+            border: 1.5px solid #e3e6f0;
+        }
+        .grouped-table td {
+            padding: 12px 8px;
+            vertical-align: middle;
+            border: 1.5px solid #e3e6f0;
+            background: #fff;
+        }
+        .fish-type-header {
+            background-color: #f8f9fa;
+            font-weight: bold;
+            color: #1976d2;
+        }
+        .fma-cell {
+            background-color: #f8f9fa;
+            text-align: center;
+            font-weight: bold;
+            color: #424242;
+        }
+        .stock-cell {
+            text-align: center;
+            font-weight: 500;
+            background-color: #f8f9fa;
+        }
+        .row-number {
+            background-color: #e9ecef;
+            text-align: center;
+            font-weight: bold;
+            color: #495057;
+        }
+        .grouped-table tbody tr:hover {
+            background-color: #f5f5f5;
+        }
+        .grouped-table tbody tr:hover td {
+            background-color: #f5f5f5;
+        }
+    </style>
+    <table class="table table-bordered grouped-table">
+        <thead>
+            <tr>
+                <th style="width: 60px;">Bil</th>
+                <th style="min-width: 180px;">Kumpulan Ikan</th>
+                <th style="min-width: 100px;">FMA</th>
+                <th style="min-width: 120px;">Jenis</th>
+                <th style="min-width: 150px;">Butiran</th>
+                <th style="min-width: 120px;">Jenis Sumber</th>
+                <th style="min-width: 120px;">Bilangan Stok</th>
+                <th style="min-width: 100px;">Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if(count($statusStocks) > 0)
+                @php 
+                    $rowNumber = 1;
+                    $groupedStatusStocks = $statusStocks->groupBy('fish_type_id')->sortBy(function ($stocks, $fishTypeId) {
+                        return $stocks->first()->fishType->name;
+                    });
+                @endphp
+                @forelse($groupedStatusStocks as $fishTypeId => $stocks)
+                    @php 
+                        $validStocks = $stocks->filter(function($stock) {
+                            return $stock && $stock->fishType && $stock->fma;
+                        });
+                        $firstStock = $validStocks->first();
+                    @endphp
+                    @if($firstStock && $firstStock->fishType && $validStocks->count() > 0)
+                        @php $stockCount = $validStocks->count(); @endphp
+                        @foreach($validStocks as $index => $stock)
+                            <tr>
+                                @if($index === 0)
+                                    <td rowspan="{{ $stockCount }}" class="row-number">
+                                        {{ $rowNumber }}
+                                    </td>
+                                    <td rowspan="{{ $stockCount }}" class="fish-type-header">
+                                        <strong>{{ $stock->fishType->name ?? 'N/A' }}</strong>
+                                    </td>
                                 @endif
-                            </div>
-                        </div>
-
-                        <!-- Status Stock Summary -->
-                        @if($statusStocks && $statusStocks->count() > 0)
-                            <div class="card mt-4">
-                                <div class="card-header text-white" style="background-color: #17a2b8;">
-                                    <h5 class="mb-0">
-                                        <i class="fas fa-chart-bar me-2"></i>
-                                        Ringkasan Status Stok - Tahun {{ $selectedYear }}
-                                    </h5>
-                                </div>
-                                <div class="card-body">
-                                    <div class="row">
-                                        <div class="col-md-3">
-                                            <div class="text-center">
-                                                <h4 class="text-primary">{{ count($statusStocks) }}</h4>
-                                                <p class="text-muted mb-0">Jumlah Rekod</p>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-3">
-                                            <div class="text-center">
-                                                <h4 class="text-success">{{ $statusStocks->where('status', 'submitted')->count() }}</h4>
-                                                <p class="text-muted mb-0">Dihantar</p>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-3">
-                                            <div class="text-center">
-                                                <h4 class="text-warning">{{ $statusStocks->where('status', 'draft')->count() }}</h4>
-                                                <p class="text-muted mb-0">Draft</p>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-3">
-                                            <div class="text-center">
-                                                <h4 class="text-info">{{ $fmas->count() }}</h4>
-                                                <p class="text-muted mb-0">FMA Areas</p>
-                                            </div>
-                                        </div>
+                                <td class="fma-cell">
+                                    {{ $stock->fma }}
+                                </td>
+                                <td class="text-center">
+                                    @if($stock->selection_type === 'vesel')
+                                        Vesel
+                                    @elseif($stock->selection_type === 'zon')
+                                        Zon
+                                    @else
+                                        -
+                                    @endif
+                                </td>
+                                <td class="text-center">
+                                    @if($stock->selection_type === 'vesel')
+                                        {{ $stock->vesel_type ?? '-' }}
+                                    @elseif($stock->selection_type === 'zon')
+                                        {{ $stock->zon_type ?? '-' }}
+                                    @else
+                                        -
+                                    @endif
+                                </td>
+                                <td class="text-center">
+                                    {{ $stock->jenis_sumber ?? '-' }}
+                                </td>
+                                <td class="stock-cell">
+                                    <div class="d-flex align-items-center justify-content-center">
+                                        <span class="fw-bold me-1">{{ number_format($stock->bilangan_stok) }}</span>
+                                        <small class="text-muted">unit</small>
                                     </div>
-                                </div>
-                            </div>
-                        @endif
-                    @else
-                        <div class="alert alert-warning">
-                            <i class="fas fa-exclamation-triangle me-2"></i>
-                            Sila pilih tahun untuk melihat data semakan stok.
-                        </div>
+                                </td>
+                                <td class="text-center">
+                                    @if($stock->status === 'draft')
+                                        <span class="badge bg-warning text-dark">Draf</span>
+                                    @elseif($stock->status === 'submitted')
+                                        <span class="badge bg-info">Dihantar</span>
+                                    @elseif($stock->pengesahan_status === 'approved')
+                                        <span class="badge bg-success">Diluluskan</span>
+                                    @elseif($stock->pengesahan_status === 'rejected')
+                                        <span class="badge bg-danger">Ditolak</span>
+                                    @else
+                                        <span class="badge bg-secondary">Menunggu</span>
+                                    @endif
+                                </td>
+                            </tr>
+                        @endforeach
+                        @php $rowNumber++; @endphp
                     @endif
-                </div>
-            </div>
-        </div>
+                @empty
+                    <tr>
+                        <td colspan="8" class="text-center py-4">
+                            <i class="fas fa-inbox fa-2x text-muted mb-2"></i>
+                            <br>
+                            <span class="text-muted">Tiada data untuk tahun ini.</span>
+                        </td>
+                    </tr>
+                @endforelse
+            @else
+                <tr>
+                    <td colspan="7" class="text-center py-4">
+                        <i class="fas fa-inbox fa-2x text-muted mb-2"></i>
+                        <br>
+                        <span class="text-muted">Tiada data untuk tahun ini.</span>
+                    </td>
+                </tr>
+            @endif
+        </tbody>
+    </table>
+</div>
+
+<!-- Navigation Buttons -->
+<div class="d-flex justify-content-center align-items-center mt-4" style="padding-left:16px; padding-right:16px;">
+    <div class="me-3">
+        <button type="button" class="btn btn-outline-secondary" onclick="goBack()" style="background-color: white; color: #6c757d; border-color: #6c757d;">
+            <i class="fas fa-arrow-left"></i> Kembali
+        </button>
+    </div>
+    <div class="me-3">
+        <button type="button" class="btn btn-outline-primary" onclick="saveData()" style="background-color: white; color: #007bff; border-color: #007bff;">
+            <i class="fas fa-save"></i> Simpan
+        </button>
+    </div>
+    <div>
+        <button type="button" class="btn btn-primary" onclick="goNext()" style="background-color: #007bff; color: white; border-color: #007bff;">
+            Seterusnya <i class="fas fa-arrow-right"></i>
+        </button>
     </div>
 </div>
-@endsection
+@else
+<div class="text-center py-5" style="padding-left:16px; padding-right:16px;">
+    <i class="fas fa-calendar-alt fa-3x text-muted mb-3"></i>
+    <h5 class="text-muted">Sila Pilih Tahun</h5>
+    <p class="text-muted">Pilih tahun untuk melihat senarai status stok</p>
+</div>
+@endif
 
-@section('scripts')
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-    // Auto-submit form when year changes
-    const tahunSelect = document.getElementById('tahun');
-    if (tahunSelect) {
-        tahunSelect.addEventListener('change', function() {
-            this.form.submit();
-        });
-    }
-});
-</script>
-@endsection 
+function goBack() {
+    // Go back to previous page or specific route
+    window.history.back();
+}
+
+function saveData() {
+    // Show success message
+    Swal.fire({
+        icon: 'success',
+        title: 'Berjaya!',
+        text: 'Data telah berjaya disimpan.',
+        confirmButtonText: 'OK'
+    });
+}
+
+function goNext() {
+    // Navigate to dokumen_permohonan tab
+    const currentYear = '{{ $selectedYear }}';
+    window.location.href = `?tab=dokumen_permohonan&tahun=${currentYear}`;
+}
+</script> 

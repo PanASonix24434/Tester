@@ -88,16 +88,21 @@
                                         const tambahItemBtn = document.getElementById('tambahItemBtn');
                                         
                                         if (tambahItemBtn) {
-                                            tambahItemBtn.addEventListener('click', function() {
-                                                const tahunSelect = document.getElementById('tahun');
-                                                if (!tahunSelect.value) {
-                                                    alert('Sila pilih tahun terlebih dahulu sebelum menambah item.');
-                                                    tahunSelect.focus();
-                                                    return;
-                                                }
-                                                var tambahItemModal = new bootstrap.Modal(document.getElementById('tambahItemModal'));
-                                                tambahItemModal.show();
-                                            });
+                                        tambahItemBtn.addEventListener('click', function() {
+                                            const tahunSelect = document.getElementById('tahun');
+                                            if (!tahunSelect.value) {
+                                                alert('Sila pilih tahun terlebih dahulu sebelum menambah item.');
+                                                tahunSelect.focus();
+                                                return;
+                                            }
+                                            var tambahItemModal = new bootstrap.Modal(document.getElementById('tambahItemModal'));
+                                            tambahItemModal.show();
+                                            
+                                            // Initialize Vesel/Zon functionality when modal opens
+                                            setTimeout(function() {
+                                                initializeVeselZon();
+                                            }, 500);
+                                        });
                                         }
                                     });
                                 </script>
@@ -113,18 +118,21 @@
                                         text-align: center;
                                         padding: 12px 8px;
                                         font-weight: bold;
+                                        border: 1.5px solid #e3e6f0;
                                     }
                                     .grouped-table td {
-                                        padding: 10px 8px;
+                                        padding: 12px 8px;
                                         vertical-align: middle;
+                                        border: 1.5px solid #e3e6f0;
+                                        background: #fff;
                                     }
                                     .fish-type-header {
-                                        background-color: #f5f5f5;
+                                        background-color: #f8f9fa;
                                         font-weight: bold;
                                         color: #1976d2;
                                     }
                                     .fma-cell {
-                                        background-color: #f5f5f5;
+                                        background-color: #f8f9fa;
                                         text-align: center;
                                         font-weight: bold;
                                         color: #424242;
@@ -132,21 +140,32 @@
                                     .stock-cell {
                                         text-align: center;
                                         font-weight: 500;
+                                        background-color: #f8f9fa;
                                     }
                                     .row-number {
-                                        background-color: #f8f9fa;
+                                        background-color: #e9ecef;
                                         text-align: center;
                                         font-weight: bold;
                                         color: #495057;
+                                    }
+                                    .grouped-table tbody tr:hover {
+                                        background-color: #f5f5f5;
+                                    }
+                                    .grouped-table tbody tr:hover td {
+                                        background-color: #f5f5f5;
                                     }
                                 </style>
                                 <table class="table table-bordered grouped-table">
                                     <thead>
                                         <tr>
-                                            <th>Bil</th>
-                                            <th>Kumpulan Ikan</th>
-                                            <th>FMA</th>
-                                            <th>Bilangan Stok</th>
+                                            <th style="width: 60px;">Bil</th>
+                                            <th style="min-width: 180px;">Kumpulan Ikan</th>
+                                            <th style="min-width: 100px;">FMA</th>
+                                            <th style="min-width: 120px;">Jenis</th>
+                                            <th style="min-width: 150px;">Butiran</th>
+                                            <th style="min-width: 120px;">Jenis Sumber</th>
+                                            <th style="min-width: 120px;">Bilangan Stok</th>
+                                            <th style="min-width: 100px;">Status</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -168,22 +187,63 @@
                                                                 {{ $rowNumber }}
                                                             </td>
                                                             <td rowspan="{{ $stockCount }}" class="fish-type-header">
-                                                                {{ $stock->fishType->name ?? '-' }}
+                                                                <strong>{{ $stock->fishType->name ?? '-' }}</strong>
                                                             </td>
                                                         @endif
                                                         <td class="fma-cell">
                                                             {{ $stock->fma }}
                                                         </td>
-                                                        <td class="stock-cell">
-                                                            {{ number_format($stock->bilangan_stok) }}
+                                                        <td class="text-center">
+                                                            @if($stock->selection_type === 'vesel')
+                                                                Vesel
+                                                            @elseif($stock->selection_type === 'zon')
+                                                                Zon
+                                                            @else
+                                                                -
+                                                            @endif
                                                         </td>
-                                            </tr>
+                                                        <td class="text-center">
+                                                            @if($stock->selection_type === 'vesel')
+                                                                {{ $stock->vesel_type ?? '-' }}
+                                                            @elseif($stock->selection_type === 'zon')
+                                                                {{ $stock->zon_type ?? '-' }}
+                                                            @else
+                                                                -
+                                                            @endif
+                                                        </td>
+                                                        <td class="text-center">
+                                                            {{ $stock->jenis_sumber ?? '-' }}
+                                                        </td>
+                                                        <td class="stock-cell">
+                                                            <div class="d-flex align-items-center justify-content-center">
+                                                                <span class="fw-bold me-1">{{ number_format($stock->bilangan_stok) }}</span>
+                                                                <small class="text-muted">unit</small>
+                                                            </div>
+                                                        </td>
+                                                        <td class="text-center">
+                                                            @if($stock->status === 'draft')
+                                                                <span class="badge bg-warning text-dark">Draf</span>
+                                                            @elseif($stock->status === 'submitted')
+                                                                <span class="badge bg-info">Dihantar</span>
+                                                            @elseif($stock->pengesahan_status === 'approved')
+                                                                <span class="badge bg-success">Diluluskan</span>
+                                                            @elseif($stock->pengesahan_status === 'rejected')
+                                                                <span class="badge bg-danger">Ditolak</span>
+                                                            @else
+                                                                <span class="badge bg-secondary">Menunggu</span>
+                                                            @endif
+                                                        </td>
+                                                    </tr>
                                                 @endforeach
                                                 @php $rowNumber++; @endphp
                                             @endif
                                         @empty
                                             <tr>
-                                                <td colspan="4" class="text-center">Tiada data</td>
+                                                <td colspan="8" class="text-center py-4">
+                                                    <i class="fas fa-inbox fa-2x text-muted mb-2"></i>
+                                                    <br>
+                                                    <span class="text-muted">Tiada data untuk tahun ini.</span>
+                                                </td>
                                             </tr>
                                         @endforelse
                                     </tbody>
@@ -225,7 +285,7 @@
             <input type="hidden" name="uploadedDokumenKppPath" id="uploadedDokumenKppPath">
             <!-- Dokumen Kelulusan KPP input removed from modal -->
             <div class="mb-3">
-                <label for="kumpulanIkan" class="form-label">Kumpulan Ikan</label>
+                <label for="kumpulanIkan" class="form-label">Kumpulan Ikan <span class="text-danger">*</span></label>
                 <select class="form-select" id="kumpulanIkan" name="kumpulanIkan" required>
                     <option value="">-- Pilih Kumpulan Ikan --</option>
                     @foreach($fishTypes as $fishType)
@@ -234,7 +294,7 @@
                 </select>
             </div>
             <div class="mb-3">
-                <label for="fma" class="form-label">FMA</label>
+                <label for="fma" class="form-label">FMA <span class="text-danger">*</span></label>
                 <select class="form-select" id="fma" name="fma" required>
                     <option value="">-- Pilih FMA --</option>
                     <option value="FMA01">FMA01 - Perlis, Kedah, Pulau Pinang, Perak & Selangor</option>
@@ -246,16 +306,71 @@
                     <option value="FMA07">FMA07 - Labuan</option>
                 </select>
             </div>
+            
+            <!-- Vesel/Zon Selection Section (Hidden initially) -->
+            <div id="veselZonSection" class="mb-3" style="display: none;">
+                <div class="mb-3">
+                    <label class="form-label">Pilih Jenis: <span class="text-danger">*</span></label>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="selection_type" id="veselRadio" value="vesel" required>
+                        <label class="form-check-label" for="veselRadio">
+                            Vesel
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="selection_type" id="zonRadio" value="zon" required>
+                        <label class="form-check-label" for="zonRadio">
+                            Zon
+                        </label>
+                    </div>
+                </div>
+                
+                <!-- Vesel Dropdown (Hidden initially) -->
+                <div id="veselDropdown" class="mb-3" style="display: none;">
+                    <label for="vesel_type" class="form-label">Jenis Vesel <span class="text-danger">*</span></label>
+                    <select class="form-select" id="vesel_type" name="vesel_type" required>
+                        <option value="">-- Pilih Jenis Vesel --</option>
+                        <option value="Sampan">Sampan</option>
+                        <option value="Jerut Bilis">Jerut Bilis</option>
+                        <option value="PTMT">PTMT</option>
+                        <option value="Kenka 2 bot">Kenka 2 bot</option>
+                        <option value="Siput retak seribu">Siput retak seribu</option>
+                    </select>
+                </div>
+                
+                <!-- Zon Dropdown (Hidden initially) -->
+                <div id="zonDropdown" class="mb-3" style="display: none;">
+                    <label for="zon_type" class="form-label">Jenis Zon <span class="text-danger">*</span></label>
+                    <select class="form-select" id="zon_type" name="zon_type" required>
+                        <option value="">-- Pilih Jenis Zon --</option>
+                        <option value="A">A</option>
+                        <option value="B">B</option>
+                        <option value="C">C</option>
+                        <option value="C2">C2</option>
+                    </select>
+                </div>
+            </div>
+            
+            <!-- Jenis Sumber Dropdown -->
             <div class="mb-3">
-                <label for="bilanganStok" class="form-label">Bilangan Stok</label>
+                <label for="jenis_sumber" class="form-label">Jenis Sumber <span class="text-danger">*</span></label>
+                <select class="form-select" id="jenis_sumber" name="jenis_sumber" required>
+                    <option value="">-- Pilih Jenis Sumber --</option>
+                    <option value="Pelagik">Pelagik</option>
+                    <option value="Demersal">Demersal</option>
+                </select>
+            </div>
+            
+            <div class="mb-3">
+                <label for="bilanganStok" class="form-label">Bilangan Stok <span class="text-danger">*</span></label>
                 <input type="number" class="form-control" id="bilanganStok" name="bilanganStok" required min="0" step="1" oninput="this.value = this.value.replace(/[^0-9]/g, '')" placeholder="Masukkan nombor sahaja">
             </div>
             <div class="mb-2 fw-bold" style="color: #007bff;">Muat Naik Borang Excel</div>
             <hr style="border-top: 2px solid #007bff; margin-bottom: 1rem;">
             <div class="mb-3">
-                <label for="dokumenSenaraiStok" class="form-label">Dokumen Senarai Stok Semasa</label>
+                <label for="dokumenSenaraiStok" class="form-label">Dokumen Senarai Stok Semasa <span class="text-danger">*</span></label>
                 <div class="input-group">
-                    <input type="file" class="form-control" id="dokumenSenaraiStok" name="dokumenSenaraiStok" accept=".jpg,.jpeg,.png,.pdf">
+                    <input type="file" class="form-control" id="dokumenSenaraiStok" name="dokumenSenaraiStok" accept=".jpg,.jpeg,.png,.pdf" required>
                     <button class="btn btn-outline-secondary" type="button">Pilih Fail</button>
                 </div>
             </div>
@@ -761,6 +876,101 @@ document.addEventListener('DOMContentLoaded', function() {
                 });
         });
     }
+});
+
+// Vesel/Zon Dynamic Functionality
+function initializeVeselZon() {
+    const fmaSelect = document.getElementById('fma');
+    const veselZonSection = document.getElementById('veselZonSection');
+    const veselRadio = document.getElementById('veselRadio');
+    const zonRadio = document.getElementById('zonRadio');
+    const veselDropdown = document.getElementById('veselDropdown');
+    const zonDropdown = document.getElementById('zonDropdown');
+    const veselTypeSelect = document.getElementById('vesel_type');
+    const zonTypeSelect = document.getElementById('zon_type');
+
+    // Show Vesel/Zon section when FMA is selected
+    if (fmaSelect) {
+        // Remove any existing event listeners
+        fmaSelect.removeEventListener('change', handleFmaChange);
+        fmaSelect.addEventListener('change', handleFmaChange);
+    }
+
+    // Show Vesel dropdown when Vesel radio is selected
+    if (veselRadio) {
+        veselRadio.removeEventListener('change', handleVeselChange);
+        veselRadio.addEventListener('change', handleVeselChange);
+    }
+
+    // Show Zon dropdown when Zon radio is selected
+    if (zonRadio) {
+        zonRadio.removeEventListener('change', handleZonChange);
+        zonRadio.addEventListener('change', handleZonChange);
+    }
+}
+
+function handleFmaChange() {
+    const fmaSelect = document.getElementById('fma');
+    const veselZonSection = document.getElementById('veselZonSection');
+    const veselRadio = document.getElementById('veselRadio');
+    const zonRadio = document.getElementById('zonRadio');
+    const veselDropdown = document.getElementById('veselDropdown');
+    const zonDropdown = document.getElementById('zonDropdown');
+    const veselTypeSelect = document.getElementById('vesel_type');
+    const zonTypeSelect = document.getElementById('zon_type');
+    
+    if (fmaSelect.value) {
+        veselZonSection.style.display = 'block';
+    } else {
+        veselZonSection.style.display = 'none';
+        // Reset selections and remove required attributes
+        if (veselRadio) veselRadio.checked = false;
+        if (zonRadio) zonRadio.checked = false;
+        if (veselDropdown) {
+            veselDropdown.style.display = 'none';
+            veselTypeSelect.required = false;
+        }
+        if (zonDropdown) {
+            zonDropdown.style.display = 'none';
+            zonTypeSelect.required = false;
+        }
+        if (veselTypeSelect) veselTypeSelect.value = '';
+        if (zonTypeSelect) zonTypeSelect.value = '';
+    }
+}
+
+function handleVeselChange() {
+    const veselDropdown = document.getElementById('veselDropdown');
+    const zonDropdown = document.getElementById('zonDropdown');
+    const veselTypeSelect = document.getElementById('vesel_type');
+    const zonTypeSelect = document.getElementById('zon_type');
+    
+    if (this.checked) {
+        veselDropdown.style.display = 'block';
+        veselTypeSelect.required = true;
+        zonDropdown.style.display = 'none';
+        zonTypeSelect.required = false;
+        if (zonTypeSelect) zonTypeSelect.value = ''; // Clear zon selection
+    }
+}
+
+function handleZonChange() {
+    const veselDropdown = document.getElementById('veselDropdown');
+    const zonDropdown = document.getElementById('zonDropdown');
+    const veselTypeSelect = document.getElementById('vesel_type');
+    const zonTypeSelect = document.getElementById('zon_type');
+    
+    if (this.checked) {
+        zonDropdown.style.display = 'block';
+        zonTypeSelect.required = true;
+        veselDropdown.style.display = 'none';
+        veselTypeSelect.required = false;
+        if (veselTypeSelect) veselTypeSelect.value = ''; // Clear vesel selection
+    }
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    initializeVeselZon();
 });
 </script>
 @endsection 
