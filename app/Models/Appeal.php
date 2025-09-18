@@ -27,6 +27,7 @@ class Appeal extends Model
         'kpp_decision',
         'kpp_comments',
         'kpp_ref_no',
+        'surat_kelulusan_kpp',
     ];
 
     protected static function boot()

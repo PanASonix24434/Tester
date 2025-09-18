@@ -122,10 +122,12 @@
                             </span>
                         </td>
                         <td class="text-center">
-                            <a href="{{ route('appeals.role_review', ['id' => $app->id]) }}" 
-                               class="btn btn-sm btn-light border shadow-sm" title="Lihat Permohonan">
+                            <button type="button" 
+                                    class="btn btn-sm btn-light border shadow-sm" 
+                                    title="Lihat Permohonan"
+                                    onclick="handleTindakanClick('{{ $app->id }}')">
                                 <i class="fas fa-eye text-primary"></i>
-                            </a>
+                            </button>
                         </td>
                     @else
                         {{-- Applicant View Columns for KPV-07/KPV-08 --}}
@@ -156,23 +158,41 @@
                             </span>
                         </td>
                         <td class="text-center">
-                            @php
-                                $incompleteStatuses = ['ppl_incomplete', 'kcl_incomplete', 'pk_incomplete'];
-                            @endphp
-                            @if(in_array($app->status, $incompleteStatuses))
+                                    @php
+                                        $incompleteStatuses = ['ppl_incomplete', 'kcl_incomplete', 'pk_incomplete'];
+                                    @endphp
+                                    @if(in_array($app->status, $incompleteStatuses))
                                 <a href="{{ route('appeals.edit', ['id' => $app->id]) }}" 
                                    class="btn btn-sm btn-warning border shadow-sm" title="Edit/Kemaskini">
                                     <i class="fas fa-edit"></i>
                                 </a>
                             @else
-                                <a href="{{ route('appeals.role_review', ['id' => $app->id]) }}" 
-                                   class="btn btn-sm btn-light border shadow-sm" title="Lihat">
-                                    <i class="fas fa-pencil text-primary"></i>
-                                </a>
+                                <button type="button" 
+                                        class="btn btn-sm btn-light border shadow-sm" 
+                                        title="Lihat Status"
+                                        onclick="handleTindakanClick('{{ $app->id }}')">
+                                    <i class="fas fa-eye text-primary"></i>
+                                </button>
                             @endif
                         </td>
                     @endif
                 </tr>
+                
+                {{-- Status Details Row (only for Pelesen) - Will be loaded via AJAX --}}
+                @if(!$isOfficer)
+                <tr id="status-details-{{ $app->id }}" class="status-details-row" style="display: none;">
+                    <td colspan="5" class="p-0">
+                        <div id="status-content-{{ $app->id }}" class="status-content-placeholder">
+                            <div class="text-center p-4">
+                                <div class="spinner-border text-primary" role="status">
+                                    <span class="visually-hidden">Loading...</span>
+                                </div>
+                                <div class="mt-2 text-muted">Memuatkan status...</div>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+                @endif
             @empty
                 <tr>
                     <td colspan="{{ $isOfficer ? '9' : '6' }}" class="text-center text-muted py-4">
@@ -184,3 +204,91 @@
         </tbody>
     </table>
 </div>
+
+<script>
+// Handle Tindakan button click with role validation
+function handleTindakanClick(appealId) {
+    console.log('Tindakan button clicked for appeal:', appealId);
+    
+    // Show loading state
+    const button = event.target.closest('button');
+    const originalContent = button.innerHTML;
+    button.innerHTML = '<i class="fas fa-spinner fa-spin text-primary"></i>';
+    button.disabled = true;
+    
+    // Call role validation API
+    fetch(`{{ url('/appeals/validate-tindakan') }}/${appealId}`)
+        .then(response => response.json())
+        .then(data => {
+            console.log('Role validation response:', data);
+            
+            if (data.success) {
+                if (data.action === 'status_content') {
+                    // Show status content for pelesen
+                    loadStatusDetails(appealId);
+                } else if (data.action === 'redirect') {
+                    // Redirect to appropriate review page
+                    window.location.href = data.redirect_url;
+                }
+            } else {
+                // Handle error
+                alert('Error: ' + data.message);
+                console.error('Role validation error:', data);
+            }
+        })
+        .catch(error => {
+            console.error('Error validating role:', error);
+            alert('Ralat memvalidasi peranan pengguna.');
+        })
+        .finally(() => {
+            // Restore button state
+            button.innerHTML = originalContent;
+            button.disabled = false;
+        });
+}
+
+function loadStatusDetails(appealId) {
+    const statusRow = document.getElementById('status-details-' + appealId);
+    const statusContent = document.getElementById('status-content-' + appealId);
+    
+    if (statusRow) {
+        if (statusRow.style.display === 'none') {
+            // Hide all other status details first
+            document.querySelectorAll('.status-details-row').forEach(row => {
+                row.style.display = 'none';
+            });
+            
+            // Show the selected one
+            statusRow.style.display = 'table-row';
+            
+            // Load status content via AJAX if not already loaded
+            if (!statusContent.dataset.loaded) {
+                fetch(`{{ url('/appeals') }}/${appealId}/status-content`)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error(`HTTP error! status: ${response.status}`);
+                        }
+                        return response.text();
+                    })
+                    .then(html => {
+                        statusContent.innerHTML = html;
+                        statusContent.dataset.loaded = 'true';
+                    })
+                    .catch(error => {
+                        console.error('Error loading status:', error);
+                        statusContent.innerHTML = `
+                            <div class="text-center p-4 text-danger">
+                                <i class="fas fa-exclamation-triangle fa-2x mb-2"></i>
+                                <div>Ralat memuatkan status permohonan.</div>
+                                <small class="text-muted">Error: ${error.message}</small>
+                            </div>
+                        `;
+                    });
+            }
+        } else {
+            // Hide the current one
+            statusRow.style.display = 'none';
+        }
+    }
+}
+</script>

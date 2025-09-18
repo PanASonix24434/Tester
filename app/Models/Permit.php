@@ -84,4 +84,5 @@ class Permit extends Model
         // For now, returning a default date
         return now()->addMonths(6);
     }
+
 }

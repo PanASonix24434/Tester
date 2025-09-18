@@ -34,22 +34,39 @@ class AppealController extends Controller
         $appeal = Appeal::where('id', $id)->firstOrFail();
         // Fetch the applicant user
         $applicant = \App\Models\User::find($appeal->applicant_id);
-        // Determine reviewer name for the current stage
-        $status = $appeal->status;
-        if (in_array($status, ['submitted', 'ppl_review', 'ppl_incomplete'])) {
-            $reviewerUser = \App\Models\User::whereRaw('LOWER(TRIM(peranan)) = ?', [strtolower(trim('PEGAWAI PERIKANAN NEGERI'))])->first();
-            $reviewerName = $reviewerUser->name ?? '-';
-        } elseif (in_array($status, ['kcl_review', 'kcl_incomplete'])) {
-            $reviewerUser = \App\Models\User::whereRaw('LOWER(TRIM(peranan)) = ?', [strtolower(trim('KETUA CAWANGAN'))])->first();
-            $reviewerName = $reviewerUser->name ?? '-';
-        } elseif (in_array($status, ['pk_review', 'pk_incomplete', 'approved', 'rejected'])) {
-            $reviewerUser = \App\Models\User::whereRaw('LOWER(TRIM(peranan)) = ?', [strtolower(trim('PENGARAH KANAN'))])->first();
-            $reviewerName = $reviewerUser->name ?? '-';
-        } else {
-            $reviewerName = $applicant->name ?? '-';
+        // Fetch the perakuan data to get the surat kelulusan KPP file
+        $perakuan = \App\Models\Perakuan::where('appeal_id', $id)->first();
+        
+        // Get reviewer names - prioritize the final approver
+        $reviewerName = '';
+        
+        // Check for KPP reviewer first (final approver)
+        if ($appeal->kpp_reviewer_id) {
+            $kppReviewer = \App\Models\User::find($appeal->kpp_reviewer_id);
+            $reviewerName = $kppReviewer ? $kppReviewer->name : 'Unknown';
         }
-        // Return the status view with the appeal and applicant data
-        return view('appeals.status', compact('appeal', 'applicant', 'reviewerName'));
+        // Check for PK reviewer
+        elseif ($appeal->pk_reviewer_id) {
+            $pkReviewer = \App\Models\User::find($appeal->pk_reviewer_id);
+            $reviewerName = $pkReviewer ? $pkReviewer->name : 'Unknown';
+        }
+        // Check for KCL reviewer
+        elseif ($appeal->kcl_reviewer_id) {
+            $kclReviewer = \App\Models\User::find($appeal->kcl_reviewer_id);
+            $reviewerName = $kclReviewer ? $kclReviewer->name : 'Unknown';
+        }
+        // Check for PPL reviewer
+        elseif ($appeal->ppl_reviewer_id) {
+            $pplReviewer = \App\Models\User::find($appeal->ppl_reviewer_id);
+            $reviewerName = $pplReviewer ? $pplReviewer->name : 'Unknown';
+        }
+        
+        // If no reviewer found, use current user as fallback
+        if (empty($reviewerName)) {
+            $reviewerName = auth()->user()->name ?? 'Unknown';
+        }
+        // Return the status view with the appeal, applicant, perakuan, and reviewer data
+        return view('appeals.status', compact('appeal', 'applicant', 'perakuan', 'reviewerName'));
     }
     // Applicant: Edit application after incomplete or rejected
     public function edit($id)
@@ -66,25 +83,284 @@ class AppealController extends Controller
     // Applicant: Update/resubmit application
     public function update(Request $request, $id)
     {
+        try {
         $appeal = \App\Models\Appeal::findOrFail($id);
         $perakuan = \App\Models\Perakuan::where('appeal_id', $appeal->id)->latest()->first();
         $user = auth()->user();
+            
         if ($appeal->applicant_id !== $user->id) {
             abort(403, 'Anda tidak dibenarkan mengedit permohonan ini.');
         }
-        // Validate and update fields as needed (simplified example)
+            
+            // Validate and update fields as needed
         $request->validate([
             'justifikasi_pindaan' => 'required|string',
-            // Add other fields and file validation as needed
-        ]);
+            ]);
+            
+            // Custom validation for dokumen sokongan files
+            $dokumenSokonganTypes = [
+                'dokumen_sokongan_bina_baru',
+                'dokumen_sokongan_bina_baru_luar_negara', 
+                'dokumen_sokongan_terpakai',
+                'dokumen_sokongan_pangkalan',
+                'dokumen_sokongan_bahan_binaan',
+                'dokumen_sokongan_tukar_peralatan',
+            ];
+            
+            foreach ($dokumenSokonganTypes as $fieldName) {
+                // Check both array and non-array versions
+                if ($request->hasFile($fieldName)) {
+                    $file = $request->file($fieldName);
+                    
+                    // Handle both single file and array of files
+                    if (is_array($file)) {
+                        foreach ($file as $singleFile) {
+                            if ($singleFile && $singleFile->isValid()) {
+                                $allowedMimes = ['application/pdf', 'image/png', 'image/jpg', 'image/jpeg'];
+                                if (!in_array($singleFile->getMimeType(), $allowedMimes)) {
+                                    return redirect()->back()->withErrors([
+                                        $fieldName => 'File mesti dalam format PDF, PNG, JPG, atau JPEG.'
+                                    ])->withInput();
+                                }
+                                if ($singleFile->getSize() > 5120 * 1024) { // 5MB
+                                    return redirect()->back()->withErrors([
+                                        $fieldName => 'Saiz file mesti kurang daripada 5MB.'
+                                    ])->withInput();
+                                }
+                            }
+                        }
+                    } else {
+                        if ($file && $file->isValid()) {
+                            $allowedMimes = ['application/pdf', 'image/png', 'image/jpg', 'image/jpeg'];
+                            if (!in_array($file->getMimeType(), $allowedMimes)) {
+                                return redirect()->back()->withErrors([
+                                    $fieldName => 'File mesti dalam format PDF, PNG, JPG, atau JPEG.'
+                                ])->withInput();
+                            }
+                            if ($file->getSize() > 5120 * 1024) { // 5MB
+                                return redirect()->back()->withErrors([
+                                    $fieldName => 'Saiz file mesti kurang daripada 5MB.'
+                                ])->withInput();
+                            }
+                        }
+                    }
+                }
+                
+                // Check array version
+                $arrayFieldName = $fieldName . '[]';
+                if ($request->hasFile($arrayFieldName)) {
+                    $files = $request->file($arrayFieldName);
+                    if (!is_array($files)) {
+                        $files = [$files];
+                    }
+                    
+                    foreach ($files as $file) {
+                        if ($file && $file->isValid()) {
+                            $allowedMimes = ['application/pdf', 'image/png', 'image/jpg', 'image/jpeg'];
+                            if (!in_array($file->getMimeType(), $allowedMimes)) {
+                                return redirect()->back()->withErrors([
+                                    $arrayFieldName => 'File mesti dalam format PDF, PNG, JPG, atau JPEG.'
+                                ])->withInput();
+                            }
+                            if ($file->getSize() > 5120 * 1024) { // 5MB
+                                return redirect()->back()->withErrors([
+                                    $arrayFieldName => 'Saiz file mesti kurang daripada 5MB.'
+                                ])->withInput();
+                            }
+                        }
+                    }
+                }
+            }
+            
+            // Update perakuan fields
         $perakuan->justifikasi_pindaan = $request->input('justifikasi_pindaan');
-        // Add other fields as needed
         $perakuan->status = 'submitted';
+            $perakuan->updated_at = now(); // Update timestamp
         $perakuan->save();
+            
+            \Log::info('Perakuan updated successfully', [
+                'perakuan_id' => $perakuan->id,
+                'appeal_id' => $appeal->id,
+                'user_id' => $user->id,
+                'justifikasi_pindaan' => $request->input('justifikasi_pindaan')
+            ]);
+            
+            // Handle dokumen sokongan uploads - ADD NEW FILES ONLY (don't replace existing)
+            $dokumenSokonganTypes = [
+                'dokumen_sokongan_bina_baru' => 'bina_baru',
+                'dokumen_sokongan_bina_baru_luar_negara' => 'bina_baru_luar_negara',
+                'dokumen_sokongan_terpakai' => 'terpakai',
+                'dokumen_sokongan_pangkalan' => 'pangkalan',
+                'dokumen_sokongan_bahan_binaan' => 'bahan_binaan',
+                'dokumen_sokongan_tukar_peralatan' => 'tukar_peralatan',
+            ];
+            
+            \Log::info('Processing dokumen sokongan uploads for edit', [
+                'appeal_id' => $appeal->id,
+                'user_id' => $user->id,
+                'existing_docs_count' => \App\Models\DokumenSokongan::where('appeals_id', $appeal->id)->count(),
+                'all_files' => $request->allFiles(),
+                'all_input' => $request->all(),
+                'request_method' => $request->method(),
+                'content_type' => $request->header('Content-Type'),
+                'has_files' => $request->hasFile('dokumen_sokongan_terpakai') || $request->hasFile('dokumen_sokongan_terpakai[]'),
+                'form_data_keys' => array_keys($request->all()),
+                'file_keys' => array_keys($request->allFiles()),
+                'dokumen_sokongan_terpakai' => $request->file('dokumen_sokongan_terpakai'),
+                'dokumen_sokongan_terpakai_array' => $request->file('dokumen_sokongan_terpakai[]'),
+                'dokumen_sokongan_bahan_binaan' => $request->file('dokumen_sokongan_bahan_binaan'),
+                'dokumen_sokongan_bahan_binaan_array' => $request->file('dokumen_sokongan_bahan_binaan[]')
+            ]);
+
+            foreach ($dokumenSokonganTypes as $inputName => $fileType) {
+                // Check both array and non-array versions
+                $arrayInputName = $inputName . '[]';
+                $hasArrayFiles = $request->hasFile($arrayInputName);
+                $hasSingleFiles = $request->hasFile($inputName);
+                
+                \Log::info('Checking for files', [
+                    'input_name' => $inputName,
+                    'array_input_name' => $arrayInputName,
+                    'file_type' => $fileType,
+                    'has_array_files' => $hasArrayFiles,
+                    'has_single_files' => $hasSingleFiles
+                ]);
+                
+                $files = null;
+                if ($hasArrayFiles) {
+                    $files = $request->file($arrayInputName);
+                    \Log::info('Array files found', [
+                        'input_name' => $arrayInputName,
+                        'files_type' => gettype($files),
+                        'files_count' => is_array($files) ? count($files) : 1,
+                        'files_content' => $files
+                    ]);
+                } elseif ($hasSingleFiles) {
+                    $files = $request->file($inputName);
+                    \Log::info('Single files found', [
+                        'input_name' => $inputName,
+                        'files_type' => gettype($files),
+                        'files_count' => is_array($files) ? count($files) : 1,
+                        'files_content' => $files
+                    ]);
+                }
+                
+                if ($files) {
+                    // Ensure we have an array of files
+                    if (!is_array($files)) {
+                        $files = [$files]; // Convert single file to array
+                    }
+                    
+                    foreach ($files as $index => $file) {
+                        \Log::info('Processing individual file', [
+                            'file_index' => $index,
+                            'file_valid' => ($file && method_exists($file, 'isValid')) ? $file->isValid() : 'null',
+                            'file_name' => $file ? $file->getClientOriginalName() : 'null',
+                            'file_size' => $file ? $file->getSize() : 'null'
+                        ]);
+                        
+                        if ($file && $file->isValid()) {
+                            try {
+                                // Preserve original filename and extension
+                                $originalName = $file->getClientOriginalName();
+                                $path = $file->storeAs('dokumen_permohonan/' . $user->id, $originalName, 'public');
+                                
+                                \Log::info('File stored successfully', [
+                                    'original_name' => $originalName,
+                                    'stored_path' => $path,
+                                    'file_type' => $fileType
+                                ]);
+                                
+                                // Create individual dokumen_sokongan record - ADD NEW FILE (don't replace existing)
+                                $dokumenSokongan = \App\Models\DokumenSokongan::create([
+                                    'id' => (string) \Str::uuid(),
+                                    'appeals_id' => $appeal->id,
+                                    'ref_number' => $appeal->ref_number,
+                                    'user_id' => $user->id,
+                                    'file_path' => $path,
+                                    'file_name' => $originalName,
+                                    'file_type' => $fileType,
+                                    'file_size' => $file->getSize(),
+                                    'mime_type' => $file->getMimeType(),
+                                    'upload_date' => now(),
+                                ]);
+                                
+                                \Log::info('New dokumen sokongan added to database', [
+                                    'dokumen_id' => $dokumenSokongan->id,
+                                    'appeal_id' => $appeal->id,
+                                    'file_name' => $originalName,
+                                    'file_type' => $fileType,
+                                    'file_path' => $path,
+                                    'created_successfully' => true,
+                                    'database_record' => $dokumenSokongan->toArray()
+                                ]);
+                                
+                            } catch (\Exception $e) {
+                                \Log::error("Error storing file {$inputName}: " . $e->getMessage(), [
+                                    'file_name' => $file ? $file->getClientOriginalName() : 'unknown',
+                                    'error_trace' => $e->getTraceAsString()
+                                ]);
+                                continue; // Skip this file and continue with others
+                            }
+                        } else {
+                            \Log::warning('Invalid file skipped', [
+                                'file_index' => $index,
+                                'file_valid' => $file ? $file->isValid() : false,
+                                'file_name' => $file ? $file->getClientOriginalName() : 'null'
+                            ]);
+                        }
+                    }
+                }
+            }
+            
+            // Log final dokumen count after uploads - ADDITIVE BEHAVIOR
+            $finalDocCount = \App\Models\DokumenSokongan::where('appeals_id', $appeal->id)->count();
+            $initialDocCount = \App\Models\DokumenSokongan::where('appeals_id', $appeal->id)
+                ->where('created_at', '<', now()->subMinutes(5))
+                ->count();
+            $newDocsAdded = $finalDocCount - $initialDocCount;
+            
+            \Log::info('Dokumen sokongan upload completed - ADDITIVE BEHAVIOR', [
+                'appeal_id' => $appeal->id,
+                'initial_docs_count' => $initialDocCount,
+                'new_docs_added' => $newDocsAdded,
+                'final_docs_count' => $finalDocCount,
+                'behavior' => 'ADDITIVE - New files added without replacing existing ones'
+            ]);
+            
+            // Update appeal status
         $appeal->status = 'submitted';
+            $appeal->updated_at = now(); // Update timestamp
         $appeal->save();
+            
+            \Log::info('Appeal updated successfully', [
+                'appeal_id' => $appeal->id,
+                'user_id' => $user->id,
+                'status' => 'submitted',
+                'updated_at' => $appeal->updated_at
+            ]);
+            
         event(new \App\Events\AppealUpdated($appeal));
-        return redirect()->route('appeals.status', $appeal->id)->with('success', 'Permohonan berjaya dikemaskini dan dihantar semula.');
+            
+            // Count new files added (ADDITIVE BEHAVIOR)
+            $newFilesCount = \App\Models\DokumenSokongan::where('appeals_id', $appeal->id)
+                ->where('created_at', '>=', now()->subMinutes(2))
+                ->count();
+            
+            $totalFilesCount = \App\Models\DokumenSokongan::where('appeals_id', $appeal->id)->count();
+            
+            $successMessage = 'Permohonan berjaya dikemaskini dan dihantar semula.';
+            if ($newFilesCount > 0) {
+                $successMessage .= ' ' . $newFilesCount . ' dokumen sokongan baru telah ditambah.';
+                $successMessage .= ' (Jumlah keseluruhan: ' . $totalFilesCount . ' dokumen)';
+            }
+            
+            return redirect()->route('senarai_permohonan.index')->with('success', $successMessage);
+            
+        } catch (\Exception $e) {
+            \Log::error('Error updating appeal: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'Ralat mengemaskini permohonan: ' . $e->getMessage());
+        }
     }
     // PPL: Review
     public function pplReview($id) {
@@ -120,14 +396,30 @@ class AppealController extends Controller
         $validated = $request->validate($rules, $messages);
 
         $appeal = Appeal::findOrFail($id);
-        $appeal->ppl_comments = $request->input('comments');
-        $appeal->ppl_status = $status; // Save the status (e.g., 'Lengkap', 'Tidak Lengkap')
-        if ($status === 'Lengkap') {
-            $appeal->status = 'kcl_review';
-        } else {
-            $appeal->status = 'ppl_incomplete';
+        
+        // Only update comments if provided, otherwise keep existing
+        $updateData = [
+            'ppl_status' => $status,
+            'status' => $status === 'Lengkap' ? 'kcl_review' : 'ppl_incomplete',
+            'ppl_reviewer_id' => auth()->id() // Set reviewer ID
+        ];
+        
+        // Only update comments if provided and not empty
+        if ($request->filled('comments')) {
+            $updateData['ppl_comments'] = $request->input('comments');
         }
-        $appeal->save();
+        
+        // Debug: Log what's happening
+        \Log::info('PPL Submit Debug', [
+            'status' => $status,
+            'comments_provided' => $request->has('comments'),
+            'comments_filled' => $request->filled('comments'),
+            'comments_value' => $request->input('comments'),
+            'existing_comments' => $appeal->ppl_comments,
+            'will_update_comments' => $request->filled('comments')
+        ]);
+        
+        $appeal->update($updateData);
         event(new AppealUpdated($appeal));
         // Update perakuan status using appeal_id for direct linkage
         $perakuan = \App\Models\Perakuan::where('appeal_id', $appeal->id)->latest()->first();
@@ -153,16 +445,44 @@ class AppealController extends Controller
     }
     public function kclSubmit(Request $request, $id)
     {
-        $appeal = Appeal::findOrFail($id);
-        $appeal->kcl_comments = $request->input('comments');
         $status = $request->input('status');
-        $appeal->kcl_status = $status; // Save the status (e.g., 'Disokong', 'Tidak Disokong')
-        if ($status === 'Disokong') {
-            $appeal->status = 'pk_review';
-        } else {
-            $appeal->status = 'kcl_incomplete';
+        
+        // Validation rules
+        $rules = [
+            'status' => 'required',
+        ];
+        $messages = [];
+        if ($status === 'Tidak Disokong') {
+            $rules['comments'] = 'required|string|min:3';
+            $messages['comments.required'] = 'Ulasan wajib diisi jika permohonan tidak disokong.';
         }
-        $appeal->save();
+        $validated = $request->validate($rules, $messages);
+        
+        $appeal = Appeal::findOrFail($id);
+        
+        // Only update comments if provided, otherwise keep existing
+        $updateData = [
+            'kcl_status' => $status,
+            'status' => $status === 'Disokong' ? 'pk_review' : 'kcl_incomplete',
+            'kcl_reviewer_id' => auth()->id() // Set reviewer ID
+        ];
+        
+        // Only update comments if provided and not empty
+        if ($request->filled('comments')) {
+            $updateData['kcl_comments'] = $request->input('comments');
+        }
+        
+        // Debug: Log what's happening
+        \Log::info('KCL Submit Debug', [
+            'status' => $status,
+            'comments_provided' => $request->has('comments'),
+            'comments_filled' => $request->filled('comments'),
+            'comments_value' => $request->input('comments'),
+            'existing_comments' => $appeal->kcl_comments,
+            'will_update_comments' => $request->filled('comments')
+        ]);
+        
+        $appeal->update($updateData);
         event(new AppealUpdated($appeal));
         // Update perakuan status as well using appeal_id
         $perakuan = \App\Models\Perakuan::where('appeal_id', $appeal->id)->latest()->first();
@@ -188,6 +508,8 @@ class AppealController extends Controller
     
     public function redirectToRoleReview($id)
     {
+        \Log::info("=== redirectToRoleReview called for appeal ID: $id ===");
+        
         if (!auth()->check()) {
             \Log::info('User not logged in, redirecting to login.');
             return redirect()->route('login');
@@ -197,6 +519,8 @@ class AppealController extends Controller
         $userRole = strtolower(trim($user->peranan ?? ''));
         $userId = $user->id ?? 'unknown';
 
+        \Log::info("User ID: $userId, Role: '$userRole'");
+
         if (empty($userRole)) {
             \Log::warning('User has empty role. User ID: ' . $userId);
             abort(403, 'Role is not set. Please contact the administrator.');
@@ -205,12 +529,16 @@ class AppealController extends Controller
         \Log::info("User role: $userRole, redirecting to appropriate review page for appeal ID: $id");
 
         if (stripos($userRole, 'pegawai perikanan') !== false) {
+            \Log::info("Redirecting to PPL review for appeal: $id");
             return redirect()->route('appeals.ppl_review', ['id' => $id]);
         } elseif (stripos($userRole, 'ketua cawangan') !== false) {
+            \Log::info("Redirecting to KCL review for appeal: $id");
             return redirect()->route('appeals.kcl_review', ['id' => $id]);
         } elseif (stripos($userRole, 'pengarah kanan') !== false) {
+            \Log::info("Redirecting to PK review for appeal: $id");
             return redirect()->route('appeals.pk_review', ['id' => $id]);
         } elseif (stripos($userRole, 'pelesen') !== false) {
+            \Log::info("Redirecting to status page for appeal: $id");
             return redirect()->route('appeals.status', ['id' => $id]);
         }
 
@@ -231,6 +559,20 @@ class AppealController extends Controller
 
             $pkStatus = $request->input('status');
             
+            // Server-side validation
+            if ($pkStatus === 'Diluluskan') {
+                if (!$request->hasFile('surat_kelulusan_kpp')) {
+                    return redirect()->back()->with('error', 'Surat Kelulusan KPP wajib dimuat naik jika permohonan diluluskan.');
+                }
+                if (empty($request->input('no_rujukan_surat'))) {
+                    return redirect()->back()->with('error', 'No. Rujukan Surat Kelulusan KPP wajib diisi jika permohonan diluluskan.');
+                }
+            } elseif ($pkStatus === 'Tidak Diluluskan') {
+                if (empty($request->input('comments'))) {
+                    return redirect()->back()->with('error', 'Ulasan wajib diisi jika permohonan tidak diluluskan.');
+                }
+            }
+            
             // Determine final status based on PK decision
             $finalStatus = '';
             if ($pkStatus === 'Diluluskan') {
@@ -242,18 +584,37 @@ class AppealController extends Controller
             }
             
             // Update appeal status
-            $appeal->update([
+            $updateData = [
                 'status' => $finalStatus,
                 'pk_status' => $pkStatus,
-                'pk_comments' => $request->input('comments'),
-                'pk_no_rujukan_surat' => $request->input('no_rujukan_surat'),
+                'kpp_ref_no' => $request->input('no_rujukan_surat'),
+                'pk_reviewer_id' => auth()->id() // Set reviewer ID
+            ];
+            
+            // Only update comments if provided and not empty
+            if ($request->filled('comments')) {
+                $updateData['pk_comments'] = $request->input('comments');
+            }
+            
+            // Debug: Log what's happening
+            \Log::info('PK Submit Debug', [
+                'status' => $pkStatus,
+                'comments_provided' => $request->has('comments'),
+                'comments_filled' => $request->filled('comments'),
+                'comments_value' => $request->input('comments'),
+                'existing_comments' => $appeal->pk_comments,
+                'will_update_comments' => $request->filled('comments')
             ]);
+            
+            $appeal->update($updateData);
 
             // Handle file upload for surat kelulusan KPP
             if ($request->hasFile('surat_kelulusan_kpp')) {
                 $file = $request->file('surat_kelulusan_kpp');
-                $path = $file->store('surat_kelulusan_kpp/' . auth()->id(), 'public');
-                $perakuan->update(['surat_kelulusan_kpp_path' => $path]);
+                // Preserve original filename and extension
+                $originalName = $file->getClientOriginalName();
+                $path = $file->storeAs('surat_kelulusan_kpp/' . auth()->id(), $originalName, 'public');
+                $appeal->update(['surat_kelulusan_kpp' => $path]);
             }
 
             // Update perakuan status
@@ -272,11 +633,12 @@ class AppealController extends Controller
         try {
             $kvp08Application = \App\Models\Kpv08Application::findOrFail($id);
             
-            // Check if user has permission to approve (PK/SPT role)
-            if (!auth()->user()->hasRole(['pk', 'spt', 'pk_spt'])) {
+            // Check if user has permission to approve (PK role)
+            $userRole = strtolower(trim(auth()->user()->peranan ?? ''));
+            if (stripos($userRole, 'pengarah kanan') === false) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'Anda tidak mempunyai kebenaran untuk meluluskan permit.'
+                    'message' => 'Anda tidak mempunyai kebenaran untuk meluluskan permit. Hanya Pengarah Kanan boleh meluluskan permit.'
                 ], 403);
             }
 
@@ -300,11 +662,12 @@ class AppealController extends Controller
         try {
             $kvp08Application = \App\Models\Kpv08Application::findOrFail($id);
             
-            // Check if user has permission to reject (PK/SPT role)
-            if (!auth()->user()->hasRole(['pk', 'spt', 'pk_spt'])) {
+            // Check if user has permission to reject (PK role)
+            $userRole = strtolower(trim(auth()->user()->peranan ?? ''));
+            if (stripos($userRole, 'pengarah kanan') === false) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'Anda tidak mempunyai kebenaran untuk menolak permit.'
+                    'message' => 'Anda tidak mempunyai kebenaran untuk menolak permit. Hanya Pengarah Kanan boleh menolak permit.'
                 ], 403);
             }
 
@@ -331,6 +694,7 @@ class AppealController extends Controller
         $appeal->kpp_comments = $request->input('comments');
         $appeal->kpp_ref_no = $request->input('ref_no');
         $appeal->status = $request->input('decision') === 'Lulus' ? 'approved' : 'rejected';
+        $appeal->kpp_reviewer_id = auth()->id(); // Set reviewer ID
         $appeal->save();
         event(new AppealUpdated($appeal));
         return redirect()->route('appeals.amendment');
@@ -338,7 +702,53 @@ class AppealController extends Controller
     // Print letter (stub)
     public function printLetter($id) {
         $appeal = Appeal::findOrFail($id);
-        return view('appeals.print_letter', compact('appeal'));
+        
+        // Get the current user (the one who is approving)
+        $approver = auth()->user();
+        
+        // Get applicant details
+        $applicant = \App\Models\User::find($appeal->applicant_id);
+        
+        return view('appeals.print_letter', compact('appeal', 'approver', 'applicant'));
+    }
+
+    // Download letter as PDF
+    public function downloadLetterPDF($id) {
+        $appeal = Appeal::findOrFail($id);
+        
+        // Get the current user (the one who is approving)
+        $approver = auth()->user();
+        
+        // Get applicant details
+        $applicant = \App\Models\User::find($appeal->applicant_id);
+        
+        // Generate PDF using DomPDF
+        $pdf = PDF::loadView('appeals.print_letter_pdf', compact('appeal', 'approver', 'applicant'));
+        
+        // Generate filename
+        $refNumber = $appeal->kpp_ref_no ?? 'KPP-' . date('Ymd') . '-' . str_pad(rand(1, 999), 3, '0', STR_PAD_LEFT);
+        $filename = 'Surat_Kelulusan_' . preg_replace('/[^a-zA-Z0-9]/', '_', $refNumber) . '.pdf';
+        
+        return $pdf->download($filename);
+    }
+
+    // Update reference number
+    public function updateReference(Request $request, $id) {
+        $appeal = Appeal::findOrFail($id);
+        
+        $request->validate([
+            'reference_number' => 'required|string|max:255'
+        ]);
+        
+        $appeal->update([
+            'kpp_ref_no' => $request->reference_number
+        ]);
+        
+        return response()->json([
+            'success' => true,
+            'message' => 'Reference number updated successfully',
+            'reference_number' => $request->reference_number
+        ]);
     }
     // Senarai Permohonan Landing Page
     public function senaraiPermohonanIndex()
@@ -590,7 +1000,9 @@ class AppealController extends Controller
         foreach ($dokumenTypes as $type) {
             if ($request->hasFile($type)) {
                 $file = $request->file($type);
-                $path = $file->store('dokumen_permohonan/' . $user->id, 'public');
+                // Preserve original filename and extension
+                $originalName = $file->getClientOriginalName();
+                $path = $file->storeAs('dokumen_permohonan/' . $user->id, $originalName, 'public');
                 \App\Models\DokumenPermohonan::create([
                     'user_id' => $user->id,
                     'file_path' => $path,
@@ -723,7 +1135,9 @@ class AppealController extends Controller
                 try {
                     $file = $request->file($inputName);
                     if ($file && $file->isValid()) {
-                        $path = $file->store('dokumen_permohonan/' . $user->id, 'public');
+                        // Preserve original filename and extension
+                        $originalName = $file->getClientOriginalName();
+                        $path = $file->storeAs('dokumen_permohonan/' . $user->id, $originalName, 'public');
                         $data[$dbField] = $path;
                     }
                 } catch (\Exception $e) {
@@ -773,7 +1187,9 @@ class AppealController extends Controller
                     
                     if ($file && $file->isValid()) {
                         try {
-                            $path = $file->store('dokumen_permohonan/' . $user->id, 'public');
+                            // Preserve original filename and extension
+                            $originalName = $file->getClientOriginalName();
+                            $path = $file->storeAs('dokumen_permohonan/' . $user->id, $originalName, 'public');
                             \Log::info('File stored at: ' . $path);
                             
                             // Create individual dokumen_sokongan record
@@ -783,7 +1199,7 @@ class AppealController extends Controller
                                 'ref_number' => $appeal->ref_number,
                                 'user_id' => $user->id,
                                 'file_path' => $path,
-                                'file_name' => $file->getClientOriginalName(),
+                                'file_name' => $originalName,
                                 'file_type' => $fileType,
                                 'file_size' => $file->getSize(),
                                 'mime_type' => $file->getMimeType(),
@@ -992,7 +1408,9 @@ class AppealController extends Controller
             foreach ($dokumenTypes as $inputName => $dbField) {
                 if ($request->hasFile($inputName)) {
                     $file = $request->file($inputName);
-                    $path = $file->store('dokumen_permohonan/' . $user->id, 'public');
+                    // Preserve original filename and extension
+                    $originalName = $file->getClientOriginalName();
+                    $path = $file->storeAs('dokumen_permohonan/' . $user->id, $originalName, 'public');
                     $data[$dbField] = $path;
                 }
             }
@@ -1090,9 +1508,11 @@ class AppealController extends Controller
     public function viewSuratKelulusanKpp($id)
     {
         $appeal = \App\Models\Appeal::findOrFail($id);
+        
         if (!$appeal->surat_kelulusan_kpp) {
             abort(404);
         }
+        
         $path = storage_path('app/public/' . $appeal->surat_kelulusan_kpp);
         if (!file_exists($path)) {
             abort(404);
@@ -1115,6 +1535,48 @@ class AppealController extends Controller
         ];
         return response()->file($path, $headers);
     }
+
+    // Status content for AJAX loading
+    public function statusContent($id)
+    {
+        $appeal = Appeal::where('id', $id)->firstOrFail();
+        $applicant = \App\Models\User::find($appeal->applicant_id);
+        $perakuan = \App\Models\Perakuan::where('appeal_id', $id)->first();
+        
+        
+        // Get reviewer names - prioritize the final approver
+        $reviewerName = '';
+        
+        // Check for KPP reviewer first (final approver)
+        if ($appeal->kpp_reviewer_id) {
+            $kppReviewer = \App\Models\User::find($appeal->kpp_reviewer_id);
+            $reviewerName = $kppReviewer ? $kppReviewer->name : 'Unknown';
+        }
+        // Check for PK reviewer
+        elseif ($appeal->pk_reviewer_id) {
+            $pkReviewer = \App\Models\User::find($appeal->pk_reviewer_id);
+            $reviewerName = $pkReviewer ? $pkReviewer->name : 'Unknown';
+        }
+        // Check for KCL reviewer
+        elseif ($appeal->kcl_reviewer_id) {
+            $kclReviewer = \App\Models\User::find($appeal->kcl_reviewer_id);
+            $reviewerName = $kclReviewer ? $kclReviewer->name : 'Unknown';
+        }
+        // Check for PPL reviewer
+        elseif ($appeal->ppl_reviewer_id) {
+            $pplReviewer = \App\Models\User::find($appeal->ppl_reviewer_id);
+            $reviewerName = $pplReviewer ? $pplReviewer->name : 'Unknown';
+        }
+        
+        // If no reviewer found, use current user as fallback
+        if (empty($reviewerName)) {
+            $reviewerName = auth()->user()->name ?? 'Unknown';
+        }
+        
+        return view('appeals.status_content', compact('appeal', 'applicant', 'perakuan', 'reviewerName'));
+    }
+
+
 
     /**
      * Get permits for a specific kelulusan perolehan
@@ -1148,6 +1610,212 @@ class AppealController extends Controller
         } catch (\Exception $e) {
             \Log::error('Error getting permits: ' . $e->getMessage());
             return response()->json(['error' => 'Failed to load permits'], 500);
+        }
+    }
+
+    /**
+     * Show error page for corrupted documents
+     */
+    private function showDocumentError()
+    {
+        $html = '
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <title>Document Error</title>
+            <style>
+                body { font-family: Arial, sans-serif; margin: 50px; background: #f8f9fa; }
+                .error-box { border: 2px solid #ff6b6b; padding: 30px; border-radius: 10px; background: white; box-shadow: 0 4px 6px rgba(0,0,0,0.1); max-width: 600px; margin: 0 auto; }
+                .error-title { color: #d63031; font-size: 24px; font-weight: bold; margin-bottom: 15px; }
+                .error-message { color: #636e72; margin: 15px 0; font-size: 16px; }
+                .solution { background: #e8f5e8; border: 1px solid #00b894; padding: 20px; border-radius: 8px; margin-top: 20px; }
+                .solution-title { color: #00b894; font-weight: bold; margin-bottom: 10px; }
+                .btn { background: #007bff; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; text-decoration: none; display: inline-block; margin-top: 15px; }
+                .btn:hover { background: #0056b3; }
+            </style>
+        </head>
+        <body>
+            <div class="error-box">
+                <div class="error-title">⚠️ Dokumen Tidak Dapat Dibuka</div>
+                <div class="error-message">
+                    Dokumen ini rosak atau tidak dapat dibaca dengan betul. Ini mungkin berlaku kerana masalah teknikal semasa muat naik.
+                </div>
+                <div class="solution">
+                    <div class="solution-title">Penyelesaian:</div>
+                    1. <strong>Muat semula dokumen</strong> - Sila muat naik semula dokumen ini<br>
+                    2. <strong>Semak format fail</strong> - Pastikan format adalah PDF, JPG, PNG, atau DOC<br>
+                    3. <strong>Hubungi pentadbir</strong> - Jika masalah berterusan, hubungi pentadbir sistem
+                </div>
+                <a href="javascript:history.back()" class="btn">Kembali</a>
+            </div>
+        </body>
+        </html>';
+        
+        return response($html, 200, ['Content-Type' => 'text/html']);
+    }
+
+    /**
+     * View document for appeals
+     */
+    public function viewDocument($appealId, $field)
+    {
+        try {
+            // Find the appeal
+            $appeal = Appeal::findOrFail($appealId);
+            
+            // Find the associated perakuan
+            $perakuan = \App\Models\Perakuan::where('appeal_id', $appealId)->latest()->first();
+            
+            if (!$perakuan) {
+                abort(404, 'Perakuan not found');
+            }
+
+            // Check if the field exists and has a value
+            if (!isset($perakuan->$field) || empty($perakuan->$field)) {
+                abort(404, 'Document not found');
+            }
+
+            $filePath = storage_path('app/public/' . $perakuan->$field);
+
+            if (!file_exists($filePath)) {
+                abort(404, 'File not found on server');
+            }
+
+            // Get file info
+            $fileInfo = pathinfo($filePath);
+            $extension = strtolower($fileInfo['extension'] ?? '');
+            $filename = $fileInfo['basename'];
+
+            // Handle corrupted .bin files - show error message instead
+            if ($extension === 'bin') {
+                return $this->showDocumentError();
+            }
+            
+            // Check if file is actually corrupted by reading the first few bytes
+            $handle = fopen($filePath, 'rb');
+            $header = fread($handle, 4);
+            fclose($handle);
+            
+            // Check for common file signatures
+            $isValidFile = false;
+            if (strpos($header, '%PDF') === 0) {
+                $isValidFile = true; // PDF
+            } elseif (strpos($header, "\xFF\xD8\xFF") === 0) {
+                $isValidFile = true; // JPEG
+            } elseif (strpos($header, "\x89PNG") === 0) {
+                $isValidFile = true; // PNG
+            } elseif (strpos($header, "GIF8") === 0) {
+                $isValidFile = true; // GIF
+            }
+            
+            // If file doesn't have a valid signature, show error
+            if (!$isValidFile) {
+                \Log::warning("Corrupted file detected: $filePath, header: " . bin2hex($header));
+                return $this->showDocumentError();
+            }
+
+            // Determine content type
+            $contentTypes = [
+                'pdf' => 'application/pdf',
+                'jpg' => 'image/jpeg',
+                'jpeg' => 'image/jpeg',
+                'png' => 'image/png',
+                'gif' => 'image/gif',
+                'bmp' => 'image/bmp',
+                'tiff' => 'image/tiff',
+                'doc' => 'application/msword',
+                'docx' => 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+                'xls' => 'application/vnd.ms-excel',
+                'xlsx' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+                'txt' => 'text/plain',
+            ];
+
+            $contentType = $contentTypes[$extension] ?? 'application/octet-stream';
+
+            // Always try to display inline for viewable files
+            if (in_array($extension, ['pdf', 'jpg', 'jpeg', 'png', 'gif', 'bmp', 'tiff', 'txt'])) {
+                return response()->file($filePath, [
+                    'Content-Type' => $contentType,
+                    'Content-Disposition' => 'inline; filename="' . $filename . '"'
+                ]);
+            }
+
+            // For other files, still try to display inline but with download fallback
+            return response()->file($filePath, [
+                'Content-Type' => $contentType,
+                'Content-Disposition' => 'inline; filename="' . $filename . '"'
+            ]);
+
+        } catch (\Exception $e) {
+            \Log::error('Document viewing error: ' . $e->getMessage());
+            abort(404, 'Document not found or access denied');
+        }
+    }
+
+    /**
+     * View supporting documents (DokumenSokongan)
+     */
+    public function viewDokumenSokongan($id)
+    {
+        try {
+            // Find the supporting document
+            $dokumen = \App\Models\DokumenSokongan::findOrFail($id);
+
+            if (empty($dokumen->file_path)) {
+                abort(404, 'Document not found');
+            }
+
+            $filePath = storage_path('app/public/' . $dokumen->file_path);
+
+            if (!file_exists($filePath)) {
+                abort(404, 'File not found on server');
+            }
+
+            // Get file info
+            $fileInfo = pathinfo($filePath);
+            $extension = strtolower($fileInfo['extension'] ?? '');
+            $filename = $dokumen->file_name ?: $fileInfo['basename'];
+
+            // Handle corrupted .bin files - show error message instead
+            if ($extension === 'bin') {
+                return $this->showDocumentError();
+            }
+
+            // Determine content type
+            $contentTypes = [
+                'pdf' => 'application/pdf',
+                'jpg' => 'image/jpeg',
+                'jpeg' => 'image/jpeg',
+                'png' => 'image/png',
+                'gif' => 'image/gif',
+                'bmp' => 'image/bmp',
+                'tiff' => 'image/tiff',
+                'doc' => 'application/msword',
+                'docx' => 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+                'xls' => 'application/vnd.ms-excel',
+                'xlsx' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+                'txt' => 'text/plain',
+            ];
+
+            $contentType = $contentTypes[$extension] ?? 'application/octet-stream';
+
+            // Always try to display inline for viewable files
+            if (in_array($extension, ['pdf', 'jpg', 'jpeg', 'png', 'gif', 'bmp', 'tiff', 'txt'])) {
+                return response()->file($filePath, [
+                    'Content-Type' => $contentType,
+                    'Content-Disposition' => 'inline; filename="' . $filename . '"'
+                ]);
+            }
+
+            // For other files, still try to display inline but with download fallback
+            return response()->file($filePath, [
+                'Content-Type' => $contentType,
+                'Content-Disposition' => 'inline; filename="' . $filename . '"'
+            ]);
+
+        } catch (\Exception $e) {
+            \Log::error('Supporting document viewing error: ' . $e->getMessage());
+            abort(404, 'Document not found or access denied');
         }
     }
 }   

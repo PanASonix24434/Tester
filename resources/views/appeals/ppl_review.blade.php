@@ -10,61 +10,113 @@
                             Semakan Permohonan - PPL
                         </div>
                         <div class="card-body">
-                            <!-- Maklumat Pemohon -->
+                            <!-- Tab Navigation for Officer View -->
                             <div class="card border-0 shadow-sm rounded-3 mb-4">
-                                <div class="card-body" style="color: #1a1a1a;">
-                                    <h5 class="mb-2 fw-bold" style="color: #1a1a1a;">Maklumat Pemohon</h5>
-                            <div class="table-responsive mb-4">
+                                <div class="card-body">
+                                    <ul class="nav nav-tabs mb-4" id="officerTab" role="tablist">
+                                        <li class="nav-item" role="presentation">
+                                            <button class="nav-link active" id="profil-pemohon-tab" data-bs-toggle="tab" data-bs-target="#profil-pemohon" type="button" role="tab" aria-controls="profil-pemohon" aria-selected="true">Profil Pemohon</button>
+                                        </li>
+                                        <li class="nav-item" role="presentation">
+                                            <button class="nav-link" id="maklumat-permohonan-tab" data-bs-toggle="tab" data-bs-target="#maklumat-permohonan" type="button" role="tab" aria-controls="maklumat-permohonan" aria-selected="false">Maklumat Permohonan</button>
+                                        </li>
+                                        <li class="nav-item" role="presentation">
+                                            <button class="nav-link" id="dokumen-tab" data-bs-toggle="tab" data-bs-target="#dokumen" type="button" role="tab" aria-controls="dokumen" aria-selected="false">Dokumen</button>
+                                        </li>
+                                        <li class="nav-item" role="presentation">
+                                            <button class="nav-link" id="status-permohonan-tab" data-bs-toggle="tab" data-bs-target="#status-permohonan" type="button" role="tab" aria-controls="status-permohonan" aria-selected="false">Status Permohonan</button>
+                                        </li>
+                                        <li class="nav-item" role="presentation">
+                                            <button class="nav-link" id="tindakan-tab" data-bs-toggle="tab" data-bs-target="#tindakan" type="button" role="tab" aria-controls="tindakan" aria-selected="false">Tindakan</button>
+                                        </li>
+                                    </ul>
+
+                                    <div class="tab-content" id="officerTabContent">
+                                        <!-- Profil Pemohon Tab -->
+                                        <div class="tab-pane fade show active" id="profil-pemohon" role="tabpanel" aria-labelledby="profil-pemohon-tab">
+                                            <h5 class="mb-3 fw-bold" style="color: #1a1a1a;">Butiran Am Pemohon</h5>
+                                            <div class="table-responsive">
                                         <table class="table table-bordered bg-white" style="color: #1a1a1a;">
                                     <tr>
-                                        <th width="200">Nama Pemohon:</th>
+                                                        <th width="250">Nama Pemilik Vesel:</th>
                                         <td>{{ $applicant->name ?? '-' }}</td>
                                     </tr>
                                     <tr>
-                                        <th>No. IC:</th>
+                                                        <th>No. Kad Pengenalan:</th>
                                         <td>{{ $applicant->username ?? '-' }}</td>
                                     </tr>
-                                    @php
-                                        $statusLabels = [
-                                            'ppl_incomplete' => 'Dalam Semakan PPL',
-                                            'ppl_review'     => 'Dalam Semakan PPL',
-                                            'kcl_incomplete' => 'Dalam Semakan KCL',
-                                            'kcl_review'     => 'Dalam Semakan KCL',
-                                            'pk_incomplete'  => 'Dalam Semakan PK',
-                                            'pk_review'      => 'Dalam Semakan PK',
-                                            'kpp_decision'   => 'Menunggu Keputusan KPP',
-                                            'approved'       => 'Diluluskan',
-                                            'rejected'       => 'Ditolak',
-                                        ];
-                                        $status = $appeal->status ?? 'unknown';
-                                    @endphp
-                                    <tr>
-                                        <th>Status Permohonan:</th>
-                                        <td>
-                                                    <span class="badge bg-info text-white">
-                                                {{ $statusLabels[$status] ?? ucfirst(str_replace('_', ' ', $status)) }}
-                                            </span>
-                                            @php
-                                                $role = strtolower(auth()->user()->peranan ?? '');
-                                                $customStatus = null;
-                                                if (strpos($role, 'pegawai perikanan') !== false && $appeal->ppl_status === 'Lengkap') {
-                                                    $customStatus = 'lengkap';
-                                                } elseif (strpos($role, 'ketua cawangan') !== false && $appeal->kcl_status === 'Disokong') {
-                                                    $customStatus = 'disokong';
-                                                } elseif (strpos($role, 'pengarah kanan') !== false && $appeal->pk_status === 'Diluluskan') {
-                                                    $customStatus = 'diluluskan';
-                                                }
-                                            @endphp
-                                            @if($customStatus)
-                                                        <span class="badge bg-success text-white">{{ ucfirst($customStatus) }}</span>
+                                                    <tr>
+                                                        <th>Umur:</th>
+                                                        <td>{{ $applicant->age ?? '-' }}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th>Jantina:</th>
+                                                        <td>{{ $applicant->gender ?? '-' }}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th>Agama:</th>
+                                                        <td>{{ $applicant->religion ?? '-' }}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th>Bangsa:</th>
+                                                        <td>{{ $applicant->race ?? '-' }}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th>Status Bumiputera:</th>
+                                                        <td>{{ $applicant->bumiputera_status ?? '-' }}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th>Status Kewarganegaraan:</th>
+                                                        <td>{{ $applicant->citizenship ?? '-' }}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th>Status Perkahwinan:</th>
+                                                        <td>{{ $applicant->marital_status ?? '-' }}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th>No. Telefon Bimbit:</th>
+                                                        <td>{{ $applicant->mobile_contact_number ?? $applicant->mobilePhone ?? '-' }}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th>No. Telefon (Pejabat):</th>
+                                                        <td>{{ $applicant->no_phone_office ?? $applicant->phone_no ?? '-' }}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th>Email:</th>
+                                                        <td>{{ $applicant->email ?? '-' }}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th>Alamat Semasa:</th>
+                                                        <td>
+                                                            @if($applicant->current_address1 || $applicant->address1)
+                                                                {{ $applicant->current_address1 ?? $applicant->address1 }}<br>
+                                                                {{ $applicant->current_address2 ?? $applicant->address2 }}<br>
+                                                                {{ $applicant->current_address3 ?? $applicant->address3 }}
+                                                            @else
+                                                                -
                                             @endif
                                         </td>
                                     </tr>
+                                                    <tr>
+                                                        <th>Poskod:</th>
+                                                        <td>{{ $applicant->current_postcode ?? $applicant->postcode ?? '-' }}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th>Daerah:</th>
+                                                        <td>{{ $applicant->current_district ?? $applicant->district ?? '-' }}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th>Negeri:</th>
+                                                        <td>{{ $applicant->current_state ?? $applicant->state ?? '-' }}</td>
+                                                    </tr>
                                 </table>
                             </div>
-                            <!-- Butiran Permohonan Pemohon -->
-                                    <h5 class="mb-2 fw-bold" style="color: #1a1a1a;">Butiran Permohonan Pemohon</h5>
-                            <div class="table-responsive mb-4">
+                                        </div>
+
+                                        <!-- Maklumat Permohonan Tab -->
+                                        <div class="tab-pane fade" id="maklumat-permohonan" role="tabpanel" aria-labelledby="maklumat-permohonan-tab">
+                                            <h5 class="mb-3 fw-bold" style="color: #1a1a1a;">Maklumat Permohonan</h5>
+                                            <div class="table-responsive">
                                         <table class="table table-bordered bg-white" style="color: #1a1a1a;">
                                     @php
                                         $allFields = [
@@ -96,26 +148,28 @@
                                     @endforeach
                                 </table>
                             </div>
-                            
-                            <!-- Tab Navigation -->
-                            <div class="card border-0 shadow-sm rounded-3 mb-4">
-                                <div class="card-body">
-                                    <ul class="nav nav-tabs mb-4" id="pplTab" role="tablist">
+                                        </div>
+
+                                        <!-- Dokumen Tab -->
+                                        <div class="tab-pane fade" id="dokumen" role="tabpanel" aria-labelledby="dokumen-tab">
+                                            <h5 class="mb-3 fw-bold" style="color: #1a1a1a;">Dokumen Permohonan</h5>
+                                            
+                                            <!-- Sub-tabs for different document categories -->
+                                            <ul class="nav nav-pills mb-3" id="documentSubTab" role="tablist">
                                         <li class="nav-item" role="presentation">
-                                            <button class="nav-link active" id="dokumen-wajib-tab" data-bs-toggle="tab" data-bs-target="#dokumen-wajib" type="button" role="tab" aria-controls="dokumen-wajib" aria-selected="true">Dokumen Wajib</button>
+                                                    <button class="nav-link active" id="dokumen-wajib-sub-tab" data-bs-toggle="tab" data-bs-target="#dokumen-wajib-sub" type="button" role="tab">Dokumen Wajib</button>
                                         </li>
                                         <li class="nav-item" role="presentation">
-                                            <button class="nav-link" id="dokumen-sokongan-tab" data-bs-toggle="tab" data-bs-target="#dokumen-sokongan" type="button" role="tab" aria-controls="dokumen-sokongan" aria-selected="false">Dokumen Sokongan</button>
+                                                    <button class="nav-link" id="dokumen-sokongan-sub-tab" data-bs-toggle="tab" data-bs-target="#dokumen-sokongan-sub" type="button" role="tab">Dokumen Sokongan</button>
                                         </li>
                                         <li class="nav-item" role="presentation">
-                                            <button class="nav-link" id="dokumen-tambahan-tab" data-bs-toggle="tab" data-bs-target="#dokumen-tambahan" type="button" role="tab" aria-controls="dokumen-tambahan" aria-selected="false">Dokumen Tambahan</button>
+                                                    <button class="nav-link" id="dokumen-tambahan-sub-tab" data-bs-toggle="tab" data-bs-target="#dokumen-tambahan-sub" type="button" role="tab">Dokumen Tambahan</button>
                                         </li>
                                     </ul>
 
-                                    <div class="tab-content" id="pplTabContent">
-                                        <!-- Dokumen Wajib Tab -->
-                                        <div class="tab-pane fade show active" id="dokumen-wajib" role="tabpanel" aria-labelledby="dokumen-wajib-tab">
-                                            <h5 class="mb-3 fw-bold" style="color: #1a1a1a;">Dokumen Wajib</h5>
+                                            <div class="tab-content" id="documentSubTabContent">
+                                                <!-- Dokumen Wajib Sub-tab -->
+                                                <div class="tab-pane fade show active" id="dokumen-wajib-sub" role="tabpanel">
                                             <div class="table-responsive">
                                                 <table class="table table-bordered bg-white" style="color: #1a1a1a;">
                                                     @php
@@ -142,7 +196,7 @@
                                                         <tr>
                                                             <th width="200">{{ $label }}:</th>
                                                             <td>
-                                                                <a href="{{ asset('storage/' . $perakuan->$doc) }}" target="_blank" class="btn btn-sm btn-primary">
+                                                                        <a href="{{ route('appeals.viewDocument', ['appealId' => $appeal->id, 'field' => $doc]) }}" target="_blank" class="btn btn-sm btn-primary">
                                                                     <i class="fas fa-eye me-1"></i>Lihat Dokumen
                                                                 </a>
                                                             </td>
@@ -153,24 +207,43 @@
                                             </div>
                                         </div>
 
-                                        <!-- Dokumen Sokongan Tab -->
-                                        <div class="tab-pane fade" id="dokumen-sokongan" role="tabpanel" aria-labelledby="dokumen-sokongan-tab">
-                                            <h5 class="mb-3 fw-bold" style="color: #1a1a1a;">Dokumen Sokongan</h5>
+                                                <!-- Dokumen Sokongan Sub-tab -->
+                                                <div class="tab-pane fade" id="dokumen-sokongan-sub" role="tabpanel">
                                             <div class="table-responsive">
                                                 <table class="table table-bordered bg-white" style="color: #1a1a1a;">
+                                                    @php
+                                                        $hasDocuments = false;
+                                                    @endphp
+                                                    
                                                     @if($dokumenSokongan && $dokumenSokongan->count() > 0)
                                                         @foreach($dokumenSokongan as $dokumen)
+                                                            @php $hasDocuments = true; @endphp
                                                             <tr>
                                                                 <th width="200">{{ ucfirst(str_replace('_', ' ', $dokumen->file_type)) }}:</th>
                                                                 <td>
-                                                                    <a href="{{ asset('storage/' . $dokumen->file_path) }}" target="_blank" class="btn btn-sm btn-primary">
+                                                                    <a href="{{ route('appeals.viewDokumenSokongan', $dokumen->id) }}" target="_blank" class="btn btn-sm btn-primary">
                                                                         <i class="fas fa-eye me-1"></i>Lihat Dokumen
                                                                     </a>
                                                                     <small class="text-muted ms-2">{{ $dokumen->file_name }}</small>
                                                                 </td>
                                                             </tr>
                                                         @endforeach
-                                                    @else
+                                                    @endif
+                                                    
+                                                    @if($perakuan && $perakuan->type === 'kvp08' && !empty($perakuan->dokumen_sokongan_path))
+                                                        @php $hasDocuments = true; @endphp
+                                                        <tr>
+                                                            <th width="200">Dokumen Sokongan (KPV-08):</th>
+                                                            <td>
+                                                                <a href="{{ route('appeals.viewDocument', ['appealId' => $appeal->id, 'field' => 'dokumen_sokongan_path']) }}" target="_blank" class="btn btn-sm btn-primary">
+                                                                    <i class="fas fa-eye me-1"></i>Lihat Dokumen
+                                                                </a>
+                                                                <small class="text-muted ms-2">{{ basename($perakuan->dokumen_sokongan_path) }}</small>
+                                                            </td>
+                                                        </tr>
+                                                    @endif
+                                                    
+                                                    @if(!$hasDocuments)
                                                         <tr>
                                                             <td colspan="2" class="text-center text-muted">Tiada dokumen sokongan dijumpai</td>
                                                         </tr>
@@ -179,9 +252,8 @@
                                             </div>
                                         </div>
 
-                                        <!-- Dokumen Tambahan Tab -->
-                                        <div class="tab-pane fade" id="dokumen-tambahan" role="tabpanel" aria-labelledby="dokumen-tambahan-tab">
-                                            <h5 class="mb-3 fw-bold" style="color: #1a1a1a;">Dokumen Tambahan</h5>
+                                                <!-- Dokumen Tambahan Sub-tab -->
+                                                <div class="tab-pane fade" id="dokumen-tambahan-sub" role="tabpanel">
                                             <div class="table-responsive">
                                         <table class="table table-bordered bg-white" style="color: #1a1a1a;">
                                     @php
@@ -195,7 +267,7 @@
                                         <tr>
                                             <th width="200">{{ $label }}:</th>
                                             <td>
-                                                                <a href="{{ asset('storage/' . $perakuan->$doc) }}" target="_blank" class="btn btn-sm btn-primary">
+                                                                        <a href="{{ route('appeals.viewDocument', ['appealId' => $appeal->id, 'field' => $doc]) }}" target="_blank" class="btn btn-sm btn-primary">
                                                                     <i class="fas fa-eye me-1"></i>Lihat Dokumen
                                                                 </a>
                                             </td>
@@ -203,14 +275,86 @@
                                         @endif
                                     @endforeach
                                 </table>
-                                    </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
 
+                                        <!-- Status Permohonan Tab -->
+                                        <div class="tab-pane fade" id="status-permohonan" role="tabpanel" aria-labelledby="status-permohonan-tab">
+                                            <h5 class="mb-3 fw-bold" style="color: #1a1a1a;">Status Permohonan</h5>
+                                            <div class="table-responsive">
+                                                <table class="table table-bordered bg-white" style="color: #1a1a1a;">
+                                                    @php
+                                                        $statusLabels = [
+                                                            'ppl_incomplete' => 'Dalam Semakan PPL',
+                                                            'ppl_review'     => 'Dalam Semakan PPL',
+                                                            'kcl_incomplete' => 'Dalam Semakan KCL',
+                                                            'kcl_review'     => 'Dalam Semakan KCL',
+                                                            'pk_incomplete'  => 'Dalam Semakan PK',
+                                                            'pk_review'      => 'Dalam Semakan PK',
+                                                            'kpp_decision'   => 'Menunggu Keputusan KPP',
+                                                            'approved'       => 'Diluluskan',
+                                                            'rejected'       => 'Ditolak',
+                                                        ];
+                                                        $status = $appeal->status ?? 'unknown';
+                                                    @endphp
+                                                    <tr>
+                                                        <th width="200">Status Semasa:</th>
+                                                        <td>
+                                                            <span class="badge bg-info text-white">
+                                                                {{ $statusLabels[$status] ?? ucfirst(str_replace('_', ' ', $status)) }}
+                                                            </span>
+                                                            @php
+                                                                $role = strtolower(auth()->user()->peranan ?? '');
+                                                                $customStatus = null;
+                                                                if (strpos($role, 'pegawai perikanan') !== false && $appeal->ppl_status === 'Lengkap') {
+                                                                    $customStatus = 'lengkap';
+                                                                } elseif (strpos($role, 'ketua cawangan') !== false && $appeal->kcl_status === 'Disokong') {
+                                                                    $customStatus = 'disokong';
+                                                                } elseif (strpos($role, 'pengarah kanan') !== false && $appeal->pk_status === 'Diluluskan') {
+                                                                    $customStatus = 'diluluskan';
+                                                                }
+                                                            @endphp
+                                                            @if($customStatus)
+                                                                <span class="badge bg-success text-white ms-2">{{ ucfirst($customStatus) }}</span>
+                                                            @endif
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th>Tarikh Permohonan:</th>
+                                                        <td>{{ $appeal->created_at ? $appeal->created_at->format('d/m/Y H:i') : '-' }}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th>Tarikh Kemaskini:</th>
+                                                        <td>{{ $appeal->updated_at ? $appeal->updated_at->format('d/m/Y H:i') : '-' }}</td>
+                                                    </tr>
+                                                    @if($appeal->ppl_comments)
+                                                    <tr>
+                                                        <th>Ulasan PPL:</th>
+                                                        <td>{{ $appeal->ppl_comments }}</td>
+                                                    </tr>
+                                                    @endif
+                                                    @if($appeal->kcl_comments)
+                                                    <tr>
+                                                        <th>Ulasan KCL:</th>
+                                                        <td>{{ $appeal->kcl_comments }}</td>
+                                                    </tr>
+                                                    @endif
+                                                    @if($appeal->pk_comments)
+                                                    <tr>
+                                                        <th>Ulasan PK:</th>
+                                                        <td>{{ $appeal->pk_comments }}</td>
+                                                    </tr>
+                                                    @endif
+                                                </table>
                                 </div>
                             </div>
+
+                                        <!-- Tindakan Tab -->
+                                        <div class="tab-pane fade" id="tindakan" role="tabpanel" aria-labelledby="tindakan-tab">
+                                            <h5 class="mb-3 fw-bold" style="color: #1a1a1a;">Tindakan Pegawai</h5>
+                                            
                             <!-- Review Form -->
                             <div class="card border-0 shadow-sm rounded-3 mt-4">
                                 <div class="card-body bg-white">
@@ -231,7 +375,7 @@
                                         </div>
                                         <div class="mb-3 fw-bold">Ulasan</div>
                                         <div class="mb-3">
-                                            <textarea class="form-control" name="comments" id="ulasanField" rows="3" placeholder="Masukkan ulasan anda..."></textarea>
+                                            <textarea class="form-control" name="comments" id="ulasanField" rows="3" placeholder="Masukkan ulasan anda...">{{ old('comments', $appeal->ppl_comments) }}</textarea>
                                         </div>
                                         <div class="d-flex justify-content-end gap-2 bg-white p-2" style="border-radius: 0 0 0.5rem 0.5rem;">
                                             <button type="button" class="btn btn-outline-secondary">Kembali</button>
@@ -251,6 +395,10 @@
                                             });
                                         });
                                     </script>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>

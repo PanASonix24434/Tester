@@ -10,28 +10,113 @@
                             Semakan Permohonan - PK(SPT)
                         </div>
                         <div class="card-body">
-                            <!-- Maklumat Pemohon -->
+                            <!-- Tab Navigation for PK Officer View -->
                             <div class="card border-0 shadow-sm rounded-3 mb-4">
-                                <div class="card-body" style="color: #1a1a1a;">
-                                    <h5 class="mb-2 fw-bold" style="color: #1a1a1a;">Maklumat Pemohon</h5>
-                            <div class="table-responsive mb-4">
+                                <div class="card-body">
+                                    <ul class="nav nav-tabs mb-4" id="pkOfficerTab" role="tablist">
+                                        <li class="nav-item" role="presentation">
+                                            <button class="nav-link active" id="profil-pemohon-tab" data-bs-toggle="tab" data-bs-target="#profil-pemohon" type="button" role="tab" aria-controls="profil-pemohon" aria-selected="true">Profil Pemohon</button>
+                                        </li>
+                                        <li class="nav-item" role="presentation">
+                                            <button class="nav-link" id="maklumat-permohonan-tab" data-bs-toggle="tab" data-bs-target="#maklumat-permohonan" type="button" role="tab" aria-controls="maklumat-permohonan" aria-selected="false">Maklumat Permohonan</button>
+                                        </li>
+                                        <li class="nav-item" role="presentation">
+                                            <button class="nav-link" id="dokumen-tab" data-bs-toggle="tab" data-bs-target="#dokumen" type="button" role="tab" aria-controls="dokumen" aria-selected="false">Dokumen</button>
+                                        </li>
+                                        <li class="nav-item" role="presentation">
+                                            <button class="nav-link" id="status-permohonan-tab" data-bs-toggle="tab" data-bs-target="#status-permohonan" type="button" role="tab" aria-controls="status-permohonan" aria-selected="false">Status Permohonan</button>
+                                        </li>
+                                        <li class="nav-item" role="presentation">
+                                            <button class="nav-link" id="tindakan-tab" data-bs-toggle="tab" data-bs-target="#tindakan" type="button" role="tab" aria-controls="tindakan" aria-selected="false">Tindakan</button>
+                                        </li>
+                                    </ul>
+
+                                    <div class="tab-content" id="pkOfficerTabContent">
+                                        <!-- Profil Pemohon Tab -->
+                                        <div class="tab-pane fade show active" id="profil-pemohon" role="tabpanel" aria-labelledby="profil-pemohon-tab">
+                                            <h5 class="mb-3 fw-bold" style="color: #1a1a1a;">Butiran Am Pemohon</h5>
+                                            <div class="table-responsive">
                                 <table class="table table-bordered bg-white" style="color: #1a1a1a;">
                                     <tr>
-                                        <th width="200">Nama Pemohon:</th>
+                                                        <th width="250">Nama Pemilik Vesel:</th>
                                         <td>{{ $applicant->name ?? '-' }}</td>
                                     </tr>
                                     <tr>
-                                        <th>No. IC:</th>
+                                                        <th>No. Kad Pengenalan:</th>
                                         <td>{{ $applicant->username ?? '-' }}</td>
                                     </tr>
                                     <tr>
-                                        <th>Status Permohonan:</th>
-                                        <td><span class="badge bg-info text-white">{{ $appeal->status }}</span></td>
+                                                        <th>Umur:</th>
+                                                        <td>{{ $applicant->age ?? '-' }}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th>Jantina:</th>
+                                                        <td>{{ $applicant->gender ?? '-' }}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th>Agama:</th>
+                                                        <td>{{ $applicant->religion ?? '-' }}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th>Bangsa:</th>
+                                                        <td>{{ $applicant->race ?? '-' }}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th>Status Bumiputera:</th>
+                                                        <td>{{ $applicant->bumiputera_status ?? '-' }}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th>Status Kewarganegaraan:</th>
+                                                        <td>{{ $applicant->citizenship ?? '-' }}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th>Status Perkahwinan:</th>
+                                                        <td>{{ $applicant->marital_status ?? '-' }}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th>No. Telefon Bimbit:</th>
+                                                        <td>{{ $applicant->mobile_contact_number ?? $applicant->mobilePhone ?? '-' }}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th>No. Telefon (Pejabat):</th>
+                                                        <td>{{ $applicant->no_phone_office ?? $applicant->phone_no ?? '-' }}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th>Email:</th>
+                                                        <td>{{ $applicant->email ?? '-' }}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th>Alamat Semasa:</th>
+                                                        <td>
+                                                            @if($applicant->current_address1 || $applicant->address1)
+                                                                {{ $applicant->current_address1 ?? $applicant->address1 }}<br>
+                                                                {{ $applicant->current_address2 ?? $applicant->address2 }}<br>
+                                                                {{ $applicant->current_address3 ?? $applicant->address3 }}
+                                                            @else
+                                                                -
+                                                            @endif
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th>Poskod:</th>
+                                                        <td>{{ $applicant->current_postcode ?? $applicant->postcode ?? '-' }}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th>Daerah:</th>
+                                                        <td>{{ $applicant->current_district ?? $applicant->district ?? '-' }}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th>Negeri:</th>
+                                                        <td>{{ $applicant->current_state ?? $applicant->state ?? '-' }}</td>
                                     </tr>
                                 </table>
                             </div>
-                            <h5 class="mb-2 fw-bold" style="color: #1a1a1a;">Butiran Permohonan Pemohon</h5>
-                            <div class="table-responsive mb-4">
+                                        </div>
+
+                                        <!-- Maklumat Permohonan Tab -->
+                                        <div class="tab-pane fade" id="maklumat-permohonan" role="tabpanel" aria-labelledby="maklumat-permohonan-tab">
+                                            <h5 class="mb-3 fw-bold" style="color: #1a1a1a;">Maklumat Permohonan</h5>
+                                            <div class="table-responsive">
                                 <table class="table table-bordered bg-white" style="color: #1a1a1a;">
                                     @php
                                         $allFields = [
@@ -70,26 +155,28 @@
                                     @endif
                                 </table>
                             </div>
-                            
-                            <!-- Tab Navigation -->
-                            <div class="card border-0 shadow-sm rounded-3 mb-4">
-                                <div class="card-body">
-                                    <ul class="nav nav-tabs mb-4" id="pkTab" role="tablist">
+                                        </div>
+
+                                        <!-- Dokumen Tab -->
+                                        <div class="tab-pane fade" id="dokumen" role="tabpanel" aria-labelledby="dokumen-tab">
+                                            <h5 class="mb-3 fw-bold" style="color: #1a1a1a;">Dokumen Permohonan</h5>
+                                            
+                                            <!-- Sub-tabs for different document categories -->
+                                            <ul class="nav nav-pills mb-3" id="pkDocumentSubTab" role="tablist">
                                         <li class="nav-item" role="presentation">
-                                            <button class="nav-link active" id="dokumen-wajib-tab" data-bs-toggle="tab" data-bs-target="#dokumen-wajib" type="button" role="tab" aria-controls="dokumen-wajib" aria-selected="true">Dokumen Wajib</button>
+                                                    <button class="nav-link active" id="dokumen-wajib-sub-tab" data-bs-toggle="tab" data-bs-target="#dokumen-wajib-sub" type="button" role="tab">Dokumen Wajib</button>
                                         </li>
                                         <li class="nav-item" role="presentation">
-                                            <button class="nav-link" id="dokumen-sokongan-tab" data-bs-toggle="tab" data-bs-target="#dokumen-sokongan" type="button" role="tab" aria-controls="dokumen-sokongan" aria-selected="false">Dokumen Sokongan</button>
+                                                    <button class="nav-link" id="dokumen-sokongan-sub-tab" data-bs-toggle="tab" data-bs-target="#dokumen-sokongan-sub" type="button" role="tab">Dokumen Sokongan</button>
                                         </li>
                                         <li class="nav-item" role="presentation">
-                                            <button class="nav-link" id="dokumen-tambahan-tab" data-bs-toggle="tab" data-bs-target="#dokumen-tambahan" type="button" role="tab" aria-controls="dokumen-tambahan" aria-selected="false">Dokumen Tambahan</button>
+                                                    <button class="nav-link" id="dokumen-tambahan-sub-tab" data-bs-toggle="tab" data-bs-target="#dokumen-tambahan-sub" type="button" role="tab">Dokumen Tambahan</button>
                                         </li>
                                     </ul>
 
-                                    <div class="tab-content" id="pkTabContent">
-                                        <!-- Dokumen Wajib Tab -->
-                                        <div class="tab-pane fade show active" id="dokumen-wajib" role="tabpanel" aria-labelledby="dokumen-wajib-tab">
-                                            <h5 class="mb-3 fw-bold" style="color: #1a1a1a;">Dokumen Wajib</h5>
+                                            <div class="tab-content" id="pkDocumentSubTabContent">
+                                                <!-- Dokumen Wajib Sub-tab -->
+                                                <div class="tab-pane fade show active" id="dokumen-wajib-sub" role="tabpanel">
                                             <div class="table-responsive">
                                                 <table class="table table-bordered bg-white" style="color: #1a1a1a;">
                                                     @php
@@ -134,24 +221,43 @@
                                             </div>
                                         </div>
 
-                                        <!-- Dokumen Sokongan Tab -->
-                                        <div class="tab-pane fade" id="dokumen-sokongan" role="tabpanel" aria-labelledby="dokumen-sokongan-tab">
-                                            <h5 class="mb-3 fw-bold" style="color: #1a1a1a;">Dokumen Sokongan</h5>
+                                                <!-- Dokumen Sokongan Sub-tab -->
+                                                <div class="tab-pane fade" id="dokumen-sokongan-sub" role="tabpanel">
                                             <div class="table-responsive">
                                                 <table class="table table-bordered bg-white" style="color: #1a1a1a;">
+                                                    @php
+                                                        $hasDocuments = false;
+                                                    @endphp
+                                                    
                                                     @if($dokumenSokongan && $dokumenSokongan->count() > 0)
                                                         @foreach($dokumenSokongan as $dokumen)
+                                                            @php $hasDocuments = true; @endphp
                                                             <tr>
                                                                 <th width="200">{{ ucfirst(str_replace('_', ' ', $dokumen->file_type)) }}:</th>
                                                                 <td>
-                                                                    <a href="{{ asset('storage/' . $dokumen->file_path) }}" target="_blank" class="btn btn-sm btn-primary">
+                                                                    <a href="{{ route('appeals.viewDokumenSokongan', $dokumen->id) }}" target="_blank" class="btn btn-sm btn-primary">
                                                                         <i class="fas fa-eye me-1"></i>Lihat Dokumen
                                                                     </a>
                                                                     <small class="text-muted ms-2">{{ $dokumen->file_name }}</small>
                                                                 </td>
                                                             </tr>
                                                         @endforeach
-                                                    @else
+                                                    @endif
+                                                    
+                                                    @if($perakuan && $perakuan->type === 'kvp08' && !empty($perakuan->dokumen_sokongan_path))
+                                                        @php $hasDocuments = true; @endphp
+                                                        <tr>
+                                                            <th width="200">Dokumen Sokongan (KPV-08):</th>
+                                                            <td>
+                                                                <a href="{{ route('appeals.viewDocument', ['appealId' => $appeal->id, 'field' => 'dokumen_sokongan_path']) }}" target="_blank" class="btn btn-sm btn-primary">
+                                                                    <i class="fas fa-eye me-1"></i>Lihat Dokumen
+                                                                </a>
+                                                                <small class="text-muted ms-2">{{ basename($perakuan->dokumen_sokongan_path) }}</small>
+                                                            </td>
+                                                        </tr>
+                                                    @endif
+                                                    
+                                                    @if(!$hasDocuments)
                                                         <tr>
                                                             <td colspan="2" class="text-center text-muted">Tiada dokumen sokongan dijumpai</td>
                                                         </tr>
@@ -160,9 +266,8 @@
                                             </div>
                                         </div>
 
-                                        <!-- Dokumen Tambahan Tab -->
-                                        <div class="tab-pane fade" id="dokumen-tambahan" role="tabpanel" aria-labelledby="dokumen-tambahan-tab">
-                                            <h5 class="mb-3 fw-bold" style="color: #1a1a1a;">Dokumen Tambahan</h5>
+                                                <!-- Dokumen Tambahan Sub-tab -->
+                                                <div class="tab-pane fade" id="dokumen-tambahan-sub" role="tabpanel">
                                             <div class="table-responsive">
                                                 <table class="table table-bordered bg-white" style="color: #1a1a1a;">
                                                     @php
@@ -195,11 +300,77 @@
                                         </div>
                                     </div>
                                 </div>
-                            </div>
+
+                                        <!-- Status Permohonan Tab -->
+                                        <div class="tab-pane fade" id="status-permohonan" role="tabpanel" aria-labelledby="status-permohonan-tab">
+                                            <h5 class="mb-3 fw-bold" style="color: #1a1a1a;">Status Permohonan</h5>
+                                            <div class="table-responsive">
+                                                <table class="table table-bordered bg-white" style="color: #1a1a1a;">
+                                                    @php
+                                                        $statusLabels = [
+                                                            'ppl_incomplete' => 'Dalam Semakan PPL',
+                                                            'ppl_review'     => 'Dalam Semakan PPL',
+                                                            'kcl_incomplete' => 'Dalam Semakan KCL',
+                                                            'kcl_review'     => 'Dalam Semakan KCL',
+                                                            'pk_incomplete'  => 'Dalam Semakan PK',
+                                                            'pk_review'      => 'Dalam Semakan PK',
+                                                            'kpp_decision'   => 'Menunggu Keputusan KPP',
+                                                            'approved'       => 'Diluluskan',
+                                                            'rejected'       => 'Ditolak',
+                                                        ];
+                                                        $status = $appeal->status ?? 'unknown';
+                                                    @endphp
+                                                    <tr>
+                                                        <th width="200">Status Semasa:</th>
+                                                        <td>
+                                                            <span class="badge bg-info text-white">
+                                                                {{ $statusLabels[$status] ?? ucfirst(str_replace('_', ' ', $status)) }}
+                                                            </span>
+                                                            @php
+                                                                $role = strtolower(auth()->user()->peranan ?? '');
+                                                                $customStatus = null;
+                                                                if (strpos($role, 'pengarah kanan') !== false && $appeal->pk_status === 'Diluluskan') {
+                                                                    $customStatus = 'diluluskan';
+                                                                }
+                                                            @endphp
+                                                            @if($customStatus)
+                                                                <span class="badge bg-success text-white ms-2">{{ ucfirst($customStatus) }}</span>
+                                                            @endif
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th>Tarikh Permohonan:</th>
+                                                        <td>{{ $appeal->created_at ? $appeal->created_at->format('d/m/Y H:i') : '-' }}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th>Tarikh Kemaskini:</th>
+                                                        <td>{{ $appeal->updated_at ? $appeal->updated_at->format('d/m/Y H:i') : '-' }}</td>
+                                                    </tr>
+                                                    @if($appeal->ppl_comments)
+                                                    <tr>
+                                                        <th>Ulasan PPL:</th>
+                                                        <td>{{ $appeal->ppl_comments }}</td>
+                                                    </tr>
+                                                    @endif
+                                                    @if($appeal->kcl_comments)
+                                                    <tr>
+                                                        <th>Ulasan KCL:</th>
+                                                        <td>{{ $appeal->kcl_comments }}</td>
+                                                    </tr>
+                                                    @endif
+                                                    @if($appeal->pk_comments)
+                                                    <tr>
+                                                        <th>Ulasan PK:</th>
+                                                        <td>{{ $appeal->pk_comments }}</td>
+                                                    </tr>
+                                                    @endif
+                                                </table>
                         </div>
                     </div>
-                        </div>
-                    </div>
+
+                                        <!-- Tindakan Tab -->
+                                        <div class="tab-pane fade" id="tindakan" role="tabpanel" aria-labelledby="tindakan-tab">
+                                            <h5 class="mb-3 fw-bold" style="color: #1a1a1a;">Tindakan Pegawai</h5>
                     
                     <!-- KPV-08 Permit Approval Section -->
                     @if($perakuan->type === 'kvp08')
@@ -251,7 +422,7 @@
                                                         @endif
                                                     </td>
                                                     <td>
-                                                        @if($kvp08App->status === 'submitted')
+                                                        @if(in_array($kvp08App->status, ['submitted', 'pk_review']))
                                                             <div class="form-check">
                                                                 <input class="form-check-input permit-approval" 
                                                                        type="checkbox" 
@@ -262,6 +433,14 @@
                                                                     Lulus
                                                                 </label>
                                                             </div>
+                                                        @elseif($kvp08App->status === 'approved')
+                                                            <span class="text-success">
+                                                                <i class="fas fa-check-circle me-1"></i>Diluluskan
+                                                            </span>
+                                                        @elseif($kvp08App->status === 'rejected')
+                                                            <span class="text-danger">
+                                                                <i class="fas fa-times-circle me-1"></i>Ditolak
+                                                            </span>
                                                         @else
                                                             <span class="text-muted">
                                                                 {{ $kvp08App->is_approved_by_pk ? 'Diluluskan' : 'Ditolak' }}
@@ -274,19 +453,30 @@
                                     </table>
                                 </div>
                                 
-                                <div class="form-group mb-3">
-                                    <label for="pk_remarks" class="form-label fw-bold">Ulasan PK(SPT)</label>
-                                    <textarea class="form-control" id="pk_remarks" name="pk_remarks" rows="3" placeholder="Masukkan ulasan jika perlu..."></textarea>
-                                </div>
+                                @php
+                                    $hasReviewablePermits = $kvp08Applications->whereIn('status', ['submitted', 'pk_review'])->count() > 0;
+                                @endphp
                                 
-                                <div class="text-center mb-3">
-                                    <button type="button" class="btn btn-success me-2" onclick="approveSelectedPermits()">
-                                        <i class="fas fa-check me-2"></i>Lulus Permit Terpilih
-                                    </button>
-                                    <button type="button" class="btn btn-danger" onclick="rejectSelectedPermits()">
-                                        <i class="fas fa-times me-2"></i>Tolak Permit Terpilih
-                                    </button>
-                                </div>
+                                @if($hasReviewablePermits)
+                                    <div class="form-group mb-3">
+                                        <label for="pk_remarks" class="form-label fw-bold">Ulasan PK(SPT)</label>
+                                        <textarea class="form-control" id="pk_remarks" name="pk_remarks" rows="3" placeholder="Masukkan ulasan jika perlu..."></textarea>
+                                    </div>
+                                    
+                                    <div class="text-center mb-3">
+                                        <button type="button" class="btn btn-success me-2" onclick="approveSelectedPermits()">
+                                            <i class="fas fa-check me-2"></i>Lulus Permit Terpilih
+                                        </button>
+                                        <button type="button" class="btn btn-danger" onclick="rejectSelectedPermits()">
+                                            <i class="fas fa-times me-2"></i>Tolak Permit Terpilih
+                                        </button>
+                                    </div>
+                                @else
+                                    <div class="alert alert-info">
+                                        <i class="fas fa-info-circle me-2"></i>
+                                        Semua permit telah diproses. Tiada permit yang memerlukan kelulusan.
+                                    </div>
+                                @endif
                             @else
                                 <div class="alert alert-warning">
                                     <i class="fas fa-exclamation-triangle me-2"></i>
@@ -308,10 +498,13 @@
                                             <label class="form-label fw-bold">Surat Kelulusan KPP :</label>
                                     <input type="file" class="form-control" name="surat_kelulusan_kpp" id="suratKelulusanKpp" accept=".pdf,.png,.jpg,.jpeg" @if(!$canEdit) disabled @endif>
                                     <small class="form-text text-muted">Hanya PDF, PNG, JPG, atau JPEG. Saiz maksimum 5MB.</small>
+                                    <div id="fileUploadStatus" class="mt-2" style="display: none;">
+                                        <small class="text-success"><i class="fas fa-check-circle"></i> Fail berjaya dimuat naik!</small>
+                                    </div>
                                         </div>
                                         <div class="mb-3">
                                             <label class="form-label fw-bold">No. Rujukan Surat Kelulusan KPP</label>
-                                    <input type="text" class="form-control" name="no_rujukan_surat" id="noRujukanSurat" value="{{ old('no_rujukan_surat', $appeal->pk_no_rujukan_surat) }}" @if(!$canEdit) disabled @endif>
+                                    <input type="text" class="form-control" name="no_rujukan_surat" id="noRujukanSurat" value="{{ old('no_rujukan_surat', $appeal->kpp_ref_no) }}" @if(!$canEdit) disabled @endif>
                                         </div>
                                         <div class="mb-3">
                                             <label class="form-label fw-bold">Keputusan Permohonan :</label>
@@ -328,25 +521,43 @@
                                             <label class="form-label fw-bold">Ulasan KPP</label>
                                     <textarea name="comments" class="form-control" id="ulasanKppField" rows="4" placeholder="Masukkan ulasan anda..." @if(!$canEdit) disabled @endif>{{ old('comments', $appeal->pk_comments) }}</textarea>
                                         </div>
-                                <div class="d-flex justify-content-end gap-2 bg-white p-2" style="border-radius: 0 0 0.5rem 0.5rem;">
-                                    <a href="{{ route('appeals.amendment') }}" class="btn btn-outline-secondary">Kembali</a>
-                                            @if($canEdit)
+                                <div class="d-flex justify-content-between gap-2 bg-white p-2" style="border-radius: 0 0 0.5rem 0.5rem;">
+                                    <div>
+                                        @if($canEdit)
+                                        <button type="button" class="btn btn-success me-2" onclick="generateAndPrintLetter()" id="generateLetterBtn">
+                                            <i class="fas fa-file-pdf me-2"></i>Jana dan Cetak Surat Berserta Laporan
+                                        </button>
+                                        @else
+                                        <button type="button" class="btn btn-secondary me-2" disabled>
+                                            <i class="fas fa-file-pdf me-2"></i>Jana dan Cetak Surat Berserta Laporan
+                                        </button>
+                                        <small class="text-muted">(Tidak boleh diedit - Status bukan "Tidak Lengkap")</small>
+                                        @endif
+                                    </div>
+                                    <div>
+                                        <a href="{{ route('appeals.amendment') }}" class="btn btn-outline-secondary">Kembali</a>
+                                        @if($canEdit)
                                         <button type="submit" name="action" value="save" class="btn btn-outline-primary">Simpan</button>
                                         <button type="submit" name="action" value="submit" class="btn btn-primary" id="hantarPkBtn">Hantar</button>
-                                            @else
-                                                <span class="text-muted">Permohonan tidak boleh diedit kerana status bukan "Tidak Lengkap".</span>
-                                            @endif
-                                        </div>
+                                        @else
+                                        <span class="text-muted">Permohonan tidak boleh diedit kerana status bukan "Tidak Lengkap".</span>
+                                        @endif
+                                    </div>
+                                </div>
                                     </form>
                             <script>
                                 document.addEventListener('DOMContentLoaded', function() {
                                     var pkForm = document.getElementById('pkReviewForm');
                                     if(pkForm) {
                                         pkForm.addEventListener('submit', function(e) {
+                                            // Auto-fill reference number if approved
+                                            autoFillAfterSubmission();
+                                            
                                             var status = document.querySelector('input[name="status"]:checked');
                                             var ulasan = document.getElementById('ulasanKppField').value.trim();
                                             var suratKelulusan = document.getElementById('suratKelulusanKpp').value.trim();
                                             var noRujukan = document.getElementById('noRujukanSurat').value.trim();
+                                            
                                             if (status && status.value === 'Tidak Diluluskan' && ulasan === '') {
                                                 alert('Ulasan wajib diisi jika permohonan tidak diluluskan.');
                                                 e.preventDefault();
@@ -364,6 +575,93 @@
                                                 }
                                             }
                                         });
+                                    }
+                                });
+
+                                // Generate and Print Letter Function
+                                function generateAndPrintLetter() {
+                                    // Generate a unique reference number
+                                    const today = new Date();
+                                    const year = today.getFullYear();
+                                    const month = String(today.getMonth() + 1).padStart(2, '0');
+                                    const day = String(today.getDate()).padStart(2, '0');
+                                    const randomNum = Math.floor(Math.random() * 1000).toString().padStart(3, '0');
+                                    
+                                    const refNumber = `KPP/${year}${month}${day}/${randomNum}`;
+                                    
+                                    // Auto-fill the reference number
+                                    document.getElementById('noRujukanSurat').value = refNumber;
+                                    
+                                    // Save the reference number to database immediately
+                                    fetch('{{ route("appeals.update_reference", $appeal->id) }}', {
+                                        method: 'POST',
+                                        headers: {
+                                            'Content-Type': 'application/json',
+                                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                                        },
+                                        body: JSON.stringify({
+                                            reference_number: refNumber
+                                        })
+                                    })
+                                    .then(response => response.json())
+                                    .then(data => {
+                                        if (data.success) {
+                                            
+                                            // Set the status to "Diluluskan" automatically
+                                            const diluluskanRadio = document.querySelector('input[name="status"][value="Diluluskan"]');
+                                            if (diluluskanRadio) {
+                                                diluluskanRadio.checked = true;
+                                            }
+                                            
+                                            // Open the print letter page in a new tab AFTER saving
+                                            const printUrl = '{{ route("appeals.print_letter", $appeal->id) }}';
+                                            window.open(printUrl, '_blank');
+                                            
+                                            // Show success message with instructions
+                                            alert(`✅ Surat kelulusan akan dijana dengan nombor rujukan: ${refNumber}\n\n📋 Arahan:\n1. Cetak surat yang dibuka dalam tab baru\n2. Simpan sebagai PDF\n3. Muat naik fail PDF tersebut dalam medan "Surat Kelulusan KPP"\n4. Klik "Hantar" untuk menyimpan keputusan`);
+                                            
+                                            // Focus on the file upload field
+                                            setTimeout(() => {
+                                                const fileInput = document.getElementById('suratKelulusanKpp');
+                                                if (fileInput) {
+                                                    fileInput.style.border = '2px solid #007bff';
+                                                    fileInput.focus();
+                                                }
+                                            }, 100);
+                                        } else {
+                                            alert('❌ Ralat semasa menyimpan nombor rujukan. Sila cuba lagi.');
+                                        }
+                                    })
+                                    .catch(error => {
+                                        console.error('Error saving reference number:', error);
+                                        alert('❌ Ralat semasa menyimpan nombor rujukan. Sila cuba lagi.');
+                                    });
+                                }
+
+                                // Auto-fill functionality when form is submitted
+                                function autoFillAfterSubmission() {
+                                    const status = document.querySelector('input[name="status"]:checked');
+                                    if (status && status.value === 'Diluluskan') {
+                                        // Auto-generate reference number if not filled
+                                        if (!document.getElementById('noRujukanSurat').value) {
+                                            const today = new Date();
+                                            const year = today.getFullYear();
+                                            const month = String(today.getMonth() + 1).padStart(2, '0');
+                                            const day = String(today.getDate()).padStart(2, '0');
+                                            const randomNum = Math.floor(Math.random() * 1000).toString().padStart(3, '0');
+                                            const refNumber = `KPP/${year}${month}${day}/${randomNum}`;
+                                            document.getElementById('noRujukanSurat').value = refNumber;
+                                        }
+                                    }
+                                }
+
+                                // Show feedback when file is uploaded
+                                document.getElementById('suratKelulusanKpp').addEventListener('change', function(e) {
+                                    if (e.target.files.length > 0) {
+                                        document.getElementById('fileUploadStatus').style.display = 'block';
+                                        // Remove the highlight
+                                        e.target.style.borderColor = '';
+                                        e.target.style.borderWidth = '';
                                     }
                                 });
 
@@ -403,7 +701,7 @@
                                 }
 
                                 function approvePermit(permitId, remarks) {
-                                    fetch(`/appeals/approve-permit/${permitId}`, {
+                                    fetch(`{{ url('/appeals/approve-permit') }}/${permitId}`, {
                                         method: 'POST',
                                         headers: {
                                             'Content-Type': 'application/json',
@@ -429,7 +727,7 @@
                                 }
 
                                 function rejectPermit(permitId, remarks) {
-                                    fetch(`/appeals/reject-permit/${permitId}`, {
+                                    fetch(`{{ url('/appeals/reject-permit') }}/${permitId}`, {
                                         method: 'POST',
                                         headers: {
                                             'Content-Type': 'application/json',
@@ -454,6 +752,14 @@
                                     });
                                 }
                             </script>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                         </div>
                     </div>
                 </div>

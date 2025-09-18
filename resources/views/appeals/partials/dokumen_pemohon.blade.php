@@ -326,7 +326,7 @@
     </div>
 
     <!-- Navigation Buttons -->
-    <div class="text-center mt-4">
+    <div class="text-center mt-4 navigation-buttons">
         <button type="button" class="btn btn-secondary me-2" onclick="previousTab('butiran-tab')">
             <i class="fas fa-arrow-left me-2"></i> Kembali
         </button>

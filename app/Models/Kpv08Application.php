@@ -57,9 +57,6 @@ class Kpv08Application extends Model
         $this->permit->update([
             'expiry_date' => $this->new_expiry_date,
         ]);
-
-        // Increment application count
-        $this->permit->incrementApplicationCount();
     }
 
     public function rejectByPK($remarks = null)

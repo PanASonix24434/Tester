@@ -73,7 +73,7 @@
 <script>
     window.Echo.channel('amendments')
         .listen('AppealUpdated', (e) => {
-            fetch('/amendments/list')
+            fetch('{{ url("/amendments/list") }}')
                 .then(response => response.text())
                 .then(html => {
                     document.getElementById('amendment-list').innerHTML = html;

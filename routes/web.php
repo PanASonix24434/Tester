@@ -145,6 +145,8 @@ Route::group(['middleware' => ['auth', 'verified'], 'prefix' => config('app.url_
         
         // Print Letter for Appeal
         Route::get('/{id}/print-letter', [AppealController::class, 'printLetter'])->name('print_letter');  // Route to print the letter
+        Route::get('/{id}/download-letter-pdf', [AppealController::class, 'downloadLetterPDF'])->name('download_letter_pdf');  // Route to download PDF
+        Route::post('/{id}/update-reference', [AppealController::class, 'updateReference'])->name('update_reference');  // Route to update reference number
 
         // Senarai Permohonan Landing Page
         Route::get('/senarai-permohonan', [AppealController::class, 'senaraiPermohonanIndex'])->name('senarai_permohonan.index');  // Landing page for application lists
@@ -178,9 +180,18 @@ Route::group(['middleware' => ['auth', 'verified'], 'prefix' => config('app.url_
         Route::post('/pk-submit/{id}', [AppealController::class, 'pkSubmit'])->name('pk_submit');  // Submit PK review
         Route::post('/approve-permit/{id}', [AppealController::class, 'approvePermit'])->name('approve_permit');
         Route::post('/reject-permit/{id}', [AppealController::class, 'rejectPermit'])->name('reject_permit');
+        
+        // Document viewing routes
+        Route::get('/view-document/{appealId}/{field}', [AppealController::class, 'viewDocument'])->name('viewDocument');
+        Route::get('/view-dokumen-sokongan/{id}', [AppealController::class, 'viewDokumenSokongan'])->name('viewDokumenSokongan');
 
         // Role Review Route (for redirecting to specific role review)
         Route::get('/role-review/{id}', [AppealController::class, 'redirectToRoleReview'])->name('role_review');
+        
+        // Role Validation Routes
+        Route::get('/validate-tindakan/{id}', [App\Http\Controllers\RoleValidationController::class, 'validateTindakanAction'])->name('validate_tindakan');
+        Route::get('/user-role', [App\Http\Controllers\RoleValidationController::class, 'getUserRole'])->name('user_role');
+
 
         // Fix Appeal IDs route
         Route::get('/fix-perakuan-appeal', [UtilityController::class, 'fixAppealIds'])->name('fix_perakuan_appeal');
@@ -211,6 +222,7 @@ Route::group(['middleware' => ['auth', 'verified'], 'prefix' => config('app.url_
     Route::prefix('appeals')->name('appeals.')->group(function () {
 
         Route::get('/{id}/surat-kelulusan-kpp', [AppealController::class, 'viewSuratKelulusanKpp'])->name('viewSuratKelulusanKpp');
+        Route::get('/{id}/status-content', [AppealController::class, 'statusContent'])->name('status_content');
     });
 
     Route::get('/lanjutan-tempoh/summary/{id}', [ApplicationController::class, 'lanjutanTempohSummary'])->name('lanjutan-tempoh.summary');
@@ -1325,9 +1337,6 @@ Route::group(['middleware' => ['auth', 'verified'], 'prefix' => config('app.url_
 
         Route::get('/pk-review/{id}', [AppealController::class, 'pkReview'])->name('pk_review');
         Route::post('/pk-submit/{id}', [AppealController::class, 'pkSubmit'])->name('pk_submit');
-            
-            // Role review redirect route
-            Route::get('/role-review/{id}', [AppealController::class, 'redirectToRoleReview'])->name('role_review');
             
             // Show route
             Route::get('/{id}', [AppealController::class, 'show'])->name('show');

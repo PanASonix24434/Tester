@@ -188,7 +188,10 @@ class ApplicationController extends Controller
                 if (!$file) {
                     return 'FILE UPLOAD FAILED: No file received.';
                 }
-                $dokumenPath = $file->store('dokumen_sokongan', 'public');
+                
+                // Preserve original filename and extension
+                $originalName = $file->getClientOriginalName();
+                $dokumenPath = $file->storeAs('dokumen_sokongan', $originalName, 'public');
             } catch (\Exception $e) {
                 return 'FILE UPLOAD FAILED: ' . $e->getMessage();
             }
