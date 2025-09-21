@@ -20,6 +20,7 @@ class Kpv08Application extends Model
         'status',
         'pk_remarks',
         'is_approved_by_pk',
+        'application_count',
     ];
 
     protected $casts = [
@@ -53,10 +54,13 @@ class Kpv08Application extends Model
             'is_approved_by_pk' => true,
         ]);
 
-        // Update permit expiry date
+        // Update permit expiry date and increment application count
         $this->permit->update([
             'expiry_date' => $this->new_expiry_date,
         ]);
+        
+        // Increment application count
+        $this->permit->incrementApplicationCount();
     }
 
     public function rejectByPK($remarks = null)

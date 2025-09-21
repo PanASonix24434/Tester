@@ -362,7 +362,7 @@
                                     <div style="border-bottom: 3px solid #1976d2; margin-bottom: 24px; margin-top: 2px;"></div>
                                     <form method="POST" action="{{ route('appeals.ppl_submit', $appeal->id) }}" id="pplReviewForm">
                                         @csrf
-                                        <div class="mb-3 fw-bold">Maklumat dan Dokumen Permohonan :</div>
+                                        <div class="mb-3 fw-bold">Maklumat dan Dokumen Permohonan <span class="text-danger">*</span> :</div>
                                         <div class="mb-3">
                                             <div class="form-check form-check-inline">
                                                 <input class="form-check-input" type="radio" name="status" id="lengkap" value="Lengkap">
@@ -373,7 +373,7 @@
                                                 <label class="form-check-label" for="tidak_lengkap">Tidak Lengkap</label>
                                             </div>
                                         </div>
-                                        <div class="mb-3 fw-bold">Ulasan</div>
+                                        <div class="mb-3 fw-bold">Ulasan <span class="text-danger">*</span></div>
                                         <div class="mb-3">
                                             <textarea class="form-control" name="comments" id="ulasanField" rows="3" placeholder="Masukkan ulasan anda...">{{ old('comments', $appeal->ppl_comments) }}</textarea>
                                         </div>

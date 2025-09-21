@@ -381,7 +381,7 @@
                                                     <form method="POST" action="{{ route('appeals.kcl_submit', $appeal->id) }}" id="kclReviewForm">
                                                         @csrf
                                                         <div class="mb-3 mt-3">
-                                                            <label class="form-label fw-bold">Maklumat dan Dokumen Permohonan :</label>
+                                                            <label class="form-label fw-bold">Maklumat dan Dokumen Permohonan <span class="text-danger">*</span> :</label>
                                                             <div class="form-check">
                                                                 <input class="form-check-input" type="radio" name="status" id="disokong" value="Disokong" {{ old('status', $appeal->kcl_status) == 'Disokong' ? 'checked' : '' }} @if(!$canEdit) disabled @endif>
                                                                 <label class="form-check-label" for="disokong">Disokong</label>
@@ -396,7 +396,7 @@
                                                             </div>
                                                         </div>
                                                         <div class="mb-3">
-                                                            <label class="form-label fw-bold">Ulasan</label>
+                                                            <label class="form-label fw-bold">Ulasan <span class="text-danger">*</span></label>
                                                             <textarea name="comments" class="form-control" id="kclUlasanField" rows="4" placeholder="Masukkan ulasan anda..." @if(!$canEdit) disabled @endif>{{ old('comments', $appeal->kcl_comments) }}</textarea>
                                                         </div>
                                                         <div class="d-flex justify-content-end gap-2 bg-white p-2" style="border-radius: 0 0 0.5rem 0.5rem;">

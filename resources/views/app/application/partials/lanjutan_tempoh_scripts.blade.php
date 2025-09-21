@@ -58,6 +58,11 @@ function loadPermitsForKvp08(kelulusanId) {
                         <td>${permit.no_permit}</td>
                         <td>${permit.jenis_peralatan}</td>
                         <td>
+                            <span class="badge bg-info text-white">
+                                ${permit.application_count_text || 'Kali Pertama'}
+                            </span>
+                        </td>
+                        <td>
                             <span class="badge bg-${permit.status === 'ada_kemajuan' ? 'success' : 'warning'}">
                                 ${permit.status === 'ada_kemajuan' ? 'Ada kemajuan' : 'Tiada kemajuan'}
                             </span>
@@ -70,12 +75,12 @@ function loadPermitsForKvp08(kelulusanId) {
                     permitTableBody.appendChild(row);
                 });
             } else {
-                permitTableBody.innerHTML = '<tr><td colspan="5" class="text-center text-muted">Tiada permit dijumpai untuk kelulusan ini.</td></tr>';
+                permitTableBody.innerHTML = '<tr><td colspan="6" class="text-center text-muted">Tiada permit dijumpai untuk kelulusan ini.</td></tr>';
             }
         })
         .catch(error => {
             console.error('Error loading permits:', error);
-            document.getElementById('permit-table-body').innerHTML = '<tr><td colspan="5" class="text-center text-danger">Ralat memuatkan permit.</td></tr>';
+            document.getElementById('permit-table-body').innerHTML = '<tr><td colspan="6" class="text-center text-danger">Ralat memuatkan permit.</td></tr>';
         });
 }
 

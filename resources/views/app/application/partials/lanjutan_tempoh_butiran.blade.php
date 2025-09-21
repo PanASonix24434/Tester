@@ -27,6 +27,7 @@
                     <th style="width: 50px;">Bil</th>
                     <th>No. Permit</th>
                     <th>Jenis Peralatan</th>
+                    <th>Kali Permohonan</th>
                     <th>Status</th>
                     <th style="width: 100px;">Pilih</th>
                 </tr>

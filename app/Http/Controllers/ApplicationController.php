@@ -226,6 +226,7 @@ class ApplicationController extends Controller
                 foreach ($permits as $permit) {
                     $extensionMonths = $permit->getExtensionPeriod();
                     $newExpiryDate = $permit->expiry_date->addMonths($extensionMonths);
+                    $nextApplicationCount = $permit->getNextApplicationCount();
                     
                     \App\Models\Kpv08Application::create([
                         'appeal_id' => $appeal->id,
@@ -234,6 +235,7 @@ class ApplicationController extends Controller
                         'extension_period' => $extensionMonths . ' bulan',
                         'new_expiry_date' => $newExpiryDate,
                         'status' => 'submitted',
+                        'application_count' => $nextApplicationCount,
                     ]);
                 }
 

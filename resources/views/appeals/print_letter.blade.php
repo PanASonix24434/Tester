@@ -138,9 +138,28 @@
             {{ $applicant->name ?? 'Pemohon' }}<br>
             {{ $applicant->email ?? '' }}</p>
 
-            <p><strong>Subjek: Kelulusan Permohonan Pindaan Syarat Lesen Perikanan</strong></p>
-
-            <p>Dengan hormatnya dimaklumkan bahawa permohonan pindaan syarat lesen perikanan anda telah diluluskan oleh pihak kami.</p>
+            @if($perakuan && $perakuan->type === 'kvp08')
+                <p><strong>Subjek: Kelulusan Permohonan Lanjutan Tempoh Sah Kelulusan Perolehan</strong></p>
+                
+                <p>Dengan hormatnya dimaklumkan bahawa permohonan lanjutan tempoh sah kelulusan perolehan anda telah diluluskan oleh pihak kami.</p>
+                
+                @php
+                    $kvp08Applications = \App\Models\Kpv08Application::where('appeal_id', $perakuan->appeal_id)->get();
+                @endphp
+                
+                @if($kvp08Applications->count() > 0)
+                    <p>Permohonan lanjutan tempoh untuk permit berikut telah diluluskan:</p>
+                    <ul>
+                        @foreach($kvp08Applications as $kvp08App)
+                            <li><strong>{{ $kvp08App->permit->permit_number }}</strong> - {{ $kvp08App->permit->getApplicationCountText() }}</li>
+                        @endforeach
+                    </ul>
+                @endif
+            @else
+                <p><strong>Subjek: Kelulusan Permohonan Pindaan Syarat Lesen Perikanan</strong></p>
+                
+                <p>Dengan hormatnya dimaklumkan bahawa permohonan pindaan syarat lesen perikanan anda telah diluluskan oleh pihak kami.</p>
+            @endif
 
             <p>Permohonan dengan ID: <strong>{{ $appeal->id }}</strong> telah disemak dan diputuskan untuk diluluskan berdasarkan syarat-syarat yang ditetapkan.</p>
 

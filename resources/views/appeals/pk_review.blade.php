@@ -397,6 +397,7 @@
                                                 <th>No. Permit</th>
                                                 <th>Jenis Permit</th>
                                                 <th>Zon</th>
+                                                <th>Kali Permohonan</th>
                                                 <th>Tempoh Lanjutan</th>
                                                 <th>Tarikh Luput Baru</th>
                                                 <th>Status</th>
@@ -410,6 +411,11 @@
                                                     <td>{{ $kvp08App->permit->permit_number }}</td>
                                                     <td>{{ $kvp08App->permit->permit_type }}</td>
                                                     <td>{{ $kvp08App->permit->zone }}</td>
+                                                    <td>
+                                                        <span class="badge bg-info text-white">
+                                                            {{ $kvp08App->permit->getApplicationCountText() }}
+                                                        </span>
+                                                    </td>
                                                     <td>{{ $kvp08App->extension_period }}</td>
                                                     <td>{{ $kvp08App->new_expiry_date->format('d/m/Y') }}</td>
                                                     <td>
@@ -459,7 +465,7 @@
                                 
                                 @if($hasReviewablePermits)
                                     <div class="form-group mb-3">
-                                        <label for="pk_remarks" class="form-label fw-bold">Ulasan PK(SPT)</label>
+                                        <label for="pk_remarks" class="form-label fw-bold">Ulasan PK(SPT) <span class="text-danger">*</span></label>
                                         <textarea class="form-control" id="pk_remarks" name="pk_remarks" rows="3" placeholder="Masukkan ulasan jika perlu..."></textarea>
                                     </div>
                                     
@@ -495,7 +501,7 @@
                             <form method="POST" action="{{ route('appeals.pk_submit', $appeal->id) }}" enctype="multipart/form-data" id="pkReviewForm">
                                         @csrf
                                         <div class="mb-3 mt-3">
-                                            <label class="form-label fw-bold">Surat Kelulusan KPP :</label>
+                                            <label class="form-label fw-bold">Surat Kelulusan KPP <span class="text-danger">*</span> :</label>
                                     <input type="file" class="form-control" name="surat_kelulusan_kpp" id="suratKelulusanKpp" accept=".pdf,.png,.jpg,.jpeg" @if(!$canEdit) disabled @endif>
                                     <small class="form-text text-muted">Hanya PDF, PNG, JPG, atau JPEG. Saiz maksimum 5MB.</small>
                                     <div id="fileUploadStatus" class="mt-2" style="display: none;">
@@ -503,11 +509,11 @@
                                     </div>
                                         </div>
                                         <div class="mb-3">
-                                            <label class="form-label fw-bold">No. Rujukan Surat Kelulusan KPP</label>
+                                            <label class="form-label fw-bold">No. Rujukan Surat Kelulusan KPP <span class="text-danger">*</span></label>
                                     <input type="text" class="form-control" name="no_rujukan_surat" id="noRujukanSurat" value="{{ old('no_rujukan_surat', $appeal->kpp_ref_no) }}" @if(!$canEdit) disabled @endif>
                                         </div>
                                         <div class="mb-3">
-                                            <label class="form-label fw-bold">Keputusan Permohonan :</label>
+                                            <label class="form-label fw-bold">Keputusan Permohonan <span class="text-danger">*</span> :</label>
                                             <div class="form-check">
                                                 <input class="form-check-input" type="radio" name="status" id="diluluskan" value="Diluluskan" {{ old('status', $appeal->pk_status) == 'Diluluskan' ? 'checked' : '' }} @if(!$canEdit) disabled @endif>
                                                 <label class="form-check-label" for="diluluskan">Diluluskan</label>
@@ -518,7 +524,7 @@
                                             </div>
                                         </div>
                                         <div class="mb-3">
-                                            <label class="form-label fw-bold">Ulasan KPP</label>
+                                            <label class="form-label fw-bold">Ulasan KPP <span class="text-danger">*</span></label>
                                     <textarea name="comments" class="form-control" id="ulasanKppField" rows="4" placeholder="Masukkan ulasan anda..." @if(!$canEdit) disabled @endif>{{ old('comments', $appeal->pk_comments) }}</textarea>
                                         </div>
                                 <div class="d-flex justify-content-between gap-2 bg-white p-2" style="border-radius: 0 0 0.5rem 0.5rem;">

@@ -116,10 +116,17 @@ Route::get('/debug-permits/{kelulusanId}', function($kelulusanId) {
         
         $permits = $kelulusan->permits()->where('is_active', true)->get();
         
+        // Add application count text to each permit
+        $permitsWithCount = $permits->map(function($permit) {
+            $permitArray = $permit->toArray();
+            $permitArray['application_count_text'] = $permit->getApplicationCountText();
+            return $permitArray;
+        });
+        
         return response()->json([
             'kelulusan' => $kelulusan->toArray(),
             'permits_count' => $permits->count(),
-            'permits' => $permits->toArray()
+            'permits' => $permitsWithCount->toArray()
         ]);
     } catch (\Exception $e) {
         return response()->json(['error' => $e->getMessage()], 500);

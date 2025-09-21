@@ -17,10 +17,15 @@ class Permit extends Model
         'jenis_peralatan',
         'status',
         'is_active',
+        'application_count',
+        'last_extension_date',
+        'expiry_date',
     ];
 
     protected $casts = [
         'is_active' => 'boolean',
+        'last_extension_date' => 'datetime',
+        'expiry_date' => 'datetime',
     ];
 
     public function kelulusanPerolehan()
@@ -83,6 +88,70 @@ class Permit extends Model
         // This should return the actual expiry date from the database
         // For now, returning a default date
         return now()->addMonths(6);
+    }
+
+    /**
+     * Get the next application count for this permit
+     */
+    public function getNextApplicationCount()
+    {
+        return $this->application_count + 1;
+    }
+
+    /**
+     * Get application count text for display
+     */
+    public function getApplicationCountText()
+    {
+        $count = $this->getNextApplicationCount();
+        
+        switch ($count) {
+            case 1:
+                return 'Kali Pertama';
+            case 2:
+                return 'Kali Kedua';
+            case 3:
+                return 'Kali Ketiga';
+            case 4:
+                return 'Kali Keempat';
+            default:
+                return "Kali Ke-{$count}";
+        }
+    }
+
+    /**
+     * Increment application count when extension is approved
+     */
+    public function incrementApplicationCount()
+    {
+        $this->update([
+            'application_count' => $this->application_count + 1,
+            'last_extension_date' => now(),
+        ]);
+        
+        // Create reminder for 3 months later
+        $this->createExtensionReminder();
+    }
+    
+    /**
+     * Create reminder for extension after 3 months
+     */
+    public function createExtensionReminder()
+    {
+        $reminderDate = now()->addMonths(3);
+        
+        // Get user from company profile (simplified for testing)
+        $user = User::first(); // Use first available user for testing
+        
+        if ($user) {
+            PermitReminder::create([
+                'permit_id' => $this->id,
+                'user_id' => $user->id,
+                'reminder_type' => 'extension_reminder',
+                'reminder_date' => $reminderDate,
+                'is_sent' => false,
+            ]);
+        }
     }
 
 }
