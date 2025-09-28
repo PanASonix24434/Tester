@@ -701,7 +701,7 @@ class AppealController extends Controller
     }
     // Print letter (stub)
     public function printLetter($id) {
-        $appeal = Appeal::findOrFail($id);
+        $appeal = Appeal::with('perakuan')->findOrFail($id);
         
         // Get the current user (the one who is approving)
         $approver = auth()->user();
@@ -709,12 +709,15 @@ class AppealController extends Controller
         // Get applicant details
         $applicant = \App\Models\User::find($appeal->applicant_id);
         
-        return view('appeals.print_letter', compact('appeal', 'approver', 'applicant'));
+        // Get the perakuan data
+        $perakuan = $appeal->perakuan;
+        
+        return view('appeals.print_letter', compact('appeal', 'approver', 'applicant', 'perakuan'));
     }
 
     // Download letter as PDF
     public function downloadLetterPDF($id) {
-        $appeal = Appeal::findOrFail($id);
+        $appeal = Appeal::with('perakuan')->findOrFail($id);
         
         // Get the current user (the one who is approving)
         $approver = auth()->user();
@@ -722,8 +725,11 @@ class AppealController extends Controller
         // Get applicant details
         $applicant = \App\Models\User::find($appeal->applicant_id);
         
+        // Get the perakuan data
+        $perakuan = $appeal->perakuan;
+        
         // Generate PDF using DomPDF
-        $pdf = PDF::loadView('appeals.print_letter_pdf', compact('appeal', 'approver', 'applicant'));
+        $pdf = PDF::loadView('appeals.print_letter_pdf', compact('appeal', 'approver', 'applicant', 'perakuan'));
         
         // Generate filename
         $refNumber = $appeal->kpp_ref_no ?? 'KPP-' . date('Ymd') . '-' . str_pad(rand(1, 999), 3, '0', STR_PAD_LEFT);

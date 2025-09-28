@@ -33,7 +33,7 @@ use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Log;
 
 // use App\Mail\PemeriksaanLpiNotification;
-use App\Mail\ApplicationResultNotification;
+use App\Helpers\PinNotificationHelper;
 use App\Models\LandingDeclaration\LandingDeclaration;
 use App\Models\LandingDeclaration\LandingInfo;
 use App\Models\NelayanDarat\darat_inspection_equipment;
@@ -380,7 +380,7 @@ class keputusanController extends Controller
                 ];
 
                 try {
-                    Mail::to($user->email)->send(new ApplicationResultNotification($resultDetails));
+                    PinNotificationHelper::sendPinNotification($resultDetails, $user);
                 } catch (\Exception $e) {
                     Log::error('Email sending failed: ' . $e->getMessage());
                 }

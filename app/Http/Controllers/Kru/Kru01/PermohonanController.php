@@ -54,10 +54,25 @@ class PermohonanController extends Controller
      */
     public function create()
     {
-        $user = User::find(Auth::id());
-        $vessels = Vessel::where('user_id',$user->id)->orderBy('no_pendaftaran')->get();
+        $user = Auth::user();
+        
+        // Check if user is a vessel manager (ProfileUser) or regular user
+        $isVesselManager = false;
+        $vessels = collect();
+        
+        if ($user->profile()) {
+            // User has a profile, check if they're a vessel manager
+            $profileUser = $user->profile;
+            $isVesselManager = true;
+            $vessels = $profileUser->managedVessels()->orderBy('no_pendaftaran')->get();
+        } else {
+            // Regular user
+            $vessels = Vessel::where('user_id', $user->id)->orderBy('no_pendaftaran')->get();
+        }
+        
         return view('app.kru.kru01.create', [
             'vessels' => $vessels,
+            'isVesselManager' => $isVesselManager,
         ]);
     }
 
@@ -99,6 +114,16 @@ class PermohonanController extends Controller
             $app->user_id = $request->user()->id;
             $app->kru_application_status_id = $status_id;
             $app->vessel_id = $request->selVessel;
+            
+            // Add user type information for marine applications
+            $user = $request->user();
+            if ($user->profile()) {
+                $app->applicant_type = 'vessel_manager';
+                $app->profile_user_id = $user->profile->id;
+            } else {
+                $app->applicant_type = 'regular_user';
+                $app->profile_user_id = null;
+            }
 
             //check if nelayan already applied
             $appliedNelayan = NelayanMarin::where('ic_number',$request->icNum)->first();

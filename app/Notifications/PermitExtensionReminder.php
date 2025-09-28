@@ -14,17 +14,17 @@ class PermitExtensionReminder extends Notification
     protected $permit;
     protected $reminder;
 
-    /**
-     * Create a new notification instance.
-     */
+    protected $permit;
+    protected $reminder;
+
     public function __construct($permit, $reminder)
     {
         $this->permit = $permit;
         $this->reminder = $reminder;
-    }
+    public function __construct($permit, $reminder)
 
-    /**
-     * Get the notification's delivery channels.
+        $this->permit = $permit;
+        $this->reminder = $reminder;ry channels.
      *
      * @return array<int, string>
      */
@@ -40,21 +40,21 @@ class PermitExtensionReminder extends Notification
     {
         $permit = $this->permit;
         
-        return (new MailMessage)
                     ->subject('Peringatan: Permohonan Lanjutan Tempoh Sah Kelulusan Perolehan')
                     ->greeting('Assalamualaikum dan Salam Sejahtera,')
                     ->line('Dengan hormatnya dimaklumkan bahawa permit perikanan anda memerlukan perhatian.')
                     ->line('**Maklumat Permit:**')
                     ->line('• No. Permit: ' . $permit->no_permit)
-                    ->line('• Jenis Peralatan: ' . $permit->jenis_peralatan)
-                    ->line('• Tarikh Luput: ' . $permit->expiry_date->format('d/m/Y'))
-                    ->line('• Kali Permohonan: ' . $permit->getApplicationCountText())
-                    ->line('')
+                    ->line('• No. Permit: ' . ($permit->no_permit ?? 'N/A'))
+                    ->line('• Jenis Peralatan: ' . ($permit->jenis_peralatan ?? 'N/A'))
+                    ->line('• Tarikh Luput: ' . ($permit->expiry_date ? $permit->expiry_date->format('d/m/Y') : 'N/A'))
+                    ->line('• Kali Permohonan: ' . ($permit->getApplicationCountText() ?? 'Kali Pertama'))
                     ->line('Permit anda telah dilanjutkan tempoh selama 3 bulan dan kini memerlukan tindakan lanjutan.')
                     ->line('Sila buat permohonan lanjutan tempoh yang baru untuk mengelakkan permit luput.')
                     ->action('Buat Permohonan Lanjutan Tempoh', url('/application/borang-permohonan'))
                     ->line('')
                     ->line('Sekiranya anda memerlukan bantuan, sila hubungi pihak kami.')
+                    ->salutation('Terima kasih.');kan bantuan, sila hubungi pihak kami.')
                     ->salutation('Terima kasih.');
     }
 

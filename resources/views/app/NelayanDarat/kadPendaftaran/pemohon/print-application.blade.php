@@ -55,6 +55,7 @@
 </head>
 
 <body>
+    <x-watermark />
 
     <!-- HEADER SECTION - SEPARATE TABLE -->
     <table style="width: 100%; border: none; margin-bottom: 10px;">

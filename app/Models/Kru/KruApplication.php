@@ -28,6 +28,24 @@ class KruApplication extends Model
      * @var array
      */
     protected $fillable = [
+        'kru_application_type_id',
+        'user_id',
+        'applicant_type',
+        'profile_user_id',
+        'vessel_id',
+        'reference_number',
+        'kru_application_status_id',
+        'entity_id',
+        'submitted_at',
+        'start_counting_at',
+        'registration_number',
+        'registration_start',
+        'registration_end',
+        'pin_number',
+        'ssd_number',
+        'created_by',
+        'updated_by',
+        'deleted_by',
     ];
 	
     /**

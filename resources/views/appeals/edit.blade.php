@@ -6,32 +6,296 @@
 .navigation-buttons {
     display: none !important;
 }
+
+.appeal-form-container {
+    max-width: 1000px;
+    margin: 0 auto;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.appeal-header {
+    background: linear-gradient(135deg, #6f42c1, #8e44ad);
+    color: white;
+    padding: 20px;
+    border-radius: 8px 8px 0 0;
+    text-align: center;
+    font-weight: bold;
+    font-size: 18px;
+}
+
+.appeal-content {
+    padding: 30px;
+}
+
+.section-title {
+    color: #333;
+    font-weight: bold;
+    margin-bottom: 15px;
+    font-size: 16px;
+}
+
+.officer-review-box {
+    background: #fff3cd;
+    border: 1px solid #ffeaa7;
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 20px;
+}
+
+.officer-info {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+    font-weight: bold;
+    color: #333;
+}
+
+.officer-info i {
+    margin-right: 8px;
+    color: #6c757d;
+}
+
+.officer-comment {
+    color: #333;
+    font-style: italic;
+}
+
+.appeal-textarea {
+    min-height: 120px;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+    padding: 15px;
+    font-size: 14px;
+    resize: vertical;
+}
+
+.documents-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+}
+
+.documents-table th {
+    background: #6f42c1;
+    color: white;
+    padding: 12px;
+    text-align: left;
+    font-weight: bold;
+}
+
+.documents-table td {
+    padding: 12px;
+    border: 1px solid #ddd;
+    vertical-align: middle;
+}
+
+.file-input-group {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.file-input {
+    flex: 1;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+.file-upload-btn {
+    background: #28a745;
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 12px;
+}
+
+.file-upload-btn:hover {
+    background: #218838;
+}
+
+.delete-btn {
+    background: #dc3545;
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.delete-btn:hover {
+    background: #c82333;
+}
+
+.add-document-btn {
+    background: #6f42c1;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: bold;
+    margin-bottom: 15px;
+}
+
+.add-document-btn:hover {
+    background: #5a32a3;
+}
+
+.file-restrictions {
+    color: #6c757d;
+    font-size: 12px;
+    margin-top: 10px;
+}
+
+.action-buttons {
+    display: flex;
+    justify-content: flex-end;
+    gap: 15px;
+    margin-top: 30px;
+    padding-top: 20px;
+    border-top: 1px solid #eee;
+}
+
+.back-btn {
+    background: #6c757d;
+    color: white;
+    border: none;
+    padding: 12px 25px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.back-btn:hover {
+    background: #5a6268;
+}
+
+.submit-btn {
+    background: #28a745;
+    color: white;
+    border: none;
+    padding: 12px 25px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.submit-btn:hover {
+    background: #218838;
+}
 </style>
+
 <div id="app-content">
     <div class="app-content-area">
         <div class="container">
-            <h3>Edit & Resubmit Permohonan</h3>
-            <form method="POST" action="{{ route('appeals.update', $appeal->id) }}" enctype="multipart/form-data">
-                @csrf
-                @method('PUT')
-                <div class="mb-3">
-                    <label for="justifikasi_pindaan" class="form-label">Justifikasi Pindaan</label>
-                    <textarea name="justifikasi_pindaan" id="justifikasi_pindaan" class="form-control" required>{{ old('justifikasi_pindaan', $perakuan->justifikasi_pindaan ?? '') }}</textarea>
-                    @error('justifikasi_pindaan')
-                        <div class="text-danger small">{{ $message }}</div>
-                    @enderror
+            <div class="appeal-form-container">
+                <!-- Header -->
+                <div class="appeal-header">
+                    Tindakan: Rayuan Permohonan
                 </div>
-                <input type="hidden" id="jenis_pindaan_syarat" name="jenis_pindaan_syarat" value="{{ $perakuan->jenis_pindaan_syarat }}">
-                <input type="hidden" id="jenis_perolehan" name="jenis_perolehan" value="{{ $perakuan->jenis_perolehan }}">
-                <input type="hidden" id="jenis_bahan_binaan_vesel" name="jenis_bahan_binaan_vesel" value="{{ $perakuan->jenis_bahan_binaan_vesel }}">
-                 @include('appeals.partials.dokumen_pemohon')
-                 
-                 <!-- Action Buttons -->
-                 <div class="text-center mt-4">
-                     <button type="submit" class="btn btn-primary me-3">Hantar Semula</button>
-                     <a href="{{ route('appeals.status', $appeal->id) }}" class="btn btn-secondary">Batal</a>
-                 </div>
-            </form>
+                
+                <!-- Content -->
+                <div class="appeal-content">
+                    <form method="POST" action="{{ route('appeals.update', $appeal->id) }}" enctype="multipart/form-data">
+                        @csrf
+                        @method('PUT')
+                        
+                        <!-- Officer Review Section -->
+                        <div class="section-title">Ulasan Pegawai</div>
+                        <p style="color: #666; margin-bottom: 15px;">Semak ulasan pegawai dan nyatakan sebab rayuan anda.</p>
+                        
+                        <div class="officer-review-box">
+                            <div class="officer-info">
+                                <i class="fas fa-user"></i>
+                                Pegawai A - {{ now()->format('d/m/Y H:i') }}
+                            </div>
+                            <div class="officer-comment">
+                                {{ $perakuan->kcl_comments ?? $perakuan->ppl_comments ?? 'Sila kemukakan bukti pembelian yang jelas dan lengkap.' }}
+                            </div>
+                        </div>
+                        
+                        <!-- Appeal Review Section -->
+                        <div class="section-title">Ulasan Rayuan <span style="color: red;">*</span></div>
+                        <p style="color: #666; margin-bottom: 15px;">Nyatakan sebab rayuan anda.</p>
+                        
+                        <textarea name="justifikasi_pindaan" 
+                                  id="justifikasi_pindaan" 
+                                  class="form-control appeal-textarea" 
+                                  placeholder="Ringkaskan sebab rayuan anda..."
+                                  required>{{ old('justifikasi_pindaan', $perakuan->justifikasi_pindaan ?? '') }}</textarea>
+                        @error('justifikasi_pindaan')
+                            <div class="text-danger small mt-2">{{ $message }}</div>
+                        @enderror
+                        
+                        <!-- Hidden fields -->
+                        <input type="hidden" id="jenis_pindaan_syarat" name="jenis_pindaan_syarat" value="{{ $perakuan->jenis_pindaan_syarat }}">
+                        <input type="hidden" id="jenis_perolehan" name="jenis_perolehan" value="{{ $perakuan->jenis_perolehan }}">
+                        <input type="hidden" id="jenis_bahan_binaan_vesel" name="jenis_bahan_binaan_vesel" value="{{ $perakuan->jenis_bahan_binaan_vesel }}">
+                        
+                        <!-- Documents Section -->
+                        <div class="section-title">Dokumen</div>
+                        
+                        <table class="documents-table">
+                            <thead>
+                                <tr>
+                                    <th style="width: 60px;">Bil</th>
+                                    <th>Nama / Deskripsi Fail</th>
+                                    <th style="width: 200px;">Muat Naik Fail</th>
+                                    <th style="width: 80px;">Tindakan</th>
+                                </tr>
+                            </thead>
+                            <tbody id="documents-tbody">
+                                <tr>
+                                    <td>1</td>
+                                    <td>
+                                        <input type="text" 
+                                               class="form-control" 
+                                               placeholder="Contoh: Fail Sokongan 1"
+                                               name="document_names[]">
+                                    </td>
+                                    <td>
+                                        <div class="file-input-group">
+                                            <input type="file" 
+                                                   class="file-input" 
+                                                   name="documents[]"
+                                                   accept=".pdf,.jpg,.jpeg,.png">
+                                            <span style="font-size: 12px; color: #666;">No file selected</span>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <button type="button" class="delete-btn" onclick="removeDocument(this)">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        
+                        <button type="button" class="add-document-btn" onclick="addDocument()">
+                            <i class="fas fa-plus"></i> Tambah Dokumen
+                        </button>
+                        
+                        <div class="file-restrictions">
+                            Format dibenarkan: PDF, JPG, JPEG, PNG. Saiz maksimum: 5MB setiap fail.
+                        </div>
+                        
+                        <!-- Action Buttons -->
+                        <div class="action-buttons">
+                            <a href="{{ route('appeals.status', $appeal->id) }}" class="back-btn">
+                                <i class="fas fa-arrow-left"></i> Kembali
+                            </a>
+                            <button type="submit" class="submit-btn">
+                                <i class="fas fa-paper-plane"></i> Hantar Rayuan
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
         </div>
     </div>
 </div>
@@ -39,77 +303,94 @@
 
 @push('scripts')
 <script>
+let documentCounter = 1;
 
-// Function to add dokumen sokongan
-function addDokumenSokongan(containerId, fieldName) {
-    var container = document.getElementById(containerId);
-    if (!container) return;
+// Function to add new document row
+function addDocument() {
+    documentCounter++;
+    const tbody = document.getElementById('documents-tbody');
+    const newRow = document.createElement('tr');
     
-    var newItem = document.createElement('div');
-    newItem.className = 'dokumen-sokongan-item mb-2';
-    newItem.innerHTML = `
-        <div class="input-group">
-            <input type="file" class="form-control dokumen-sokongan-input" name="${fieldName}" accept=".pdf,.png,.jpg,.jpeg">
-            <button type="button" class="btn btn-outline-danger btn-remove-dokumen" onclick="removeDokumenSokongan(this)">
-                <i class="fas fa-times"></i>
+    newRow.innerHTML = `
+        <td>${documentCounter}</td>
+        <td>
+            <input type="text" 
+                   class="form-control" 
+                   placeholder="Contoh: Fail Sokongan ${documentCounter}"
+                   name="document_names[]">
+        </td>
+        <td>
+            <div class="file-input-group">
+                <input type="file" 
+                       class="file-input" 
+                       name="documents[]"
+                       accept=".pdf,.jpg,.jpeg,.png"
+                       onchange="updateFileStatus(this)">
+                <span class="file-status" style="font-size: 12px; color: #666;">No file selected</span>
+            </div>
+        </td>
+        <td>
+            <button type="button" class="delete-btn" onclick="removeDocument(this)">
+                <i class="fas fa-trash"></i>
             </button>
-        </div>
-        <small class="form-text text-muted">Hanya PDF, PNG, JPG, atau JPEG. Saiz maksimum 5MB.</small>
+        </td>
     `;
     
-    container.appendChild(newItem);
+    tbody.appendChild(newRow);
 }
 
-// Function to remove dokumen sokongan
-function removeDokumenSokongan(button) {
-    var item = button.closest('.dokumen-sokongan-item');
-    if (item) {
-        item.remove();
+// Function to remove document row
+function removeDocument(button) {
+    const row = button.closest('tr');
+    if (row) {
+        row.remove();
+        // Renumber remaining rows
+        renumberRows();
     }
 }
 
-// Initialize document sections on page load
-document.addEventListener('DOMContentLoaded', function () {
-    var jenisPerolehan = document.getElementById('jenis_perolehan');
-    var jenisPindaan = document.getElementById('jenis_pindaan_syarat');
+// Function to renumber rows after deletion
+function renumberRows() {
+    const rows = document.querySelectorAll('#documents-tbody tr');
+    rows.forEach((row, index) => {
+        row.cells[0].textContent = index + 1;
+    });
+    documentCounter = rows.length;
+}
 
-    // Function to show document sections based on selection
-    function showDokumenSection() {
-        var jpValue = jenisPindaan ? jenisPindaan.value : '';
-        var jprValue = jenisPerolehan ? jenisPerolehan.value : '';
+// Function to update file status display
+function updateFileStatus(input) {
+    const statusSpan = input.parentNode.querySelector('.file-status');
+    if (input.files && input.files[0]) {
+        statusSpan.textContent = input.files[0].name;
+        statusSpan.style.color = '#28a745';
+    } else {
+        statusSpan.textContent = 'No file selected';
+        statusSpan.style.color = '#666';
+    }
+}
 
-        // Hide all document sections initially
-        document.getElementById('dokumen-terpakai').style.display = 'none';
-        document.getElementById('dokumen-bina-baru').style.display = 'none';
-        document.getElementById('dokumen-bina-baru-luar-negara').style.display = 'none';
-        document.getElementById('dokumen-pangkalan').style.display = 'none';
-        document.getElementById('dokumen-bahan-binaan').style.display = 'none';
-        document.getElementById('dokumen-tukar-peralatan').style.display = 'none';
-        document.getElementById('dokumen-tukar-nama-syarikat').style.display = 'none';
-
-        // Show the correct section based on selection
-        if (jpValue === 'Jenis perolehan') {
-            // Handle perolehan sub-sections
-            if (jenisPerolehan && jenisPerolehan.value === 'bina_baru_dalam_negara') {
-                document.getElementById('dokumen-bina-baru').style.display = 'block';
-            } else if (jenisPerolehan && jenisPerolehan.value === 'bina_baru_luar_negara') {
-                document.getElementById('dokumen-bina-baru-luar-negara').style.display = 'block';
-            } else if (jenisPerolehan && (jenisPerolehan.value === 'terpakai_tempatan' || jenisPerolehan.value === 'terpakai_luar_negara')) {
-                document.getElementById('dokumen-terpakai').style.display = 'block';
-            }
-        } else if (jpValue === 'Pangkalan') {
-            document.getElementById('dokumen-pangkalan').style.display = 'block';
-        } else if (jpValue === 'Jenis bahan binaan vesel') {
-            document.getElementById('dokumen-bahan-binaan').style.display = 'block';
-        } else if (jpValue === 'Tukar Jenis Peralatan') {
-            document.getElementById('dokumen-tukar-peralatan').style.display = 'block';
-        } else if (jpValue === 'Tukar Nama Pendaftaran Syarikat') {
-            document.getElementById('dokumen-tukar-nama-syarikat').style.display = 'block';
+// Initialize on page load
+document.addEventListener('DOMContentLoaded', function() {
+    // Add event listeners to existing file inputs
+    const fileInputs = document.querySelectorAll('input[type="file"]');
+    fileInputs.forEach(input => {
+        input.addEventListener('change', function() {
+            updateFileStatus(this);
+        });
+    });
+    
+    // Form validation
+    const form = document.querySelector('form');
+    form.addEventListener('submit', function(e) {
+        const textarea = document.getElementById('justifikasi_pindaan');
+        if (!textarea.value.trim()) {
+            e.preventDefault();
+            alert('Sila isi ulasan rayuan anda.');
+            textarea.focus();
+            return false;
         }
-    }
-
-    // Initially call the function to show the appropriate sections
-    showDokumenSection();
+    });
 });
 </script>
 @endpush 

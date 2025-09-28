@@ -106,9 +106,6 @@
                                             <th scope="col">Jenis Permohonan</th>
                                             <th scope="col">Status</th>
                                             <th scope="col">No. Rujukan</th>
-                                            <th scope="col">No. Pin</th>
-
-
                                             <th scope="col">Tindakan</th>
                                         </tr>
                                     </thead>
@@ -133,13 +130,16 @@
                                             </td>
 
                                             <td>{{ $application->no_rujukan }}</td>
-                                                    <td>
-    @if (!empty($application->fetchPin) && !empty($application->fetchPin->pin_number))
-        {{ $application->fetchPin->pin_number }}
-    @endif
-</td>
 
                                             <td>
+                                                @if (!empty($application->fetchPin) && !empty($application->fetchPin->pin_number))
+                                                    <div class="mb-2">
+                                                        <span class="badge bg-info text-white" title="Nombor Pin">
+                                                            PIN: {{ $application->fetchPin->pin_number }}
+                                                        </span>
+                                                    </div>
+                                                @endif
+                                                
                                                 <!-- Only show the button if the status code matches one of the feedback arrays -->
                                                 @if (in_array($application->applicationStatus->code, $negativeFeedback))
                                                 <button class="btn btn-warning col-md"
@@ -165,7 +165,7 @@
                                         @endforeach
                                         @else
                                         <tr>
-                                            <td class="text-center" colspan="6">Tiada permohonan ditemui.</td>
+                                            <td class="text-center" colspan="7">Tiada permohonan ditemui.</td>
                                         </tr>
                                         @endif
                                     </tbody>

@@ -19,6 +19,7 @@
                     <th style="width: 100px;">Daerah</th>
                     <th style="width: 140px;">Tarikh Kemaskini</th>
                     <th style="width: 120px;">Status Permohonan</th>
+                    <th style="width: 100px;">Tempoh Pegangan</th>
                     <th class="text-center" style="width: 80px;">Tindakan</th>
                 @else
                     {{-- Applicant view columns --}}
@@ -47,39 +48,40 @@
                     }
                     
                     // Status configuration for different user roles
+                    // Updated to use only green (positive) and red (negative) colors
                     $statusConfig = [
                         'submitted' => [
-                            'ppl' => ['text' => 'Menunggu semakan', 'class' => 'warning'],
-                            'kcl' => ['text' => 'Menunggu sokongan', 'class' => 'warning'], 
-                            'pk' => ['text' => 'Menunggu keputusan', 'class' => 'warning'],
-                            'applicant' => ['text' => 'Dihantar', 'class' => 'primary']
+                            'ppl' => ['text' => 'Menunggu semakan', 'class' => 'success'],
+                            'kcl' => ['text' => 'Menunggu sokongan', 'class' => 'success'], 
+                            'pk' => ['text' => 'Menunggu keputusan', 'class' => 'success'],
+                            'applicant' => ['text' => 'Dihantar', 'class' => 'success']
                         ],
                         'ppl_review' => [
-                            'ppl' => ['text' => 'Dalam semakan', 'class' => 'info'],
-                            'kcl' => ['text' => 'Menunggu sokongan', 'class' => 'warning'],
-                            'pk' => ['text' => 'Menunggu keputusan', 'class' => 'warning'],
-                            'applicant' => ['text' => 'Menunggu semakan', 'class' => 'primary']
+                            'ppl' => ['text' => 'Dalam semakan', 'class' => 'success'],
+                            'kcl' => ['text' => 'Menunggu sokongan', 'class' => 'success'],
+                            'pk' => ['text' => 'Menunggu keputusan', 'class' => 'success'],
+                            'applicant' => ['text' => 'Menunggu semakan', 'class' => 'success']
                         ],
                         'kcl_review' => [
                             'ppl' => ['text' => 'Selesai disemak', 'class' => 'success'],
-                            'kcl' => ['text' => 'Menunggu sokongan', 'class' => 'warning'],
-                            'pk' => ['text' => 'Menunggu keputusan', 'class' => 'warning'],
-                            'applicant' => ['text' => 'Menunggu sokongan', 'class' => 'primary']
+                            'kcl' => ['text' => 'Menunggu sokongan', 'class' => 'success'],
+                            'pk' => ['text' => 'Menunggu keputusan', 'class' => 'success'],
+                            'applicant' => ['text' => 'Menunggu sokongan', 'class' => 'success']
                         ],
                         'pk_review' => [
                             'ppl' => ['text' => 'Selesai disemak', 'class' => 'success'],
                             'kcl' => ['text' => 'Selesai disokong', 'class' => 'success'],
-                            'pk' => ['text' => 'Menunggu keputusan', 'class' => 'warning'],
-                            'applicant' => ['text' => 'Menunggu keputusan', 'class' => 'primary']
+                            'pk' => ['text' => 'Menunggu keputusan', 'class' => 'success'],
+                            'applicant' => ['text' => 'Menunggu keputusan', 'class' => 'success']
                         ],
                         'ppl_incomplete' => [
-                            'all' => ['text' => 'Perlu dikemaskini', 'class' => 'warning']
+                            'all' => ['text' => 'Perlu dikemaskini', 'class' => 'danger']
                         ],
                         'kcl_incomplete' => [
-                            'all' => ['text' => 'Perlu dikemaskini', 'class' => 'warning']
+                            'all' => ['text' => 'Perlu dikemaskini', 'class' => 'danger']
                         ],
                         'pk_incomplete' => [
-                            'all' => ['text' => 'Perlu dikemaskini', 'class' => 'warning']
+                            'all' => ['text' => 'Perlu dikemaskini', 'class' => 'danger']
                         ],
                         'approved' => [
                             'all' => ['text' => 'Diluluskan', 'class' => 'success']
@@ -122,6 +124,25 @@
                             </span>
                         </td>
                         <td class="text-center">
+                            @php
+                                // Calculate days since application was received
+                                $daysSinceReceived = $app->created_at->diffInDays(now());
+                                $indicatorClass = '';
+                                $indicatorText = $daysSinceReceived . ' hari';
+                                
+                                if ($daysSinceReceived >= 10) {
+                                    $indicatorClass = 'bg-danger text-white';
+                                } elseif ($daysSinceReceived >= 5) {
+                                    $indicatorClass = 'bg-warning text-dark';
+                                } else {
+                                    $indicatorClass = 'bg-success text-white';
+                                }
+                            @endphp
+                            <span class="badge {{ $indicatorClass }}">
+                                {{ $indicatorText }}
+                            </span>
+                        </td>
+                        <td class="text-center">
                             <button type="button" 
                                     class="btn btn-sm btn-light border shadow-sm" 
                                     title="Lihat Permohonan"
@@ -137,17 +158,18 @@
                         <td>
                             @php
                                 // Applicant-specific status configuration for KPV-07/KPV-08
+                                // Updated to use only green (positive) and red (negative) colors
                                 $applicantStatusConfig = [
-                                    'submitted' => ['text' => 'Dihantar', 'class' => 'primary'],
-                                    'ppl_review' => ['text' => 'Menunggu semakan', 'class' => 'primary'],
-                                    'kcl_review' => ['text' => 'Menunggu sokongan', 'class' => 'primary'],
-                                    'pk_review' => ['text' => 'Menunggu keputusan', 'class' => 'primary'],
-                                    'ppl_incomplete' => ['text' => 'Perlu dikemaskini', 'class' => 'warning'],
-                                    'kcl_incomplete' => ['text' => 'Perlu dikemaskini', 'class' => 'warning'],
-                                    'pk_incomplete' => ['text' => 'Perlu dikemaskini', 'class' => 'warning'],
+                                    'submitted' => ['text' => 'Dihantar', 'class' => 'success'],
+                                    'ppl_review' => ['text' => 'Menunggu semakan', 'class' => 'success'],
+                                    'kcl_review' => ['text' => 'Menunggu sokongan', 'class' => 'success'],
+                                    'pk_review' => ['text' => 'Menunggu keputusan', 'class' => 'success'],
+                                    'ppl_incomplete' => ['text' => 'Perlu dikemaskini', 'class' => 'danger'],
+                                    'kcl_incomplete' => ['text' => 'Perlu dikemaskini', 'class' => 'danger'],
+                                    'pk_incomplete' => ['text' => 'Perlu dikemaskini', 'class' => 'danger'],
                                     'approved' => ['text' => 'Diluluskan', 'class' => 'success'],
                                     'rejected' => ['text' => 'Tidak Diluluskan', 'class' => 'danger'],
-                                    'draft' => ['text' => 'Draft', 'class' => 'secondary']
+                                    'draft' => ['text' => 'Draft', 'class' => 'success']
                                 ];
                                 
                                 $applicantStatus = $applicantStatusConfig[$app->status] ?? 
@@ -160,12 +182,47 @@
                         <td class="text-center">
                                     @php
                                         $incompleteStatuses = ['ppl_incomplete', 'kcl_incomplete', 'pk_incomplete'];
+                                        // Check if pin number exists for this application
+                                        $pinNumber = null;
+                                        if ($app->perakuan && $app->perakuan->pin_number) {
+                                            $pinNumber = $app->perakuan->pin_number;
+                                        }
                                     @endphp
+                                    
+                                    @if($pinNumber)
+                                        <div class="mb-2">
+                                            <span class="badge bg-info text-white" title="Nombor Pin">
+                                                PIN: {{ $pinNumber }}
+                                            </span>
+                                        </div>
+                                    @endif
+                                    
                                     @if(in_array($app->status, $incompleteStatuses))
                                 <a href="{{ route('appeals.edit', ['id' => $app->id]) }}" 
                                    class="btn btn-sm btn-warning border shadow-sm" title="Edit/Kemaskini">
                                     <i class="fas fa-edit"></i>
                                 </a>
+                            @elseif($app->status === 'approved')
+                                {{-- Show print button for approved applications --}}
+                                <div class="btn-group" role="group">
+                                    <button type="button" 
+                                            class="btn btn-sm btn-light border shadow-sm" 
+                                            title="Lihat Status"
+                                            onclick="handleTindakanClick('{{ $app->id }}')">
+                                        <i class="fas fa-eye text-primary"></i>
+                                    </button>
+                                    <a href="{{ route('appeals.print_letter', $app->id) }}" 
+                                       target="_blank"
+                                       class="btn btn-sm btn-success border shadow-sm" 
+                                       title="Cetak Surat Kelulusan">
+                                        <i class="fas fa-print"></i>
+                                    </a>
+                                    <a href="{{ route('appeals.download_letter_pdf', $app->id) }}" 
+                                       class="btn btn-sm btn-info border shadow-sm" 
+                                       title="Muat Turun PDF">
+                                        <i class="fas fa-download"></i>
+                                    </a>
+                                </div>
                             @else
                                 <button type="button" 
                                         class="btn btn-sm btn-light border shadow-sm" 
