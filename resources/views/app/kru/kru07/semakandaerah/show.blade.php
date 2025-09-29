@@ -413,11 +413,11 @@
                                         <div class="row">
                                             <div class="col-lg-12 text-lg-center mt-3">
                                             <button class="btn btn-info btn-sm next-tab-btn" data-next-tab="log-tab"><i class="fas fa-arrow-left"></i> Kembali</button>
-                                                <button type="submit" name="action" value="save" class="btn btn-secondary btn-sm" onclick="return confirm($('<span>Simpan Maklumat?</span>').text())">
-                                                    <i class="fas fa-save"></i> Simpan
+                                                <button type="submit" name="action" value="save" class="btn btn-sm" style="background-color: #007BFF; color: #fff; border: none; border-radius: 8px; padding: 8px 16px; font-weight: bold; box-shadow: 0 2px 8px rgba(0,123,255,0.3);" onclick="return confirm($('<span>Simpan Maklumat?</span>').text())">
+                                                    <i class="fas fa-save" style="color: #fff;"></i> Simpan
                                                 </button>
-                                                <button id="btnSubmit" type="submit" name="action" value="submit" disabled class="btn btn-primary btn-sm" onclick="return confirm($('<span>Hantar Permohonan?</span>').text())">
-                                                    <i class="fas fa-paper-plane"></i> Hantar
+                                                <button id="btnSubmit" type="submit" name="action" value="submit" disabled class="btn btn-sm" style="background-color: #28a745; color: #fff; border: none; border-radius: 8px; padding: 8px 16px; font-weight: bold; box-shadow: 0 2px 8px rgba(40,167,69,0.3);" onclick="return confirm($('<span>Hantar Permohonan?</span>').text())">
+                                                    <i class="fas fa-paper-plane" style="color: #fff;"></i> Hantar
                                                 </button>
                                             </div>
                                         </div>

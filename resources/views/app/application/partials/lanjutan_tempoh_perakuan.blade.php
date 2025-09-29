@@ -13,6 +13,8 @@
 <input type="hidden" id="hidden_justifikasi" name="hidden_justifikasi" value="{{ old('justifikasi') }}">
 
 <div class="d-flex justify-content-end gap-2">
-    <button type="button" class="btn btn-outline-secondary me-2" onclick="goToDokumenTab()">Kembali</button>
-    <button type="submit" class="btn btn-primary">Hantar</button>
+    <button type="button" class="btn btn-sm" style="background-color: #282c34; color: #fff; border: 1px solid #282c34; border-radius: 8px;" onclick="goToDokumenTab()">Kembali</button>
+    <button type="submit" class="btn btn-sm" style="background-color: #28a745; color: #fff; border: 1px solid #28a745; border-radius: 8px;">
+        <i class="fas fa-paper-plane me-2" style="color: #fff;"></i>Hantar
+    </button>
 </div>

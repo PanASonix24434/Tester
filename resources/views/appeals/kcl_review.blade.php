@@ -207,7 +207,7 @@
                                                                         <th width="200">{{ $label }}:</th>
                                                                         <td>
                                                                             <a href="{{ asset('storage/' . $perakuan->$doc) }}" target="_blank" class="btn btn-sm btn-primary">
-                                                                                <i class="fas fa-eye me-1"></i>Lihat Dokumen
+                                                                                <i class="fas fa-search me-1" style="color: #fff;"></i>Lihat Dokumen
                                                                             </a>
                                                                         </td>
                                                                     </tr>
@@ -237,7 +237,7 @@
                                                                         <th width="200">{{ ucfirst(str_replace('_', ' ', $dokumen->file_type)) }}:</th>
                                                                         <td>
                                                                             <a href="{{ route('appeals.viewDokumenSokongan', $dokumen->id) }}" target="_blank" class="btn btn-sm btn-primary">
-                                                                                <i class="fas fa-eye me-1"></i>Lihat Dokumen
+                                                                                <i class="fas fa-search me-1" style="color: #fff;"></i>Lihat Dokumen
                                                                             </a>
                                                                             <small class="text-muted ms-2">{{ $dokumen->file_name }}</small>
                                                                         </td>
@@ -251,7 +251,7 @@
                                                                     <th width="200">Dokumen Sokongan (KPV-08):</th>
                                                                     <td>
                                                                         <a href="{{ route('appeals.viewDocument', ['appealId' => $appeal->id, 'field' => 'dokumen_sokongan_path']) }}" target="_blank" class="btn btn-sm btn-primary">
-                                                                            <i class="fas fa-eye me-1"></i>Lihat Dokumen
+                                                                            <i class="fas fa-search me-1"></i>Lihat Dokumen
                                                                         </a>
                                                                         <small class="text-muted ms-2">{{ basename($perakuan->dokumen_sokongan_path) }}</small>
                                                                     </td>
@@ -285,7 +285,7 @@
                                                                         <th width="200">{{ $label }}:</th>
                                                                         <td>
                                                                             <a href="{{ asset('storage/' . $perakuan->$doc) }}" target="_blank" class="btn btn-sm btn-primary">
-                                                                                <i class="fas fa-eye me-1"></i>Lihat Dokumen
+                                                                                <i class="fas fa-search me-1" style="color: #fff;"></i>Lihat Dokumen
                                                                             </a>
                                                                         </td>
                                                                     </tr>
@@ -305,67 +305,83 @@
                                         <!-- Status Permohonan Tab -->
                                         <div class="tab-pane fade" id="status-permohonan" role="tabpanel" aria-labelledby="status-permohonan-tab">
                                             <h5 class="mb-3 fw-bold" style="color: #1a1a1a;">Status Permohonan</h5>
-                                            <div class="table-responsive">
-                                                <table class="table table-bordered bg-white" style="color: #1a1a1a;">
-                                                    @php
-                                                        $statusLabels = [
-                                                            'ppl_incomplete' => 'Dalam Semakan PPL',
-                                                            'ppl_review'     => 'Dalam Semakan PPL',
-                                                            'kcl_incomplete' => 'Dalam Semakan KCL',
-                                                            'kcl_review'     => 'Dalam Semakan KCL',
-                                                            'pk_incomplete'  => 'Dalam Semakan PK',
-                                                            'pk_review'      => 'Dalam Semakan PK',
-                                                            'kpp_decision'   => 'Menunggu Keputusan KPP',
-                                                            'approved'       => 'Diluluskan',
-                                                            'rejected'       => 'Ditolak',
-                                                        ];
-                                                        $status = $appeal->status ?? 'unknown';
-                                                    @endphp
-                                                    <tr>
-                                                        <th width="200">Status Semasa:</th>
-                                                        <td>
-                                                            <span class="badge bg-info text-white">
-                                                                {{ $statusLabels[$status] ?? ucfirst(str_replace('_', ' ', $status)) }}
-                                                            </span>
-                                                            @php
-                                                                $role = strtolower(auth()->user()->peranan ?? '');
-                                                                $customStatus = null;
-                                                                if (strpos($role, 'ketua cawangan') !== false && $appeal->kcl_status === 'Disokong') {
-                                                                    $customStatus = 'disokong';
-                                                                }
-                                                            @endphp
-                                                            @if($customStatus)
-                                                                <span class="badge bg-success text-white ms-2">{{ ucfirst($customStatus) }}</span>
+                                            
+                                            <!-- Hantar Permohonan Card -->
+                                            <div class="card mb-3" style="border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); border: 1px solid #dee2e6;">
+                                                <div class="card-header d-flex justify-content-between align-items-center" style="background-color: #f8f9fa; border-bottom: 1px solid #dee2e6; padding: 12px 16px;">
+                                                    <div class="d-flex align-items-center">
+                                                        <h6 class="mb-0 fw-bold" style="color: #343a40;">HANTAR PERMOHONAN</h6>
+                                                    </div>
+                                                    <div class="d-flex align-items-center ms-auto">
+                                                        <span class="me-3" style="color: #343a40;">{{ $appeal->created_at ? $appeal->created_at->format('d M Y, h:i A') : '-' }}</span>
+                                                        <button class="btn btn-sm" style="border: 1px solid #ced4da; background-color: #fff; padding: 4px 8px;">
+                                                            <i class="fas fa-chevron-down" style="color: #343a40;"></i>
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                                <div class="card-body" style="background-color: #fff; padding: 16px;">
+                                                    <table class="table table-borderless" style="margin-bottom: 0;">
+                                                        <tbody>
+                                                            <tr>
+                                                                <td style="color: #343a40; padding: 8px 0; width: 80px;">Status</td>
+                                                                <td style="color: #343a40; padding: 8px 0; text-align: start; padding-left: 0; width: 10px;">:</td>
+                                                                <td style="color: #343a40; padding: 8px 0;">DIHANTAR</td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td style="color: #343a40; padding: 8px 0; width: 80px;">Ulasan</td>
+                                                                <td style="color: #343a40; padding: 8px 0; text-align: start; padding-left: 0; width: 10px;">:</td>
+                                                                <td style="color: #343a40; padding: 8px 0;">{{ $appeal->perakuan->nyatakan ?? 'PERMOHONAN DITERIMA SISTEM.' }}</td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td style="color: #343a40; padding: 8px 0; width: 80px;">Nama</td>
+                                                                <td style="color: #343a40; padding: 8px 0; text-align: start; padding-left: 0; width: 10px;">:</td>
+                                                                <td style="color: #343a40; padding: 8px 0;">{{ $appeal->applicant->name ?? 'ALI BIN ABU' }}</td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+
+                                            <!-- Semakan Dokumen Card -->
+                                            <div class="card mb-3" style="border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); border: 1px solid #dee2e6;">
+                                                <div class="card-header d-flex justify-content-between align-items-center" style="background-color: #f8f9fa; border-bottom: 1px solid #dee2e6; padding: 12px 16px;">
+                                                    <div class="d-flex align-items-center">
+                                                        <h6 class="mb-0 fw-bold" style="color: #343a40;">SEMAKAN DOKUMEN</h6>
+                                                    </div>
+                                                    <div class="d-flex align-items-center ms-auto">
+                                                        <span class="me-3" style="color: #343a40;">{{ $appeal->updated_at ? $appeal->updated_at->format('d M Y, h:i A') : '-' }}</span>
+                                                        <button class="btn btn-sm" style="border: 1px solid #ced4da; background-color: #fff; padding: 4px 8px;">
+                                                            <i class="fas fa-chevron-down" style="color: #343a40;"></i>
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                                <div class="card-body" style="background-color: #fff; padding: 16px;">
+                                                    <table class="table table-borderless" style="margin-bottom: 0;">
+                                                        <tbody>
+                                                            <tr>
+                                                                <td style="color: #343a40; padding: 8px 0; width: 80px;">Status</td>
+                                                                <td style="color: #343a40; padding: 8px 0; text-align: start; padding-left: 0; width: 10px;">:</td>
+                                                                <td style="color: #343a40; padding: 8px 0;">
+                                                                    @if(strtolower($appeal->ppl_status) === 'lengkap')
+                                                                        LENGKAP
+                                                                    @else
+                                                                        TIDAK LENGKAP
                                                             @endif
                                                         </td>
                                                     </tr>
                                                     <tr>
-                                                        <th>Tarikh Permohonan:</th>
-                                                        <td>{{ $appeal->created_at ? $appeal->created_at->format('d/m/Y H:i') : '-' }}</td>
+                                                                <td style="color: #343a40; padding: 8px 0; width: 80px;">Ulasan</td>
+                                                                <td style="color: #343a40; padding: 8px 0; text-align: start; padding-left: 0; width: 10px;">:</td>
+                                                                <td style="color: #343a40; padding: 8px 0;">{{ $appeal->ppl_comments }}</td>
                                                     </tr>
                                                     <tr>
-                                                        <th>Tarikh Kemaskini:</th>
-                                                        <td>{{ $appeal->updated_at ? $appeal->updated_at->format('d/m/Y H:i') : '-' }}</td>
+                                                                <td style="color: #343a40; padding: 8px 0; width: 80px;">Nama</td>
+                                                                <td style="color: #343a40; padding: 8px 0; text-align: start; padding-left: 0; width: 10px;">:</td>
+                                                                <td style="color: #343a40; padding: 8px 0;">{{ $appeal->pplReviewer->name ?? 'PN. SITI BINTI OMAR' }}</td>
                                                     </tr>
-                                                    @if($appeal->ppl_comments)
-                                                    <tr>
-                                                        <th>Ulasan PPL:</th>
-                                                        <td>{{ $appeal->ppl_comments }}</td>
-                                                    </tr>
-                                                    @endif
-                                                    @if($appeal->kcl_comments)
-                                                    <tr>
-                                                        <th>Ulasan KCL:</th>
-                                                        <td>{{ $appeal->kcl_comments }}</td>
-                                                    </tr>
-                                                    @endif
-                                                    @if($appeal->pk_comments)
-                                                    <tr>
-                                                        <th>Ulasan PK:</th>
-                                                        <td>{{ $appeal->pk_comments }}</td>
-                                                    </tr>
-                                                    @endif
+                                                        </tbody>
                                                 </table>
+                                                </div>
                                             </div>
                                         </div>
 
@@ -399,11 +415,17 @@
                                                             <label class="form-label fw-bold">Ulasan <span class="text-danger">*</span></label>
                                                             <textarea name="comments" class="form-control" id="kclUlasanField" rows="4" placeholder="Masukkan ulasan anda..." @if(!$canEdit) disabled @endif>{{ old('comments', $appeal->kcl_comments) }}</textarea>
                                                         </div>
-                                                        <div class="d-flex justify-content-end gap-2 bg-white p-2" style="border-radius: 0 0 0.5rem 0.5rem;">
-                                                            <a href="{{ route('appeals.amendment') }}" class="btn btn-outline-secondary">Kembali</a>
+                                                        <div class="text-center mt-4 bg-white p-2" style="border-radius: 0 0 0.5rem 0.5rem;">
+                                                            <a href="{{ route('appeals.amendment') }}" class="btn btn-sm" style="background-color: #282c34; color: #fff !important; border: 1px solid #282c34; border-radius: 8px;">
+                                                                <i class="fas fa-arrow-left me-2" style="color: #fff;"></i><span style="color: #fff !important;">Kembali</span>
+                                                            </a>
                                                             @if($canEdit)
-                                                                <button type="submit" name="action" value="save" class="btn btn-outline-primary">Simpan</button>
-                                                                <button type="submit" name="action" value="submit" class="btn btn-primary" id="kclHantarBtn">Hantar</button>
+                                                                <button type="submit" name="action" value="save" class="btn btn-sm" style="background-color: #007BFF; color: #fff; border: 1px solid #007BFF; border-radius: 8px;">
+                                                                    <i class="fas fa-save me-2" style="color: #fff;"></i>Simpan
+                                                                </button>
+                                                                <button type="submit" name="action" value="submit" class="btn btn-sm" style="background-color: #28a745; color: #fff; border: 1px solid #28a745; border-radius: 8px;" id="kclHantarBtn">
+                                                                    <i class="fas fa-paper-plane me-2" style="color: #fff;"></i>Hantar
+                                                                </button>
                                                             @else
                                                                 <span class="text-muted">Permohonan tidak boleh diedit kerana status bukan "Tidak Lengkap".</span>
                                                             @endif

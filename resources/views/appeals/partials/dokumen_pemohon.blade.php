@@ -37,8 +37,8 @@
                             <small class="form-text text-muted">Hanya PDF, PNG, JPG, atau JPEG. Saiz maksimum 5MB.</small>
                         </div>
                     </div>
-                    <button type="button" class="btn btn-outline-primary btn-sm" onclick="addDokumenSokongan('dokumen-sokongan-container-terpakai', 'dokumen_sokongan_terpakai[]')">
-                        <i class="fas fa-plus me-2"></i>Tambah Dokumen Sokongan
+                    <button type="button" class="btn btn-sm" style="background-color: #17A2B8; color: #000; border: 1px solid #17A2B8; border-radius: 8px;" onclick="addDokumenSokongan('dokumen-sokongan-container-terpakai', 'dokumen_sokongan_terpakai[]')">
+                        <i class="fas fa-plus me-2" style="color: #000;"></i>Tambah Dokumen Sokongan
                     </button>
                 </td>
             </tr>
@@ -81,8 +81,8 @@
                             <small class="form-text text-muted">Hanya PDF, PNG, JPG, atau JPEG. Saiz maksimum 5MB.</small>
                         </div>
                     </div>
-                    <button type="button" class="btn btn-outline-primary btn-sm" onclick="addDokumenSokongan('dokumen-sokongan-container-bina-baru', 'dokumen_sokongan_bina_baru[]')">
-                        <i class="fas fa-plus me-2"></i>Tambah Dokumen Sokongan
+                    <button type="button" class="btn btn-sm" style="background-color: #17A2B8; color: #000; border: 1px solid #17A2B8; border-radius: 8px;" onclick="addDokumenSokongan('dokumen-sokongan-container-bina-baru', 'dokumen_sokongan_bina_baru[]')">
+                        <i class="fas fa-plus me-2" style="color: #000;"></i>Tambah Dokumen Sokongan
                     </button>
                 </td>
             </tr>
@@ -116,8 +116,8 @@
                             <small class="form-text text-muted">Hanya PDF, PNG, JPG, atau JPEG. Saiz maksimum 5MB.</small>
                         </div>
                     </div>
-                    <button type="button" class="btn btn-outline-primary btn-sm" onclick="addDokumenSokongan('dokumen-sokongan-container-bina-baru-luar-negara', 'dokumen_sokongan_bina_baru_luar_negara[]')">
-                        <i class="fas fa-plus me-2"></i>Tambah Dokumen Sokongan
+                    <button type="button" class="btn btn-sm" style="background-color: #17A2B8; color: #000; border: 1px solid #17A2B8; border-radius: 8px;" onclick="addDokumenSokongan('dokumen-sokongan-container-bina-baru-luar-negara', 'dokumen_sokongan_bina_baru_luar_negara[]')">
+                        <i class="fas fa-plus me-2" style="color: #000;"></i>Tambah Dokumen Sokongan
                     </button>
                 </td>
             </tr>
@@ -142,8 +142,8 @@
                             <small class="form-text text-muted">Hanya PDF, PNG, JPG, atau JPEG. Saiz maksimum 5MB.</small>
                         </div>
                     </div>
-                    <button type="button" class="btn btn-outline-primary btn-sm" onclick="addDokumenSokongan('dokumen-sokongan-container-pangkalan', 'dokumen_sokongan_pangkalan[]')">
-                        <i class="fas fa-plus me-2"></i>Tambah Dokumen Sokongan
+                    <button type="button" class="btn btn-sm" style="background-color: #17A2B8; color: #000; border: 1px solid #17A2B8; border-radius: 8px;" onclick="addDokumenSokongan('dokumen-sokongan-container-pangkalan', 'dokumen_sokongan_pangkalan[]')">
+                        <i class="fas fa-plus me-2" style="color: #000;"></i>Tambah Dokumen Sokongan
                     </button>
                 </td>
             </tr>
@@ -168,8 +168,8 @@
                             <small class="form-text text-muted">Hanya PDF, PNG, JPG, atau JPEG. Saiz maksimum 5MB.</small>
                         </div>
                     </div>
-                    <button type="button" class="btn btn-outline-primary btn-sm" onclick="addDokumenSokongan('dokumen-sokongan-container-bahan-binaan', 'dokumen_sokongan_bahan_binaan[]')">
-                        <i class="fas fa-plus me-2"></i>Tambah Dokumen Sokongan
+                    <button type="button" class="btn btn-sm" style="background-color: #17A2B8; color: #000; border: 1px solid #17A2B8; border-radius: 8px;" onclick="addDokumenSokongan('dokumen-sokongan-container-bahan-binaan', 'dokumen_sokongan_bahan_binaan[]')">
+                        <i class="fas fa-plus me-2" style="color: #000;"></i>Tambah Dokumen Sokongan
                     </button>
                 </td>
             </tr>
@@ -194,8 +194,8 @@
                             <small class="form-text text-muted">Hanya PDF, PNG, JPG, atau JPEG. Saiz maksimum 5MB.</small>
                         </div>
                     </div>
-                    <button type="button" class="btn btn-outline-primary btn-sm" onclick="addDokumenSokongan('dokumen-sokongan-container-tukar-peralatan', 'dokumen_sokongan_tukar_peralatan[]')">
-                        <i class="fas fa-plus me-2"></i>Tambah Dokumen Sokongan
+                    <button type="button" class="btn btn-sm" style="background-color: #17A2B8; color: #000; border: 1px solid #17A2B8; border-radius: 8px;" onclick="addDokumenSokongan('dokumen-sokongan-container-tukar-peralatan', 'dokumen_sokongan_tukar_peralatan[]')">
+                        <i class="fas fa-plus me-2" style="color: #000;"></i>Tambah Dokumen Sokongan
                     </button>
                 </td>
             </tr>
@@ -327,13 +327,15 @@
 
     <!-- Navigation Buttons -->
     <div class="text-center mt-4 navigation-buttons">
-        <button type="button" class="btn btn-secondary me-2" onclick="previousTab('butiran-tab')">
-            <i class="fas fa-arrow-left me-2"></i> Kembali
+        <button type="button" class="btn btn-sm" style="background-color: #282c34; color: #fff; border: 1px solid #282c34; border-radius: 8px;" onclick="previousTab('butiran-tab')">
+            <i class="fas fa-arrow-left me-2" style="color: #fff;"></i> Kembali
         </button>
-        <button type="button" class="btn btn-primary" onclick="nextTab('perakuan-tab')">
-            Seterusnya <i class="fas fa-arrow-right ms-2"></i>
+        <button type="button" class="btn btn-sm" style="background-color: #007BFF; color: #fff; border: 1px solid #007BFF; border-radius: 8px;" id="simpan-draft">
+            <i class="fas fa-save me-2" style="color: #fff;"></i>Simpan
         </button>
-        <button type="button" class="btn btn-warning ms-2" id="simpan-draft">Simpan</button>
+        <button type="button" class="btn btn-sm" style="background-color: #6f42c1; color: #fff; border: 1px solid #6f42c1; border-radius: 8px;" onclick="nextTab('perakuan-tab')">
+            Seterusnya <i class="fas fa-arrow-right ms-2" style="color: #fff;"></i>
+        </button>
     </div>
 </div>
 

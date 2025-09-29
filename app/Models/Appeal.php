@@ -24,6 +24,10 @@ class Appeal extends Model
         'ppl_comments',
         'kcl_comments',
         'pk_comments',
+        'ppl_reviewer_id',
+        'kcl_reviewer_id',
+        'pk_reviewer_id',
+        'kpp_reviewer_id',
         'kpp_decision',
         'kpp_comments',
         'kpp_ref_no',
@@ -55,6 +59,26 @@ class Appeal extends Model
     public function applicant()
     {
         return $this->belongsTo(\App\Models\User::class, 'applicant_id');
+    }
+
+    public function pplReviewer()
+    {
+        return $this->belongsTo(\App\Models\User::class, 'ppl_reviewer_id');
+    }
+
+    public function kclReviewer()
+    {
+        return $this->belongsTo(\App\Models\User::class, 'kcl_reviewer_id');
+    }
+
+    public function pkReviewer()
+    {
+        return $this->belongsTo(\App\Models\User::class, 'pk_reviewer_id');
+    }
+
+    public function kppReviewer()
+    {
+        return $this->belongsTo(\App\Models\User::class, 'kpp_reviewer_id');
     }
 
     public function dokumenSokongan()

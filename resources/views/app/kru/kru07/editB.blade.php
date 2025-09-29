@@ -103,9 +103,9 @@
                                                             </div>
                                                         </div>
                                                         <div class="col-lg-12 text-lg-center mt-3 mt-lg-0">
-                                                            <a href="{{ route('pembaharuanpenggunaankrubukanwarganegara.permohonan.edit',$id) }}" class="btn btn-info btn-sm"><i class="fas fa-arrow-left"></i> Kembali</a>
-                                                            <button type="submit" class="btn btn-secondary btn-sm" onclick="return confirm($('<span>Simpan Maklumat Permohonan?</span>').text())">
-                                                                <i class="fas fa-save"></i> Simpan & Seterusnya
+                                                            <a href="{{ route('pembaharuanpenggunaankrubukanwarganegara.permohonan.edit',$id) }}" class="btn btn-sm" style="background-color: #282c34; color: #fff; border: 1px solid #444; border-radius: 8px; padding: 8px 16px; font-weight: bold; box-shadow: 0 2px 4px rgba(0,0,0,0.2);"><i class="fas fa-arrow-left" style="color: #fff;"></i> Kembali</a>
+                                                            <button type="submit" class="btn btn-sm" style="background-color: #007BFF; color: #fff; border: none; border-radius: 8px; padding: 8px 16px; font-weight: bold; box-shadow: 0 2px 8px rgba(0,123,255,0.3);" onclick="return confirm($('<span>Simpan Maklumat Permohonan?</span>').text())">
+                                                                <i class="fas fa-save" style="color: #fff;"></i> Simpan & Seterusnya
                                                             </button>
                                                         </div>
                                                     </div>

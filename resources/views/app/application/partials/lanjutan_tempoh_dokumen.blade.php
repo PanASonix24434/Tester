@@ -12,10 +12,10 @@
 
 <!-- Navigation Buttons -->
 <div class="text-center mt-4">
-    <button type="button" class="btn btn-secondary me-2" onclick="goToButiranTab()">
-        <i class="fas fa-arrow-left me-2"></i> Kembali
+    <button type="button" class="btn btn-sm" style="background-color: #282c34; color: #fff; border: 1px solid #282c34; border-radius: 8px;" onclick="goToButiranTab()">
+        <i class="fas fa-arrow-left me-2" style="color: #fff;"></i> Kembali
     </button>
-    <button type="button" class="btn btn-primary" onclick="goToPerakuanTab()">
-        Seterusnya <i class="fas fa-arrow-right ms-2"></i>
+    <button type="button" class="btn btn-sm" style="background-color: #6f42c1; color: #fff; border: 1px solid #6f42c1; border-radius: 8px;" onclick="goToPerakuanTab()">
+        Seterusnya <i class="fas fa-arrow-right ms-2" style="color: #fff;"></i>
     </button>
 </div>

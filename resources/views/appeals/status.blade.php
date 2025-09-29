@@ -134,7 +134,7 @@
                                 <div class="col-md-3 fw-bold">Surat Kelulusan KPP</div>
                                 <div class="col-md-9">:
                                     @if(!empty($appeal->surat_kelulusan_kpp))
-                                        <a href="{{ route('appeals.viewSuratKelulusanKpp', $appeal->id) }}" target="_blank" class="btn btn-primary btn-sm mt-2">Lihat / Muat Turun</a>
+                                        <a href="{{ route('appeals.viewSuratKelulusanKpp', $appeal->id) }}" target="_blank" class="btn btn-sm" style="background-color: #17A2B8; color: #000; border: 1px solid #ddd; border-radius: 6px;">Lihat / Muat Turun</a>
                                     @else
                                         <span class="text-muted">Tiada dokumen dimuat naik.</span>
                                     @endif

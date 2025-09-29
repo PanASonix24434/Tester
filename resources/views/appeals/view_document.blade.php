@@ -45,11 +45,11 @@
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
         }
         .download-btn {
-            background: linear-gradient(135deg, #28a745, #20c997);
-            border: none;
+            background-color: #17A2B8;
+            border: 1px solid #ddd;
             padding: 12px 24px;
-            border-radius: 25px;
-            color: white;
+            border-radius: 6px;
+            color: #000;
             font-weight: 500;
             text-decoration: none;
             display: inline-flex;
@@ -59,8 +59,8 @@
         }
         .download-btn:hover {
             transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
-            color: white;
+            box-shadow: 0 4px 12px rgba(23, 162, 184, 0.3);
+            color: #000;
             text-decoration: none;
         }
         .back-btn {

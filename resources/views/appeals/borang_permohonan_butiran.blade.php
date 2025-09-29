@@ -66,7 +66,9 @@
                             <div class="tab-pane fade" id="perakuan" role="tabpanel" aria-labelledby="perakuan-tab">
                                 @include('appeals.partials.perakuan')
                                 <div class="text-center mt-4">
-                                    <button type="submit" class="btn btn-primary" id="hantar-btn" disabled>Hantar</button>
+                                    <button type="submit" class="btn btn-sm" style="background-color: #28a745; color: #fff; border: 1px solid #28a745; border-radius: 8px;" id="hantar-btn" disabled>
+                                        <i class="fas fa-paper-plane me-2" style="color: #fff;"></i>Hantar
+                                    </button>
                                 </div>
                             </div>
                         </div>
@@ -787,7 +789,7 @@ function addDokumenSokongan(containerId, fieldName) {
     newItem.innerHTML = `
         <div class="input-group">
             <input type="file" class="form-control dokumen-sokongan-input" name="${fieldName}" accept=".pdf,.png,.jpg,.jpeg">
-            <button type="button" class="btn btn-outline-danger btn-remove-dokumen" onclick="removeDokumenSokongan(this)">
+            <button type="button" class="btn btn-outline-danger btn-remove-dokumen" onclick="removeDokumenSokongan(this)" title="Padam">
                 <i class="fas fa-times"></i>
             </button>
         </div>

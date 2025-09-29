@@ -251,8 +251,8 @@
 
 <!-- Navigation Button -->
 <div class="text-center mt-4">
-    <button type="button" class="btn btn-primary" onclick="nextTab('dokumen-tab')">
-        Seterusnya <i class="fas fa-arrow-right ms-2"></i>
+    <button type="button" class="btn btn-sm" style="background-color: #6f42c1; color: #fff; border: 1px solid #6f42c1; border-radius: 8px;" onclick="nextTab('dokumen-tab')">
+        Seterusnya <i class="fas fa-arrow-right ms-2" style="color: #fff;"></i>
     </button>
 </div>
 

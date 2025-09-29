@@ -245,11 +245,11 @@
             border-radius: 8px;
         }
         .download-btn {
-            background: #007bff;
-            color: white;
+            background-color: #17A2B8;
+            color: #000;
             padding: 12px 24px;
-            border: none;
-            border-radius: 5px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
             cursor: pointer;
             font-size: 16px;
             text-decoration: none;
@@ -257,14 +257,15 @@
             margin: 0 10px;
         }
         .download-btn:hover {
-            background: #0056b3;
+            background-color: #17A2B8;
+            color: #000;
         }
         .print-btn {
-            background: #28a745;
-            color: white;
+            background-color: #1A73E8;
+            color: #000;
             padding: 12px 24px;
-            border: none;
-            border-radius: 5px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
             cursor: pointer;
             font-size: 16px;
             text-decoration: none;
@@ -272,7 +273,8 @@
             margin: 0 10px;
         }
         .print-btn:hover {
-            background: #1e7e34;
+            background-color: #1A73E8;
+            color: #000;
         }
     </style>
 </head>

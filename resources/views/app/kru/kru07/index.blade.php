@@ -22,7 +22,7 @@
                 </div>
                 <div class="col-md-6">
                     <div class="mb-5 text-right">
-                        <a href="{{ route('pembaharuanpenggunaankrubukanwarganegara.permohonan.create') }}" class="btn btn-secondary btn-sm"><i class="fas fa-plus"></i> <span class="hidden-xs"> Tambah</span></a>
+                        <a href="{{ route('pembaharuanpenggunaankrubukanwarganegara.permohonan.create') }}" class="btn btn-sm" style="background-color: #17A2B8; color: #000; border: 1px solid #17A2B8; border-radius: 8px; padding: 8px 16px; font-weight: bold; box-shadow: 0 2px 4px rgba(0,0,0,0.1);"><i class="fas fa-plus" style="color: #000;"></i> <span class="hidden-xs"> Tambah</span></a>
                     </div>
                 </div>
             </div>

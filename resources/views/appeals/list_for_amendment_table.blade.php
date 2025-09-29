@@ -144,10 +144,10 @@
                         </td>
                         <td class="text-center">
                             <button type="button" 
-                                    class="btn btn-sm btn-light border shadow-sm" 
+                                    class="btn btn-sm" style="background-color: #007BFF; color: #fff; border: 1px solid #007BFF; border-radius: 4px;" 
                                     title="Lihat Permohonan"
                                     onclick="handleTindakanClick('{{ $app->id }}')">
-                                <i class="fas fa-eye text-primary"></i>
+                                <i class="fas fa-search" style="color: #fff;"></i>
                             </button>
                         </td>
                     @else
@@ -206,29 +206,29 @@
                                 {{-- Show print button for approved applications --}}
                                 <div class="btn-group" role="group">
                                     <button type="button" 
-                                            class="btn btn-sm btn-light border shadow-sm" 
+                                            class="btn btn-sm" style="background-color: #007BFF; color: #fff; border: 1px solid #007BFF; border-radius: 4px;" 
                                             title="Lihat Status"
                                             onclick="handleTindakanClick('{{ $app->id }}')">
-                                        <i class="fas fa-eye text-primary"></i>
+                                        <i class="fas fa-search" style="color: #fff;"></i>
                                     </button>
                                     <a href="{{ route('appeals.print_letter', $app->id) }}" 
                                        target="_blank"
-                                       class="btn btn-sm btn-success border shadow-sm" 
-                                       title="Cetak Surat Kelulusan">
-                                        <i class="fas fa-print"></i>
+                                       class="btn btn-sm" style="background-color: #1A73E8; color: #000; border: 1px solid #ddd; border-radius: 6px;" 
+                                       title="Cetak Surat">
+                                        <i class="fas fa-print" style="color: #000;"></i>
                                     </a>
-                                    <a href="{{ route('appeals.download_letter_pdf', $app->id) }}" 
-                                       class="btn btn-sm btn-info border shadow-sm" 
-                                       title="Muat Turun PDF">
-                                        <i class="fas fa-download"></i>
-                                    </a>
+                                      <a href="{{ route('appeals.download_letter_pdf', $app->id) }}" 
+                                        class="btn btn-sm" style="background-color: #17A2B8; color: #000; border: 1px solid #ddd; border-radius: 6px; display: flex; align-items: center; gap: 8px;" 
+                                        title="Muat Turun">
+                                         <i class="fas fa-download" style="color: #000;"></i>
+                                      </a>
                                 </div>
                             @else
                                 <button type="button" 
-                                        class="btn btn-sm btn-light border shadow-sm" 
+                                        class="btn btn-sm" style="background-color: #007BFF; color: #fff; border: 1px solid #007BFF; border-radius: 4px;" 
                                         title="Lihat Status"
                                         onclick="handleTindakanClick('{{ $app->id }}')">
-                                    <i class="fas fa-eye text-primary"></i>
+                                    <i class="fas fa-search" style="color: #fff;"></i>
                                 </button>
                             @endif
                         </td>

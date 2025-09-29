@@ -16,7 +16,7 @@
 }
 
 .appeal-header {
-    background: linear-gradient(135deg, #6f42c1, #8e44ad);
+    background: #007BFF;
     color: white;
     padding: 20px;
     border-radius: 8px 8px 0 0;
@@ -78,7 +78,7 @@
 }
 
 .documents-table th {
-    background: #6f42c1;
+    background: #007BFF;
     color: white;
     padding: 12px;
     text-align: left;
@@ -132,18 +132,20 @@
 }
 
 .add-document-btn {
-    background: #6f42c1;
-    color: white;
-    border: none;
+    background: #17A2B8;
+    color: #000;
+    border: 1px solid #17A2B8;
     padding: 10px 20px;
-    border-radius: 6px;
+    border-radius: 8px;
     cursor: pointer;
     font-weight: bold;
     margin-bottom: 15px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
 .add-document-btn:hover {
-    background: #5a32a3;
+    background: #17A2B8;
+    color: #000;
 }
 
 .file-restrictions {
@@ -162,17 +164,17 @@
 }
 
 .back-btn {
-    background: #6c757d;
+    background: #282c34;
     color: white;
     border: none;
     padding: 12px 25px;
-    border-radius: 6px;
+    border-radius: 8px;
     cursor: pointer;
     font-weight: bold;
 }
 
 .back-btn:hover {
-    background: #5a6268;
+    background: #1a1d23;
 }
 
 .submit-btn {
@@ -180,7 +182,7 @@
     color: white;
     border: none;
     padding: 12px 25px;
-    border-radius: 6px;
+    border-radius: 8px;
     cursor: pointer;
     font-weight: bold;
 }
@@ -268,7 +270,7 @@
                                         </div>
                                     </td>
                                     <td>
-                                        <button type="button" class="delete-btn" onclick="removeDocument(this)">
+                                        <button type="button" class="delete-btn" onclick="removeDocument(this)" title="Padam">
                                             <i class="fas fa-trash"></i>
                                         </button>
                                     </td>
@@ -277,7 +279,7 @@
                         </table>
                         
                         <button type="button" class="add-document-btn" onclick="addDocument()">
-                            <i class="fas fa-plus"></i> Tambah Dokumen
+                            <i class="fas fa-plus" style="color: #000;"></i> Tambah Dokumen
                         </button>
                         
                         <div class="file-restrictions">
@@ -286,7 +288,7 @@
                         
                         <!-- Action Buttons -->
                         <div class="action-buttons">
-                            <a href="{{ route('appeals.status', $appeal->id) }}" class="back-btn">
+                            <a href="{{ route('appeals.senarai_permohonan.index') }}" class="back-btn">
                                 <i class="fas fa-arrow-left"></i> Kembali
                             </a>
                             <button type="submit" class="submit-btn">
@@ -330,7 +332,7 @@ function addDocument() {
             </div>
         </td>
         <td>
-            <button type="button" class="delete-btn" onclick="removeDocument(this)">
+            <button type="button" class="delete-btn" onclick="removeDocument(this)" title="Padam">
                 <i class="fas fa-trash"></i>
             </button>
         </td>
