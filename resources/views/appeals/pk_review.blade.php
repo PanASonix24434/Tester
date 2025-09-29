@@ -381,7 +381,7 @@
                                                         </tbody>
                                                 </table>
                                                 </div>
-                        </div>
+                        
                                             </div>
 
                                             <!-- Jadual Pemeriksaan Card -->
