@@ -432,6 +432,8 @@
                                             </div>
                                             @endif
 
+                                        </div>
+
                                         <!-- Tindakan Tab -->
                                         <div class="tab-pane fade" id="tindakan" role="tabpanel" aria-labelledby="tindakan-tab">
                                             <h5 class="mb-3 fw-bold" style="color: #1a1a1a;">Tindakan Pegawai</h5>
