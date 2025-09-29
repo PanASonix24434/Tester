@@ -432,7 +432,7 @@
                                             </div>
                                             @endif
 
-                                        </div>
+                    </div>
 
                                         <!-- Tindakan Tab -->
                                         <div class="tab-pane fade" id="tindakan" role="tabpanel" aria-labelledby="tindakan-tab">
