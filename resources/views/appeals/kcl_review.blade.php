@@ -304,7 +304,12 @@
 
                                         <!-- Status Permohonan Tab -->
                                         <div class="tab-pane fade" id="status-permohonan" role="tabpanel" aria-labelledby="status-permohonan-tab">
-                                            <h5 class="mb-3 fw-bold" style="color: #1a1a1a;">Status Permohonan</h5>
+                                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                                <h5 class="mb-0 fw-bold" style="color: #1a1a1a;">Status Permohonan</h5>
+                                                <button type="button" class="btn btn-sm btn-outline-primary" onclick="printStatusPermohonan()">
+                                                    <i class="fas fa-print me-1"></i>Cetak
+                                                </button>
+                                            </div>
                                             
                                             <!-- Hantar Permohonan Card -->
                                             <div class="card mb-3" style="border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); border: 1px solid #dee2e6;">
@@ -442,6 +447,233 @@
                                                                 }
                                                             });
                                                         });
+
+                                                        // Print Status Permohonan Function
+                                                        function printStatusPermohonan() {
+                                                            // Get the status-permohonan tab content
+                                                            const statusContent = document.getElementById('status-permohonan');
+                                                            
+                                                            // Create a new window for printing
+                                                            const printWindow = window.open('', '_blank', 'width=800,height=600');
+                                                            
+                                                            // Get current date and time
+                                                            const now = new Date();
+                                                            const dateTime = now.toLocaleString('ms-MY', {
+                                                                year: 'numeric',
+                                                                month: '2-digit',
+                                                                day: '2-digit',
+                                                                hour: '2-digit',
+                                                                minute: '2-digit'
+                                                            });
+                                                            
+                                                            // Write the content to the new window
+                                                            printWindow.document.write(`
+                                                                <html>
+                                                                    <head>
+                                                                        <title>Status Permohonan - KCL</title>
+                                                                        <style>
+                                                                            body { 
+                                                                                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+                                                                                margin: 20px; 
+                                                                                color: #333;
+                                                                                line-height: 1.6;
+                                                                                position: relative;
+                                                                            }
+                                                                            .watermark {
+                                                                                position: fixed;
+                                                                                top: 0;
+                                                                                left: 0;
+                                                                                width: 100%;
+                                                                                height: 100%;
+                                                                                z-index: 999;
+                                                                                pointer-events: none;
+                                                                                user-select: none;
+                                                                                background: transparent;
+                                                                            }
+                                                                            .watermark::before {
+                                                                                content: "SULIT";
+                                                                                position: absolute;
+                                                                                top: 50%;
+                                                                                left: 50%;
+                                                                                transform: translate(-50%, -50%) rotate(-45deg);
+                                                                                font-size: 80px;
+                                                                                font-weight: bold;
+                                                                                color: rgba(255, 0, 0, 0.08);
+                                                                                text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+                                                                            }
+                                                                            .watermark::after {
+                                                                                content: "SULIT";
+                                                                                position: absolute;
+                                                                                top: 25%;
+                                                                                left: 25%;
+                                                                                transform: rotate(-45deg);
+                                                                                font-size: 80px;
+                                                                                font-weight: bold;
+                                                                                color: rgba(255, 0, 0, 0.06);
+                                                                                text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+                                                                            }
+                                                                            .watermark .sulit-1 {
+                                                                                position: absolute;
+                                                                                top: 20%;
+                                                                                left: 20%;
+                                                                                transform: translate(-50%, -50%) rotate(-45deg);
+                                                                                font-size: 70px;
+                                                                                font-weight: bold;
+                                                                                color: rgba(255, 0, 0, 0.05);
+                                                                                text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+                                                                                pointer-events: none;
+                                                                                user-select: none;
+                                                                            }
+                                                                            .watermark .sulit-2 {
+                                                                                position: absolute;
+                                                                                top: 20%;
+                                                                                left: 80%;
+                                                                                transform: translate(-50%, -50%) rotate(-45deg);
+                                                                                font-size: 70px;
+                                                                                font-weight: bold;
+                                                                                color: rgba(255, 0, 0, 0.05);
+                                                                                text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+                                                                                pointer-events: none;
+                                                                                user-select: none;
+                                                                            }
+                                                                            .watermark .sulit-3 {
+                                                                                position: absolute;
+                                                                                top: 80%;
+                                                                                left: 20%;
+                                                                                transform: translate(-50%, -50%) rotate(-45deg);
+                                                                                font-size: 70px;
+                                                                                font-weight: bold;
+                                                                                color: rgba(255, 0, 0, 0.05);
+                                                                                text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+                                                                                pointer-events: none;
+                                                                                user-select: none;
+                                                                            }
+                                                                            .watermark .sulit-4 {
+                                                                                position: absolute;
+                                                                                top: 80%;
+                                                                                left: 80%;
+                                                                                transform: translate(-50%, -50%) rotate(-45deg);
+                                                                                font-size: 70px;
+                                                                                font-weight: bold;
+                                                                                color: rgba(255, 0, 0, 0.05);
+                                                                                text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+                                                                                pointer-events: none;
+                                                                                user-select: none;
+                                                                            }
+                                                                            .header {
+                                                                                text-align: center;
+                                                                                border-bottom: 2px solid #007bff;
+                                                                                padding-bottom: 15px;
+                                                                                margin-bottom: 20px;
+                                                                                position: relative;
+                                                                                z-index: 1;
+                                                                            }
+                                                                            .header h1 {
+                                                                                color: #007bff;
+                                                                                margin: 0;
+                                                                                font-size: 24px;
+                                                                            }
+                                                                            .header p {
+                                                                                margin: 5px 0 0 0;
+                                                                                color: #666;
+                                                                                font-size: 14px;
+                                                                            }
+                                                                            .card { 
+                                                                                border: 1px solid #dee2e6; 
+                                                                                margin-bottom: 20px; 
+                                                                                border-radius: 8px;
+                                                                                box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+                                                                                position: relative;
+                                                                                z-index: 1;
+                                                                                background-color: #fff;
+                                                                            }
+                                                                            .card-header { 
+                                                                                background-color: #f8f9fa; 
+                                                                                padding: 12px 16px; 
+                                                                                font-weight: bold;
+                                                                                border-bottom: 1px solid #dee2e6;
+                                                                                font-size: 14px;
+                                                                                color: #343a40;
+                                                                            }
+                                                                            .card-body { 
+                                                                                padding: 16px; 
+                                                                                background-color: #fff;
+                                                                            }
+                                                                            table { 
+                                                                                width: 100%; 
+                                                                                border-collapse: collapse;
+                                                                            }
+                                                                            td { 
+                                                                                padding: 8px 0; 
+                                                                                border: none;
+                                                                            }
+                                                                            .status-badge {
+                                                                                font-weight: bold;
+                                                                                padding: 4px 8px;
+                                                                                border-radius: 4px;
+                                                                                background-color: #28a745;
+                                                                                color: white;
+                                                                                font-size: 12px;
+                                                                            }
+                                                                            .footer {
+                                                                                text-align: center;
+                                                                                margin-top: 30px;
+                                                                                padding-top: 20px;
+                                                                                border-top: 1px solid #ddd;
+                                                                                font-size: 12px;
+                                                                                color: #666;
+                                                                                position: relative;
+                                                                                z-index: 1;
+                                                                            }
+                                                                            @media print {
+                                                                                body { margin: 0; }
+                                                                                .card { box-shadow: none; }
+                                                                                .no-print { display: none; }
+                                                                                .watermark {
+                                                                                    background: transparent;
+                                                                                }
+                                                                                .watermark::before {
+                                                                                    color: rgba(255, 0, 0, 0.12);
+                                                                                }
+                                                                                .watermark::after {
+                                                                                    color: rgba(255, 0, 0, 0.10);
+                                                                                }
+                                                                                .watermark .sulit-1,
+                                                                                .watermark .sulit-2,
+                                                                                .watermark .sulit-3,
+                                                                                .watermark .sulit-4 {
+                                                                                    color: rgba(255, 0, 0, 0.08);
+                                                                                }
+                                                                            }
+                                                                        </style>
+                                                                    </head>
+                                                                    <body>
+                                                                        <div class="watermark">
+                                                                            <div class="sulit-1">SULIT</div>
+                                                                            <div class="sulit-2">SULIT</div>
+                                                                            <div class="sulit-3">SULIT</div>
+                                                                            <div class="sulit-4">SULIT</div>
+                                                                        </div>
+                                                                        <div class="header">
+                                                                            <h1>Status Permohonan</h1>
+                                                                            <p>Tarikh Cetak: ${dateTime}</p>
+                                                                        </div>
+                                                                        ${statusContent.innerHTML.replace(/<button[^>]*>.*?<\/button>/gi, '')}
+                                                                        <div class="footer">
+                                                                            <p>Dokumen ini dijana secara automatik pada ${dateTime}</p>
+                                                                        </div>
+                                                                    </body>
+                                                                </html>
+                                                            `);
+                                                            
+                                                            printWindow.document.close();
+                                                            
+                                                            // Wait for content to load then trigger print dialog
+                                                            setTimeout(() => {
+                                                                printWindow.focus();
+                                                                printWindow.print();
+                                                            }, 500);
+                                                        }
                                                     </script>
                                                 </div>
                                             </div>
