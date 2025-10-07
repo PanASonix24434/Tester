@@ -12,21 +12,21 @@
             <tr>
                 <th class="text-center" style="width: 50px;">Bil</th>
                 @if($isOfficer)
-                    <th style="width: 140px;">No. Rujukan</th>
+                    <th style="width: 120px;">No. Rujukan</th>
+                    <th style="width: 100px;">No. Vesel</th>
+                    <th style="width: 80px;">Zon</th>
                     <th>Nama Permohonan</th>
-                    <th style="width: 150px;">Nama Pemohon</th>
-                    <th style="width: 100px;">Negeri</th>
-                    <th style="width: 100px;">Daerah</th>
-                    <th style="width: 140px;">Tarikh Kemaskini</th>
-                    <th style="width: 120px;">Status Permohonan</th>
-                    <th style="width: 100px;">Tempoh Pegangan</th>
+                    <th style="width: 120px;">Tarikh Permohonan</th>
+                    <th style="width: 150px;">Status</th>
                     <th class="text-center" style="width: 80px;">Tindakan</th>
                 @else
                     {{-- Applicant view columns --}}
-                    <th>No. Rujukan</th>
+                    <th style="width: 120px;">No. Rujukan</th>
+                    <th style="width: 100px;">No. Vesel</th>
+                    <th style="width: 80px;">Zon</th>
                     <th>Nama Permohonan</th>
-                    <th>Tarikh Kemaskini</th>
-                    <th>Status Permohonan</th>
+                    <th style="width: 120px;">Tarikh Permohonan</th>
+                    <th style="width: 150px;">Status</th>
                     <th class="text-center" style="width: 80px;">Tindakan</th>
                 @endif
             </tr>
@@ -108,131 +108,96 @@
                 @endphp
                 
                 <tr class="align-middle hover-row">
-                    <td class="text-center text-muted">{{ $i + 1 }}</td>
+                    <td class="text-center text-muted">
+                        @php
+                            // Calculate days since application was received
+                            $daysSinceReceived = $app->created_at->diffInDays(now());
+                            $indicatorClass = '';
+                            
+                            if ($daysSinceReceived >= 10) {
+                                $indicatorClass = 'dc3545'; // red
+                            } elseif ($daysSinceReceived >= 5) {
+                                $indicatorClass = 'ffc107'; // yellow
+                            } else {
+                                $indicatorClass = '6c757d'; // gray
+                            }
+                        @endphp
+                        <div class="d-flex align-items-center justify-content-center gap-2">
+                            <div class="rounded-circle" style="width: 8px; height: 8px; background-color: #{{ $indicatorClass }};"></div>
+                            {{ $i + 1 }}
+                        </div>
+                    </td>
                     
-                    @if($isOfficer)
-                        {{-- Officer View Columns --}}
-                        <td class="fw-medium">{{ $refNumber }}</td>
-                        <td>{{ $namaPermohonan }}</td>
-                        <td>{{ $app->applicant->name ?? $app->applicant->username ?? '-' }}</td>
-                        <td>{{ $app->perakuan->negeri_limbungan_baru ?? auth()->user()->state_id ?? '-' }}</td>
-                        <td>{{ $app->perakuan->daerah_baru ?? auth()->user()->district ?? '-' }}</td>
-                        <td>{{ $app->updated_at ? $app->updated_at->format('d/m/Y H:i') : '-' }}</td>
-                        <td>
-                            <span class="badge bg-{{ $statusDisplay['class'] }} text-white">
-                                {{ $statusDisplay['text'] }}
-                            </span>
-                        </td>
-                        <td class="text-center">
-                            @php
-                                // Calculate days since application was received
-                                $daysSinceReceived = $app->created_at->diffInDays(now());
-                                $indicatorClass = '';
-                                $indicatorText = $daysSinceReceived . ' hari';
-                                
-                                if ($daysSinceReceived >= 10) {
-                                    $indicatorClass = 'bg-danger text-white';
-                                } elseif ($daysSinceReceived >= 5) {
-                                    $indicatorClass = 'bg-warning text-dark';
-                                } else {
-                                    $indicatorClass = 'bg-success text-white';
-                                }
-                            @endphp
-                            <span class="badge {{ $indicatorClass }}">
-                                {{ $indicatorText }}
-                            </span>
-                        </td>
-                        <td class="text-center">
+                    {{-- Unified View Columns --}}
+                    <td class="fw-medium">{{ $refNumber }}</td>
+                    <td>{{ $app->perakuan->no_vesel ?? 'V' . str_pad($app->id, 3, '0', STR_PAD_LEFT) }}</td>
+                    <td>{{ $app->perakuan->zon ?? 'C' }}</td>
+                    <td>{{ $namaPermohonan }}</td>
+                    <td>{{ $app->created_at ? $app->created_at->format('d/m/Y') : '-' }}</td>
+                    <td>
+                        @php
+                            // Enhanced status configuration matching the image
+                            $enhancedStatusConfig = [
+                                'submitted' => ['text' => 'Semakan Dokumen', 'class' => 'success'],
+                                'ppl_review' => ['text' => 'Semakan Dokumen', 'class' => 'success'],
+                                'kcl_review' => ['text' => 'Semakan Dokumen', 'class' => 'success'],
+                                'pk_review' => ['text' => 'Semakan Dokumen', 'class' => 'success'],
+                                'ppl_incomplete' => ['text' => 'Tidak Lengkap - Semakan Dokumen', 'class' => 'danger'],
+                                'kcl_incomplete' => ['text' => 'Tidak Lengkap - Semakan Dokumen', 'class' => 'danger'],
+                                'pk_incomplete' => ['text' => 'Tidak Lengkap - Semakan Dokumen', 'class' => 'danger'],
+                                'approved' => ['text' => 'Diluluskan', 'class' => 'success'],
+                                'rejected' => ['text' => 'Tidak Diluluskan', 'class' => 'danger'],
+                                'draft' => ['text' => 'Draft', 'class' => 'secondary']
+                            ];
+                            
+                            $enhancedStatus = $enhancedStatusConfig[$app->status] ?? 
+                                             ['text' => ucfirst(str_replace('_', ' ', $app->status)), 'class' => 'secondary'];
+                        @endphp
+                        <span class="badge bg-{{ $enhancedStatus['class'] }} text-white" style="border-radius: 4px;">
+                            {{ $enhancedStatus['text'] }}
+                        </span>
+                    </td>
+                    <td class="text-center">
+                        @php
+                            $incompleteStatuses = ['ppl_incomplete', 'kcl_incomplete', 'pk_incomplete'];
+                        @endphp
+                        
+                        @if(in_array($app->status, $incompleteStatuses))
                             <button type="button" 
-                                    class="btn btn-sm" style="background-color: #007BFF; color: #fff; border: 1px solid #007BFF; border-radius: 4px;" 
-                                    title="Lihat Permohonan"
-                                    onclick="handleTindakanClick('{{ $app->id }}')">
-                                <i class="fas fa-search" style="color: #fff;"></i>
+                                    class="btn btn-sm" style="background-color: #dc3545; color: #fff; border: 1px solid #dc3545; border-radius: 4px;" 
+                                    title="Edit/Kemaskini"
+                                    onclick="window.location.href='{{ route('appeals.edit', ['id' => $app->id]) }}'">
+                                <i class="fas fa-edit" style="color: #fff;"></i>
                             </button>
-                        </td>
-                    @else
-                        {{-- Applicant View Columns for KPV-07/KPV-08 --}}
-                        <td class="fw-medium">{{ $refNumber }}</td>
-                        <td>{{ $namaPermohonan }}</td>
-                        <td>{{ $app->updated_at ? $app->updated_at->format('d/m/Y H:i') : '-' }}</td>
-                        <td>
-                            @php
-                                // Applicant-specific status configuration for KPV-07/KPV-08
-                                // Updated to use only green (positive) and red (negative) colors
-                                $applicantStatusConfig = [
-                                    'submitted' => ['text' => 'Dihantar', 'class' => 'success'],
-                                    'ppl_review' => ['text' => 'Menunggu semakan', 'class' => 'success'],
-                                    'kcl_review' => ['text' => 'Menunggu sokongan', 'class' => 'success'],
-                                    'pk_review' => ['text' => 'Menunggu keputusan', 'class' => 'success'],
-                                    'ppl_incomplete' => ['text' => 'Perlu dikemaskini', 'class' => 'danger'],
-                                    'kcl_incomplete' => ['text' => 'Perlu dikemaskini', 'class' => 'danger'],
-                                    'pk_incomplete' => ['text' => 'Perlu dikemaskini', 'class' => 'danger'],
-                                    'approved' => ['text' => 'Diluluskan', 'class' => 'success'],
-                                    'rejected' => ['text' => 'Tidak Diluluskan', 'class' => 'danger'],
-                                    'draft' => ['text' => 'Draft', 'class' => 'success']
-                                ];
-                                
-                                $applicantStatus = $applicantStatusConfig[$app->status] ?? 
-                                                 ['text' => ucfirst(str_replace('_', ' ', $app->status)), 'class' => 'secondary'];
-                            @endphp
-                            <span class="badge bg-{{ $applicantStatus['class'] }} text-white">
-                                {{ $applicantStatus['text'] }}
-                            </span>
-                        </td>
-                        <td class="text-center">
-                                    @php
-                                        $incompleteStatuses = ['ppl_incomplete', 'kcl_incomplete', 'pk_incomplete'];
-                                        // Check if pin number exists for this application
-                                        $pinNumber = null;
-                                        if ($app->perakuan && $app->perakuan->pin_number) {
-                                            $pinNumber = $app->perakuan->pin_number;
-                                        }
-                                    @endphp
-                                    
-                                    @if($pinNumber)
-                                        <div class="mb-2">
-                                            <span class="badge bg-info text-white" title="Nombor Pin">
-                                                PIN: {{ $pinNumber }}
-                                            </span>
-                                        </div>
-                                    @endif
-                                    
-                                    @if(in_array($app->status, $incompleteStatuses))
-                                <a href="{{ route('appeals.edit', ['id' => $app->id]) }}" 
-                                   class="btn btn-sm btn-warning border shadow-sm" title="Edit/Kemaskini">
-                                    <i class="fas fa-edit"></i>
-                                </a>
-                            @elseif($app->status === 'approved')
-                                {{-- Show print button for approved applications --}}
-                                <div class="btn-group" role="group">
-                                    <button type="button" 
-                                            class="btn btn-sm" style="background-color: #007BFF; color: #fff; border: 1px solid #007BFF; border-radius: 4px;" 
-                                            title="Lihat Status"
-                                            onclick="handleTindakanClick('{{ $app->id }}')">
-                                        <i class="fas fa-search" style="color: #fff;"></i>
-                                    </button>
-                                    <a href="{{ route('appeals.print_letter', $app->id) }}" 
-                                       target="_blank"
-                                       class="btn btn-sm" style="background-color: #1A73E8; color: #000; border: 1px solid #ddd; border-radius: 6px;" 
-                                       title="Cetak Surat">
-                                        <i class="fas fa-print" style="color: #000;"></i>
-                                    </a>
-                                      <a href="{{ route('appeals.download_letter_pdf', $app->id) }}" 
-                                        class="btn btn-sm" style="background-color: #17A2B8; color: #000; border: 1px solid #ddd; border-radius: 6px; display: flex; align-items: center; gap: 8px;" 
-                                        title="Muat Turun">
-                                         <i class="fas fa-download" style="color: #000;"></i>
-                                      </a>
-                                </div>
-                            @else
+                        @elseif($app->status === 'approved')
+                            <div class="btn-group" role="group">
                                 <button type="button" 
-                                        class="btn btn-sm" style="background-color: #007BFF; color: #fff; border: 1px solid #007BFF; border-radius: 4px;" 
+                                        class="btn btn-sm" style="background-color: #0052af; color: #fff; border: 1px solid #0052af; border-radius: 4px;" 
                                         title="Lihat Status"
                                         onclick="handleTindakanClick('{{ $app->id }}')">
                                     <i class="fas fa-search" style="color: #fff;"></i>
                                 </button>
-                            @endif
-                        </td>
-                    @endif
+                                <a href="{{ route('appeals.print_letter', $app->id) }}" 
+                                   target="_blank"
+                                   class="btn btn-sm" style="background-color: #5da5eb; color: #000; border: 1px solid #ddd; border-radius: 4px;" 
+                                   title="Cetak Surat">
+                                    <i class="fas fa-print" style="color: #000;"></i>
+                                </a>
+                                <a href="{{ route('appeals.download_letter_pdf', $app->id) }}" 
+                                   class="btn btn-sm" style="background-color: #3cdccd; color: #000; border: 1px solid #ddd; border-radius: 4px;" 
+                                   title="Muat Turun">
+                                    <i class="fas fa-download" style="color: #000;"></i>
+                                </a>
+                            </div>
+                        @else
+                            <button type="button" 
+                                    class="btn btn-sm" style="background-color: #0052af; color: #fff; border: 1px solid #0052af; border-radius: 4px;" 
+                                    title="Lihat Status"
+                                    onclick="handleTindakanClick('{{ $app->id }}')">
+                                <i class="fas fa-search" style="color: #fff;"></i>
+                            </button>
+                        @endif
+                    </td>
                 </tr>
                 
                 {{-- Status Details Row (only for Pelesen) - Will be loaded via AJAX --}}
@@ -263,89 +228,27 @@
 </div>
 
 <script>
-// Handle Tindakan button click with role validation
+// Handle Tindakan button click - redirect to appropriate review page based on role
 function handleTindakanClick(appealId) {
     console.log('Tindakan button clicked for appeal:', appealId);
     
-    // Show loading state
-    const button = event.target.closest('button');
-    const originalContent = button.innerHTML;
-    button.innerHTML = '<i class="fas fa-spinner fa-spin text-primary"></i>';
-    button.disabled = true;
+    // Get user role from PHP
+    const userRole = '{{ $userRole ?? "" }}';
+    console.log('User role:', userRole);
     
-    // Call role validation API
-    fetch(`{{ url('/appeals/validate-tindakan') }}/${appealId}`)
-        .then(response => response.json())
-        .then(data => {
-            console.log('Role validation response:', data);
-            
-            if (data.success) {
-                if (data.action === 'status_content') {
-                    // Show status content for pelesen
-                    loadStatusDetails(appealId);
-                } else if (data.action === 'redirect') {
-                    // Redirect to appropriate review page
-                    window.location.href = data.redirect_url;
-                }
-            } else {
-                // Handle error
-                alert('Error: ' + data.message);
-                console.error('Role validation error:', data);
-            }
-        })
-        .catch(error => {
-            console.error('Error validating role:', error);
-            alert('Ralat memvalidasi peranan pengguna.');
-        })
-        .finally(() => {
-            // Restore button state
-            button.innerHTML = originalContent;
-            button.disabled = false;
-        });
-}
-
-function loadStatusDetails(appealId) {
-    const statusRow = document.getElementById('status-details-' + appealId);
-    const statusContent = document.getElementById('status-content-' + appealId);
-    
-    if (statusRow) {
-        if (statusRow.style.display === 'none') {
-            // Hide all other status details first
-            document.querySelectorAll('.status-details-row').forEach(row => {
-                row.style.display = 'none';
-            });
-            
-            // Show the selected one
-            statusRow.style.display = 'table-row';
-            
-            // Load status content via AJAX if not already loaded
-            if (!statusContent.dataset.loaded) {
-                fetch(`{{ url('/appeals') }}/${appealId}/status-content`)
-                    .then(response => {
-                        if (!response.ok) {
-                            throw new Error(`HTTP error! status: ${response.status}`);
-                        }
-                        return response.text();
-                    })
-                    .then(html => {
-                        statusContent.innerHTML = html;
-                        statusContent.dataset.loaded = 'true';
-                    })
-                    .catch(error => {
-                        console.error('Error loading status:', error);
-                        statusContent.innerHTML = `
-                            <div class="text-center p-4 text-danger">
-                                <i class="fas fa-exclamation-triangle fa-2x mb-2"></i>
-                                <div>Ralat memuatkan status permohonan.</div>
-                                <small class="text-muted">Error: ${error.message}</small>
-                            </div>
-                        `;
-                    });
-            }
-        } else {
-            // Hide the current one
-            statusRow.style.display = 'none';
-        }
+    // Check for officer roles and redirect to their review pages
+    if (userRole.includes('pegawai perikanan')) {
+        // PPL Officer - redirect to PPL review page
+        window.location.href = `{{ url('/appeals/ppl-review') }}/${appealId}`;
+    } else if (userRole.includes('ketua cawangan')) {
+        // KCL Officer - redirect to KCL review page
+        window.location.href = `{{ url('/appeals/kcl-review') }}/${appealId}`;
+    } else if (userRole.includes('pengarah kanan')) {
+        // PK Officer - redirect to PK review page
+        window.location.href = `{{ url('/appeals/pk-review') }}/${appealId}`;
+    } else {
+        // Applicant - redirect to status page
+        window.location.href = `{{ url('/appeals') }}/${appealId}/status`;
     }
 }
 </script>

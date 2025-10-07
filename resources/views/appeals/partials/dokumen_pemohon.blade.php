@@ -9,7 +9,7 @@
                 <td style="width:1%">:</td>
                 <td>
                     <input type="file" name="surat_jual_beli_terpakai" class="form-control file-draft" data-draft-key="surat_jual_beli_terpakai" accept=".pdf,.png,.jpg,.jpeg">
-                    <small class="form-text text-muted">Hanya PDF, PNG, JPG, atau JPEG. Saiz maksimum 5MB.</small>
+                    <small class="form-text text-muted">Hanya PDF, PNG, JPG, atau JPEG. Saiz maksimum 10MB.</small>
                     <small class="text-success" id="draft-surat_jual_beli_terpakai"></small>
                 </td>
             </tr>
@@ -18,7 +18,7 @@
                 <td>:</td>
                 <td>
                     <input type="file" name="lesen_skl_terpakai" class="form-control file-draft" data-draft-key="lesen_skl_terpakai" accept=".pdf,.png,.jpg,.jpeg">
-                    <small class="form-text text-muted">Hanya PDF, PNG, JPG, atau JPEG. Saiz maksimum 5MB.</small>
+                    <small class="form-text text-muted">Hanya PDF, PNG, JPG, atau JPEG. Saiz maksimum 10MB.</small>
                     <small class="text-success" id="draft-lesen_skl_terpakai"></small>
                 </td>
             </tr>
@@ -30,14 +30,14 @@
                         <div class="dokumen-sokongan-item mb-2">
                             <div class="input-group">
                                 <input type="file" class="form-control dokumen-sokongan-input" name="dokumen_sokongan_terpakai[]" accept=".pdf,.png,.jpg,.jpeg">
-                                <button type="button" class="btn btn-outline-danger btn-remove-dokumen" onclick="removeDokumenSokongan(this)">
-                                    <i class="fas fa-times"></i>
+                                <button type="button" class="btn btn-remove-dokumen" style="background-color: #dc3545; color: #fff; border: 1px solid #dc3545;" onclick="removeDokumenSokongan(this)">
+                                    <i class="fas fa-trash-alt" style="color: #fff;"></i>
                                 </button>
                             </div>
-                            <small class="form-text text-muted">Hanya PDF, PNG, JPG, atau JPEG. Saiz maksimum 5MB.</small>
+                            <small class="form-text text-muted">Hanya PDF, PNG, JPG, atau JPEG. Saiz maksimum 10MB.</small>
                         </div>
                     </div>
-                    <button type="button" class="btn btn-sm" style="background-color: #17A2B8; color: #000; border: 1px solid #17A2B8; border-radius: 8px;" onclick="addDokumenSokongan('dokumen-sokongan-container-terpakai', 'dokumen_sokongan_terpakai[]')">
+                    <button type="button" class="btn btn-sm" style="background-color: #3cdccd; color: #000; border: 1px solid #3cdccd; border-radius: 8px;" onclick="addDokumenSokongan('dokumen-sokongan-container-terpakai', 'dokumen_sokongan_terpakai[]')">
                         <i class="fas fa-plus me-2" style="color: #000;"></i>Tambah Dokumen Sokongan
                     </button>
                 </td>
@@ -53,7 +53,7 @@
                 <td style="width:1%">:</td>
                 <td>
                     <input type="file" name="kertas_kerja_bina_baru" class="form-control file-draft" data-draft-key="kertas_kerja_bina_baru" accept=".pdf,.png,.jpg,.jpeg" required>
-                    <small class="form-text text-muted">Hanya PDF, PNG, JPG, atau JPEG. Saiz maksimum 5MB.</small>
+                    <small class="form-text text-muted">Hanya PDF, PNG, JPG, atau JPEG. Saiz maksimum 10MB.</small>
                     <small class="text-success" id="draft-kertas_kerja_bina_baru"></small>
                 </td>
             </tr>
@@ -62,7 +62,7 @@
                 <td>:</td>
                 <td>
                     <input type="file" name="lesen_skl_bina_baru" class="form-control file-draft" data-draft-key="lesen_skl_bina_baru" accept=".pdf,.png,.jpg,.jpeg">
-                    <small class="form-text text-muted">Hanya PDF, PNG, JPG, atau JPEG. Saiz maksimum 5MB.</small>
+                    <small class="form-text text-muted">Hanya PDF, PNG, JPG, atau JPEG. Saiz maksimum 10MB.</small>
                     <small class="text-success" id="draft-lesen_skl_bina_baru"></small>
                 </td>
             </tr>
@@ -74,14 +74,14 @@
                         <div class="dokumen-sokongan-item mb-2">
                             <div class="input-group">
                                 <input type="file" class="form-control dokumen-sokongan-input" name="dokumen_sokongan_bina_baru[]" accept=".pdf,.png,.jpg,.jpeg">
-                                <button type="button" class="btn btn-outline-danger btn-remove-dokumen" onclick="removeDokumenSokongan(this)">
-                                    <i class="fas fa-times"></i>
+                                <button type="button" class="btn btn-remove-dokumen" style="background-color: #dc3545; color: #fff; border: 1px solid #dc3545;" onclick="removeDokumenSokongan(this)">
+                                    <i class="fas fa-trash-alt" style="color: #fff;"></i>
                                 </button>
                             </div>
-                            <small class="form-text text-muted">Hanya PDF, PNG, JPG, atau JPEG. Saiz maksimum 5MB.</small>
+                            <small class="form-text text-muted">Hanya PDF, PNG, JPG, atau JPEG. Saiz maksimum 10MB.</small>
                         </div>
                     </div>
-                    <button type="button" class="btn btn-sm" style="background-color: #17A2B8; color: #000; border: 1px solid #17A2B8; border-radius: 8px;" onclick="addDokumenSokongan('dokumen-sokongan-container-bina-baru', 'dokumen_sokongan_bina_baru[]')">
+                    <button type="button" class="btn btn-sm" style="background-color: #3cdccd; color: #000; border: 1px solid #3cdccd; border-radius: 8px;" onclick="addDokumenSokongan('dokumen-sokongan-container-bina-baru', 'dokumen_sokongan_bina_baru[]')">
                         <i class="fas fa-plus me-2" style="color: #000;"></i>Tambah Dokumen Sokongan
                     </button>
                 </td>
@@ -97,7 +97,7 @@
                 <td style="width:1%">:</td>
                 <td>
                     <input type="file" name="kertas_kerja_bina_baru_luar_negara" class="form-control file-draft" data-draft-key="kertas_kerja_bina_baru_luar_negara" accept=".pdf,.png,.jpg,.jpeg" required>
-                    <small class="form-text text-muted">Hanya PDF, PNG, JPG, atau JPEG. Saiz maksimum 5MB.</small>
+                    <small class="form-text text-muted">Hanya PDF, PNG, JPG, atau JPEG. Saiz maksimum 10MB.</small>
                     <small class="text-success" id="draft-kertas_kerja_bina_baru_luar_negara"></small>
                 </td>
             </tr>
@@ -109,14 +109,14 @@
                         <div class="dokumen-sokongan-item mb-2">
                             <div class="input-group">
                                 <input type="file" class="form-control dokumen-sokongan-input" name="dokumen_sokongan_bina_baru_luar_negara[]" accept=".pdf,.png,.jpg,.jpeg">
-                                <button type="button" class="btn btn-outline-danger btn-remove-dokumen" onclick="removeDokumenSokongan(this)">
-                                    <i class="fas fa-times"></i>
+                                <button type="button" class="btn btn-remove-dokumen" style="background-color: #dc3545; color: #fff; border: 1px solid #dc3545;" onclick="removeDokumenSokongan(this)">
+                                    <i class="fas fa-trash-alt" style="color: #fff;"></i>
                                 </button>
                             </div>
-                            <small class="form-text text-muted">Hanya PDF, PNG, JPG, atau JPEG. Saiz maksimum 5MB.</small>
+                            <small class="form-text text-muted">Hanya PDF, PNG, JPG, atau JPEG. Saiz maksimum 10MB.</small>
                         </div>
                     </div>
-                    <button type="button" class="btn btn-sm" style="background-color: #17A2B8; color: #000; border: 1px solid #17A2B8; border-radius: 8px;" onclick="addDokumenSokongan('dokumen-sokongan-container-bina-baru-luar-negara', 'dokumen_sokongan_bina_baru_luar_negara[]')">
+                    <button type="button" class="btn btn-sm" style="background-color: #3cdccd; color: #000; border: 1px solid #3cdccd; border-radius: 8px;" onclick="addDokumenSokongan('dokumen-sokongan-container-bina-baru-luar-negara', 'dokumen_sokongan_bina_baru_luar_negara[]')">
                         <i class="fas fa-plus me-2" style="color: #000;"></i>Tambah Dokumen Sokongan
                     </button>
                 </td>
@@ -135,14 +135,14 @@
                         <div class="dokumen-sokongan-item mb-2">
                             <div class="input-group">
                                 <input type="file" class="form-control dokumen-sokongan-input" name="dokumen_sokongan_pangkalan[]" accept=".pdf,.png,.jpg,.jpeg" required>
-                                <button type="button" class="btn btn-outline-danger btn-remove-dokumen" onclick="removeDokumenSokongan(this)">
-                                    <i class="fas fa-times"></i>
+                                <button type="button" class="btn btn-remove-dokumen" style="background-color: #dc3545; color: #fff; border: 1px solid #dc3545;" onclick="removeDokumenSokongan(this)">
+                                    <i class="fas fa-trash-alt" style="color: #fff;"></i>
                                 </button>
                             </div>
-                            <small class="form-text text-muted">Hanya PDF, PNG, JPG, atau JPEG. Saiz maksimum 5MB.</small>
+                            <small class="form-text text-muted">Hanya PDF, PNG, JPG, atau JPEG. Saiz maksimum 10MB.</small>
                         </div>
                     </div>
-                    <button type="button" class="btn btn-sm" style="background-color: #17A2B8; color: #000; border: 1px solid #17A2B8; border-radius: 8px;" onclick="addDokumenSokongan('dokumen-sokongan-container-pangkalan', 'dokumen_sokongan_pangkalan[]')">
+                    <button type="button" class="btn btn-sm" style="background-color: #3cdccd; color: #000; border: 1px solid #3cdccd; border-radius: 8px;" onclick="addDokumenSokongan('dokumen-sokongan-container-pangkalan', 'dokumen_sokongan_pangkalan[]')">
                         <i class="fas fa-plus me-2" style="color: #000;"></i>Tambah Dokumen Sokongan
                     </button>
                 </td>
@@ -161,14 +161,14 @@
                         <div class="dokumen-sokongan-item mb-2">
                             <div class="input-group">
                                 <input type="file" class="form-control dokumen-sokongan-input" name="dokumen_sokongan_bahan_binaan[]" accept=".pdf,.png,.jpg,.jpeg" required>
-                                <button type="button" class="btn btn-outline-danger btn-remove-dokumen" onclick="removeDokumenSokongan(this)">
-                                    <i class="fas fa-times"></i>
+                                <button type="button" class="btn btn-remove-dokumen" style="background-color: #dc3545; color: #fff; border: 1px solid #dc3545;" onclick="removeDokumenSokongan(this)">
+                                    <i class="fas fa-trash-alt" style="color: #fff;"></i>
                                 </button>
                             </div>
-                            <small class="form-text text-muted">Hanya PDF, PNG, JPG, atau JPEG. Saiz maksimum 5MB.</small>
+                            <small class="form-text text-muted">Hanya PDF, PNG, JPG, atau JPEG. Saiz maksimum 10MB.</small>
                         </div>
                     </div>
-                    <button type="button" class="btn btn-sm" style="background-color: #17A2B8; color: #000; border: 1px solid #17A2B8; border-radius: 8px;" onclick="addDokumenSokongan('dokumen-sokongan-container-bahan-binaan', 'dokumen_sokongan_bahan_binaan[]')">
+                    <button type="button" class="btn btn-sm" style="background-color: #3cdccd; color: #000; border: 1px solid #3cdccd; border-radius: 8px;" onclick="addDokumenSokongan('dokumen-sokongan-container-bahan-binaan', 'dokumen_sokongan_bahan_binaan[]')">
                         <i class="fas fa-plus me-2" style="color: #000;"></i>Tambah Dokumen Sokongan
                     </button>
                 </td>
@@ -187,14 +187,14 @@
                         <div class="dokumen-sokongan-item mb-2">
                             <div class="input-group">
                                 <input type="file" class="form-control dokumen-sokongan-input" name="dokumen_sokongan_tukar_peralatan[]" accept=".pdf,.png,.jpg,.jpeg" required>
-                                <button type="button" class="btn btn-outline-danger btn-remove-dokumen" onclick="removeDokumenSokongan(this)">
-                                    <i class="fas fa-times"></i>
+                                <button type="button" class="btn btn-remove-dokumen" style="background-color: #dc3545; color: #fff; border: 1px solid #dc3545;" onclick="removeDokumenSokongan(this)">
+                                    <i class="fas fa-trash-alt" style="color: #fff;"></i>
                                 </button>
                             </div>
-                            <small class="form-text text-muted">Hanya PDF, PNG, JPG, atau JPEG. Saiz maksimum 5MB.</small>
+                            <small class="form-text text-muted">Hanya PDF, PNG, JPG, atau JPEG. Saiz maksimum 10MB.</small>
                         </div>
                     </div>
-                    <button type="button" class="btn btn-sm" style="background-color: #17A2B8; color: #000; border: 1px solid #17A2B8; border-radius: 8px;" onclick="addDokumenSokongan('dokumen-sokongan-container-tukar-peralatan', 'dokumen_sokongan_tukar_peralatan[]')">
+                    <button type="button" class="btn btn-sm" style="background-color: #3cdccd; color: #000; border: 1px solid #3cdccd; border-radius: 8px;" onclick="addDokumenSokongan('dokumen-sokongan-container-tukar-peralatan', 'dokumen_sokongan_tukar_peralatan[]')">
                         <i class="fas fa-plus me-2" style="color: #000;"></i>Tambah Dokumen Sokongan
                     </button>
                 </td>
@@ -215,7 +215,7 @@
                     <td style="width:1%">:</td>
                     <td>
                         <input type="file" name="borang_e_kaedah_13" class="form-control file-draft" data-draft-key="borang_e_kaedah_13" accept=".pdf,.png,.jpg,.jpeg">
-                        <small class="form-text text-muted">Hanya PDF, PNG, JPG, atau JPEG. Saiz maksimum 5MB.</small>
+                        <small class="form-text text-muted">Hanya PDF, PNG, JPG, atau JPEG. Saiz maksimum 10MB.</small>
                         <small class="text-success" id="draft-borang_e_kaedah_13"></small>
                     </td>
                 </tr>
@@ -224,7 +224,7 @@
                     <td>:</td>
                     <td>
                         <input type="file" name="profil_perniagaan_enterprise" class="form-control file-draft" data-draft-key="profil_perniagaan_enterprise" accept=".pdf,.png,.jpg,.jpeg">
-                        <small class="form-text text-muted">Hanya PDF, PNG, JPG, atau JPEG. Saiz maksimum 5MB.</small>
+                        <small class="form-text text-muted">Hanya PDF, PNG, JPG, atau JPEG. Saiz maksimum 10MB.</small>
                         <small class="text-success" id="draft-profil_perniagaan_enterprise"></small>
                     </td>
                 </tr>
@@ -240,7 +240,7 @@
                     <td style="width:1%">:</td>
                     <td>
                         <input type="file" name="form_9" class="form-control file-draft" data-draft-key="form_9" accept=".pdf,.png,.jpg,.jpeg">
-                        <small class="form-text text-muted">Hanya PDF, PNG, JPG, atau JPEG. Saiz maksimum 5MB.</small>
+                        <small class="form-text text-muted">Hanya PDF, PNG, JPG, atau JPEG. Saiz maksimum 10MB.</small>
                         <small class="text-success" id="draft-form_9"></small>
                     </td>
                 </tr>
@@ -249,7 +249,7 @@
                     <td>:</td>
                     <td>
                         <input type="file" name="form_24" class="form-control file-draft" data-draft-key="form_24" accept=".pdf,.png,.jpg,.jpeg">
-                        <small class="form-text text-muted">Hanya PDF, PNG, JPG, atau JPEG. Saiz maksimum 5MB.</small>
+                        <small class="form-text text-muted">Hanya PDF, PNG, JPG, atau JPEG. Saiz maksimum 10MB.</small>
                         <small class="text-success" id="draft-form_24"></small>
                     </td>
                 </tr>
@@ -258,7 +258,7 @@
                     <td>:</td>
                     <td>
                         <input type="file" name="form_44" class="form-control file-draft" data-draft-key="form_44" accept=".pdf,.png,.jpg,.jpeg">
-                        <small class="form-text text-muted">Hanya PDF, PNG, JPG, atau JPEG. Saiz maksimum 5MB.</small>
+                        <small class="form-text text-muted">Hanya PDF, PNG, JPG, atau JPEG. Saiz maksimum 10MB.</small>
                         <small class="text-success" id="draft-form_44"></small>
                     </td>
                 </tr>
@@ -267,7 +267,7 @@
                     <td>:</td>
                     <td>
                         <input type="file" name="form_49" class="form-control file-draft" data-draft-key="form_49" accept=".pdf,.png,.jpg,.jpeg">
-                        <small class="form-text text-muted">Hanya PDF, PNG, JPG, atau JPEG. Saiz maksimum 5MB.</small>
+                        <small class="form-text text-muted">Hanya PDF, PNG, JPG, atau JPEG. Saiz maksimum 10MB.</small>
                         <small class="text-success" id="draft-form_49"></small>
                     </td>
                 </tr>
@@ -283,7 +283,7 @@
                     <td style="width:1%">:</td>
                     <td>
                         <input type="file" name="pendaftaran_persatuan" class="form-control file-draft" data-draft-key="pendaftaran_persatuan" accept=".pdf,.png,.jpg,.jpeg">
-                        <small class="form-text text-muted">Hanya PDF, PNG, JPG, atau JPEG. Saiz maksimum 5MB.</small>
+                        <small class="form-text text-muted">Hanya PDF, PNG, JPG, atau JPEG. Saiz maksimum 10MB.</small>
                         <small class="text-success" id="draft-pendaftaran_persatuan"></small>
                     </td>
                 </tr>
@@ -292,7 +292,7 @@
                     <td>:</td>
                     <td>
                         <input type="file" name="profil_persatuan" class="form-control file-draft" data-draft-key="profil_persatuan" accept=".pdf,.png,.jpg,.jpeg">
-                        <small class="form-text text-muted">Hanya PDF, PNG, JPG, atau JPEG. Saiz maksimum 5MB.</small>
+                        <small class="form-text text-muted">Hanya PDF, PNG, JPG, atau JPEG. Saiz maksimum 10MB.</small>
                         <small class="text-success" id="draft-profil_persatuan"></small>
                     </td>
                 </tr>
@@ -308,7 +308,7 @@
                     <td style="width:1%">:</td>
                     <td>
                         <input type="file" name="pendaftaran_koperasi" class="form-control file-draft" data-draft-key="pendaftaran_koperasi" accept=".pdf,.png,.jpg,.jpeg">
-                        <small class="form-text text-muted">Hanya PDF, PNG, JPG, atau JPEG. Saiz maksimum 5MB.</small>
+                        <small class="form-text text-muted">Hanya PDF, PNG, JPG, atau JPEG. Saiz maksimum 10MB.</small>
                         <small class="text-success" id="draft-pendaftaran_koperasi"></small>
                     </td>
                 </tr>
@@ -317,7 +317,7 @@
                     <td>:</td>
                     <td>
                         <input type="file" name="profil_koperasi" class="form-control file-draft" data-draft-key="profil_koperasi" accept=".pdf,.png,.jpg,.jpeg">
-                        <small class="form-text text-muted">Hanya PDF, PNG, JPG, atau JPEG. Saiz maksimum 5MB.</small>
+                        <small class="form-text text-muted">Hanya PDF, PNG, JPG, atau JPEG. Saiz maksimum 10MB.</small>
                         <small class="text-success" id="draft-profil_koperasi"></small>
                     </td>
                 </tr>

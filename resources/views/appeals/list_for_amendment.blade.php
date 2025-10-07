@@ -6,13 +6,13 @@
         <div class="container-fluid py-4 px-3 px-md-4">
             <div class="card border-0 shadow-sm rounded-3">
                 {{-- Header --}}
-                <div class="card-header text-white fw-semibold rounded-top" style="background-color: #007bff;">
+                <div class="card-header text-white fw-semibold rounded-top" style="background-color: #3C2387;">
                     <div class="d-flex justify-content-between align-items-center">
                         <div>
                             @if($applicationType === 'kvp07')
-                                Senarai Permohonan Rayuan Pindaan Syarat (KPV-07)
+                                Senarai Permohonan Rayuan Pindaan Syarat
                             @elseif($applicationType === 'kvp08')
-                                Senarai Permohonan Lanjut Tempoh Sah Kelulusan Perolehan (KPV-08)
+                                Senarai Permohonan Lanjut Tempoh Sah Kelulusan Perolehan
                             @else
                                 Lain-lain Permohonan
                             @endif
@@ -23,6 +23,25 @@
                                 Kembali ke Laman Utama
                             </a>
                         @endif
+                    </div>
+                </div>
+
+                {{-- Legend Section --}}
+                <div class="card-body py-3" style="background-color: #f8f9fa;">
+                    <div class="d-flex align-items-center gap-4">
+                        <span class="fw-bold text-dark">Petunjuk:</span>
+                        <div class="d-flex align-items-center gap-2">
+                            <div class="rounded-circle" style="width: 12px; height: 12px; background-color: #6c757d;"></div>
+                            <span class="text-muted small">0-4 hari</span>
+                        </div>
+                        <div class="d-flex align-items-center gap-2">
+                            <div class="rounded-circle" style="width: 12px; height: 12px; background-color: #ffc107;"></div>
+                            <span class="text-muted small">≥ 5 hari</span>
+                        </div>
+                        <div class="d-flex align-items-center gap-2">
+                            <div class="rounded-circle" style="width: 12px; height: 12px; background-color: #dc3545;"></div>
+                            <span class="text-muted small">≥ 10 hari</span>
+                        </div>
                     </div>
                 </div>
 

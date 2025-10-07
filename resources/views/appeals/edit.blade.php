@@ -197,8 +197,8 @@
         <div class="container">
             <div class="appeal-form-container">
                 <!-- Header -->
-                <div class="appeal-header">
-                    Tindakan: Rayuan Permohonan
+                <div class="appeal-header" style="background-color:#3C2387 ; color:#fff;">
+                    Rayuan Permohonan
                 </div>
                 
                 <!-- Content -->
@@ -240,15 +240,15 @@
                         <input type="hidden" id="jenis_bahan_binaan_vesel" name="jenis_bahan_binaan_vesel" value="{{ $perakuan->jenis_bahan_binaan_vesel }}">
                         
                         <!-- Documents Section -->
-                        <div class="section-title">Dokumen</div>
+                        <div class="section-title ">Dokumen</div>
                         
                         <table class="documents-table">
                             <thead>
                                 <tr>
-                                    <th style="width: 60px;">Bil</th>
-                                    <th>Nama / Deskripsi Fail</th>
-                                    <th style="width: 200px;">Muat Naik Fail</th>
-                                    <th style="width: 80px;">Tindakan</th>
+                                    <th style="width: 60px; background-color: #3C2387; color:#fff;">Bil</th>
+                                    <th style="background-color: #3C2387; color:#fff;">Nama / Deskripsi Fail</th>
+                                    <th style="width: 200px; background-color: #3C2387; color:#fff;">Muat Naik Fail</th>
+                                    <th style="width: 80px; background-color: #3C2387; color:#fff;">Tindakan</th>
                                 </tr>
                             </thead>
                             <tbody id="documents-tbody">
@@ -278,17 +278,17 @@
                             </tbody>
                         </table>
                         
-                        <button type="button" class="add-document-btn" onclick="addDocument()">
+                        <button type="button" class="add-document-btn" style="background-color:#3cdccd; color:#000; border:1px solid #3cdccd; border-radius:8px;" onclick="addDocument()">
                             <i class="fas fa-plus" style="color: #000;"></i> Tambah Dokumen
                         </button>
                         
                         <div class="file-restrictions">
-                            Format dibenarkan: PDF, JPG, JPEG, PNG. Saiz maksimum: 5MB setiap fail.
+                            Format dibenarkan: PDF, JPG, JPEG, PNG. Saiz maksimum: 10MB setiap fail.
                         </div>
                         
                         <!-- Action Buttons -->
                         <div class="action-buttons">
-                            <a href="{{ route('appeals.senarai_permohonan.index') }}" class="back-btn">
+                            <a href="{{ route('appeals.senarai_permohonan.index') }}" class="back-btn" style="background-color: #1E293B ; color:#fff; border:1px solid #1E293B ; border-radius:8px;">
                                 <i class="fas fa-arrow-left"></i> Kembali
                             </a>
                             <button type="submit" class="submit-btn">

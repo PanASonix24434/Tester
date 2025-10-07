@@ -5,7 +5,7 @@
     <div class="app-content-area">
         <div class="container py-4">
             <div class="card shadow-sm">
-                <div class="card-header" style="background-color: #0084ff; color: #fff; font-weight: 500;">
+                <div class="card-header" style="background-color: #3C2387; color: #fff; font-weight: 500;">
                     Permohonan
                 </div>
                 <div class="card-body">

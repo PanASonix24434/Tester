@@ -6,7 +6,7 @@
         <div class="container-fluid py-4 px-3 px-md-4">
             <div class="card border-0 shadow-sm rounded-3">
                 {{-- Modern Header --}}
-                <div class="card-header text-white fw-semibold rounded-top" style="background-color: #007bff;">
+                <div class="card-header text-white fw-semibold rounded-top" style="background-color: #3C2387;">
                     Lain-lain Permohonan
                 </div>
 

@@ -200,4 +200,54 @@ function goToPerakuanTab() {
     
     console.log('Successfully navigated to perakuan tab');
 }
+
+// Function to save dokumen
+function saveDokumen() {
+    const dokumenInput = document.getElementById('dokumen_sokongan');
+    
+    if (!dokumenInput.files || dokumenInput.files.length === 0) {
+        alert('Sila pilih dokumen sokongan terlebih dahulu.');
+        return;
+    }
+    
+    // Create FormData to send the file
+    const formData = new FormData();
+    formData.append('dokumen_sokongan', dokumenInput.files[0]);
+    formData.append('_token', document.querySelector('meta[name="csrf-token"]').getAttribute('content'));
+    
+    // Show loading state
+    const saveButton = event.target;
+    const originalText = saveButton.innerHTML;
+    saveButton.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Menyimpan...';
+    saveButton.disabled = true;
+    
+    // Send AJAX request to save dokumen
+    fetch('{{ url("application/lanjutan-tempoh/dokumen/store") }}', {
+        method: 'POST',
+        body: formData,
+        headers: {
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.message === 'Dokumen disimpan') {
+            alert('Dokumen berjaya disimpan!');
+            // Optionally show success message or update UI
+        } else if (data.success) {
+            alert('Dokumen berjaya disimpan!');
+        } else {
+            alert('Ralat menyimpan dokumen: ' + (data.message || 'Sila cuba lagi.'));
+        }
+    })
+    .catch(error => {
+        console.error('Error saving dokumen:', error);
+        alert('Ralat menyimpan dokumen. Sila cuba lagi.');
+    })
+    .finally(() => {
+        // Restore button state
+        saveButton.innerHTML = originalText;
+        saveButton.disabled = false;
+    });
+}
 </script>

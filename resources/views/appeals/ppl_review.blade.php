@@ -6,22 +6,77 @@
             <div class="row">
                 <div class="col-12">
                     <div class="card">
-                        <div class="card-header text-white fw-semibold rounded-top" style="background-color: #007bff;">
-                            Semakan Permohonan - PPL
+                        <div class="card-header text-white fw-semibold rounded-top" style="background-color: #3C2387;">
+                            Semakan Permohonan
                         </div>
                         <div class="card-body">
+                            <!-- Basic Info Section -->
+                            <div class="card border-0 shadow-sm rounded-3 mb-4">
+                                <div class="card-body">
+                                    <h5 class="mb-3 fw-bold" style="color: #1a1a1a;">Basic Info</h5>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="mb-3">
+                                                <label class="form-label fw-bold" style="color: #1a1a1a;">No. Pendaftaran Vesel</label>
+                                                <div class="form-control-plaintext bg-light rounded p-2" style="font-size: 1.2em; font-weight: bold; color: #495057;">
+                                                    {{ $perakuan->no_pendaftaran_vesel ?? 'VES1234' }}
+                                                </div>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label class="form-label fw-bold" style="color: #1a1a1a;">Nama Pemilik</label>
+                                                <div class="form-control-plaintext bg-light rounded p-2" style="color: #495057;">
+                                                    {{ $applicant->name ?? 'ABC MARINE SDN BHD' }}
+                                                </div>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label class="form-label fw-bold" style="color: #1a1a1a;">No. Rujukan</label>
+                                                <div class="form-control-plaintext bg-light rounded p-2" style="color: #495057;">
+                                                    {{ $appeal->id ?? 'RUJ-2025-001' }}
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="mb-3">
+                                                <label class="form-label fw-bold" style="color: #1a1a1a;">Di Mohon Oleh</label>
+                                                <div class="form-control-plaintext bg-light rounded p-2" style="color: #495057;">
+                                                    PENGURUS VESEL: {{ $applicant->name ?? 'ALI BIN ABU' }}
+                                                </div>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label class="form-label fw-bold" style="color: #1a1a1a;">No. Kad Pengenalan / No. Pendaftaran Syarikat</label>
+                                                <div class="form-control-plaintext bg-light rounded p-2" style="color: #495057;">
+                                                    {{ $applicant->username ?? '900101-14-5678' }}
+                                                </div>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label class="form-label fw-bold" style="color: #1a1a1a;">Tarikh Permohonan</label>
+                                                <div class="form-control-plaintext bg-light rounded p-2" style="color: #495057;">
+                                                    {{ $appeal->created_at ? $appeal->created_at->format('Y-m-d H:i:s') : '2025-08-21 10:30:00' }}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
                             <!-- Tab Navigation for Officer View -->
                             <div class="card border-0 shadow-sm rounded-3 mb-4">
                                 <div class="card-body">
                                     <ul class="nav nav-tabs mb-4" id="officerTab" role="tablist">
                                         <li class="nav-item" role="presentation">
-                                            <button class="nav-link active" id="profil-pemohon-tab" data-bs-toggle="tab" data-bs-target="#profil-pemohon" type="button" role="tab" aria-controls="profil-pemohon" aria-selected="true">Profil Pemohon</button>
+                                            <button class="nav-link active" id="pemohon-tab" data-bs-toggle="tab" data-bs-target="#pemohon" type="button" role="tab" aria-controls="pemohon" aria-selected="true">Pemohon</button>
                                         </li>
                                         <li class="nav-item" role="presentation">
-                                            <button class="nav-link" id="maklumat-permohonan-tab" data-bs-toggle="tab" data-bs-target="#maklumat-permohonan" type="button" role="tab" aria-controls="maklumat-permohonan" aria-selected="false">Maklumat Permohonan</button>
+                                            <button class="nav-link" id="vesel-tab" data-bs-toggle="tab" data-bs-target="#vesel" type="button" role="tab" aria-controls="vesel" aria-selected="false">Vesel</button>
+                                        </li>
+                                        <li class="nav-item" role="presentation">
+                                            <button class="nav-link" id="permohonan-tab" data-bs-toggle="tab" data-bs-target="#permohonan" type="button" role="tab" aria-controls="permohonan" aria-selected="false">Permohonan</button>
                                         </li>
                                         <li class="nav-item" role="presentation">
                                             <button class="nav-link" id="dokumen-tab" data-bs-toggle="tab" data-bs-target="#dokumen" type="button" role="tab" aria-controls="dokumen" aria-selected="false">Dokumen</button>
+                                        </li>
+                                        <li class="nav-item" role="presentation">
+                                            <button class="nav-link" id="rekod-kesalahan-tab" data-bs-toggle="tab" data-bs-target="#rekod-kesalahan" type="button" role="tab" aria-controls="rekod-kesalahan" aria-selected="false">Rekod Kesalahan</button>
                                         </li>
                                         <li class="nav-item" role="presentation">
                                             <button class="nav-link" id="status-permohonan-tab" data-bs-toggle="tab" data-bs-target="#status-permohonan" type="button" role="tab" aria-controls="status-permohonan" aria-selected="false">Status Permohonan</button>
@@ -32,8 +87,8 @@
                                     </ul>
 
                                     <div class="tab-content" id="officerTabContent">
-                                        <!-- Profil Pemohon Tab -->
-                                        <div class="tab-pane fade show active" id="profil-pemohon" role="tabpanel" aria-labelledby="profil-pemohon-tab">
+                                        <!-- Pemohon Tab -->
+                                        <div class="tab-pane fade show active" id="pemohon" role="tabpanel" aria-labelledby="pemohon-tab">
                                             <h5 class="mb-3 fw-bold" style="color: #1a1a1a;">Butiran Am Pemohon</h5>
                                             <div class="table-responsive">
                                         <table class="table table-bordered bg-white" style="color: #1a1a1a;">
@@ -113,8 +168,41 @@
                             </div>
                                         </div>
 
-                                        <!-- Maklumat Permohonan Tab -->
-                                        <div class="tab-pane fade" id="maklumat-permohonan" role="tabpanel" aria-labelledby="maklumat-permohonan-tab">
+                                        <!-- Vesel Tab -->
+                                        <div class="tab-pane fade" id="vesel" role="tabpanel" aria-labelledby="vesel-tab">
+                                            <h5 class="mb-3 fw-bold" style="color: #1a1a1a;">Maklumat Vesel</h5>
+                                            <div class="table-responsive">
+                                                <table class="table table-bordered bg-white" style="color: #1a1a1a;">
+                                                    <tr>
+                                                        <th width="250">No. Pendaftaran Vesel:</th>
+                                                        <td>{{ $perakuan->no_pendaftaran_vesel ?? '-' }}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th>Negeri Asal Vesel:</th>
+                                                        <td>{{ $perakuan->negeri_asal_vesel ?? '-' }}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th>Pelabuhan Pangkalan:</th>
+                                                        <td>{{ $perakuan->pelabuhan_pangkalan ?? '-' }}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th>Pangkalan Asal:</th>
+                                                        <td>{{ $perakuan->pangkalan_asal ?? '-' }}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th>Pangkalan Baru:</th>
+                                                        <td>{{ $perakuan->pangkalan_baru ?? '-' }}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th>Jenis Bahan Binaan Vesel:</th>
+                                                        <td>{{ $perakuan->jenis_bahan_binaan_vesel ?? '-' }}</td>
+                                                    </tr>
+                                                </table>
+                                            </div>
+                                        </div>
+
+                                        <!-- Permohonan Tab -->
+                                        <div class="tab-pane fade" id="permohonan" role="tabpanel" aria-labelledby="permohonan-tab">
                                             <h5 class="mb-3 fw-bold" style="color: #1a1a1a;">Maklumat Permohonan</h5>
                                             <div class="table-responsive">
                                         <table class="table table-bordered bg-white" style="color: #1a1a1a;">
@@ -150,29 +238,53 @@
                             </div>
                                         </div>
 
-                                        <!-- Dokumen Tab -->
-                                        <div class="tab-pane fade" id="dokumen" role="tabpanel" aria-labelledby="dokumen-tab">
-                                            <h5 class="mb-3 fw-bold" style="color: #1a1a1a;">Dokumen Permohonan</h5>
-                                            
-                                            <!-- Sub-tabs for different document categories -->
-                                            <ul class="nav nav-pills mb-3" id="documentSubTab" role="tablist">
-                                        <li class="nav-item" role="presentation">
-                                                    <button class="nav-link active" id="dokumen-wajib-sub-tab" data-bs-toggle="tab" data-bs-target="#dokumen-wajib-sub" type="button" role="tab">Dokumen Wajib</button>
-                                        </li>
-                                        <li class="nav-item" role="presentation">
-                                                    <button class="nav-link" id="dokumen-sokongan-sub-tab" data-bs-toggle="tab" data-bs-target="#dokumen-sokongan-sub" type="button" role="tab">Dokumen Sokongan</button>
-                                        </li>
-                                        <li class="nav-item" role="presentation">
-                                                    <button class="nav-link" id="dokumen-tambahan-sub-tab" data-bs-toggle="tab" data-bs-target="#dokumen-tambahan-sub" type="button" role="tab">Dokumen Tambahan</button>
-                                        </li>
-                                    </ul>
-
-                                            <div class="tab-content" id="documentSubTabContent">
-                                                <!-- Dokumen Wajib Sub-tab -->
-                                                <div class="tab-pane fade show active" id="dokumen-wajib-sub" role="tabpanel">
+                                        <!-- Rekod Kesalahan Tab -->
+                                        <div class="tab-pane fade" id="rekod-kesalahan" role="tabpanel" aria-labelledby="rekod-kesalahan-tab">
+                                            <h5 class="mb-3 fw-bold" style="color: #1a1a1a;">Rekod Kesalahan</h5>
                                             <div class="table-responsive">
                                                 <table class="table table-bordered bg-white" style="color: #1a1a1a;">
-                                                    @php
+                                                    <thead class="table-primary">
+                                                        <tr>
+                                                            <th>Bil</th>
+                                                            <th>Tarikh Kesalahan</th>
+                                                            <th>Jenis Kesalahan</th>
+                                                            <th>Hukuman</th>
+                                                            <th>Status</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <tr>
+                                                            <td colspan="5" class="text-center text-muted">Tiada rekod kesalahan dijumpai</td>
+                                                        </tr>
+                                                    </tbody>
+                                </table>
+                            </div>
+                                        </div>
+
+                                        <!-- Dokumen Tab -->
+                                        <div class="tab-pane fade" id="dokumen" role="tabpanel" aria-labelledby="dokumen-tab">
+                                            <h5 class="mb-3 fw-bold" style="color: #1a1a1a;">Maklumat Dokumen</h5>
+                                            <p class="text-muted mb-4">Senarai dokumen sokongan yang dimuat naik oleh pemohon</p>
+                                            
+                                            <div class="card border-0 shadow-sm rounded-3">
+                                                <div class="card-body p-0">
+                                            <div class="table-responsive">
+                                                        <table class="table table-hover mb-0" style="color: #1a1a1a;">
+                                                            <thead style="background-color: #E6E6FA;">
+                                                                <tr>
+                                                                    <th class="border-0 py-3 px-4 fw-bold" style="width: 60px;">Bil.</th>
+                                                                    <th class="border-0 py-3 px-4 fw-bold">Jenis Dokumen</th>
+                                                                    <th class="border-0 py-3 px-4 fw-bold">Nama Fail</th>
+                                                                    <th class="border-0 py-3 px-4 fw-bold">Tarikh Muat Naik</th>
+                                                                    <th class="border-0 py-3 px-4 fw-bold text-center" style="width: 120px;">Tindakan</th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                                @php
+                                                                    $documents = [];
+                                                                    $counter = 1;
+                                                                    
+                                                                    // Add wajib documents
                                                         $wajibDocs = [
                                                             'kertas_kerja_bina_baru_path' => 'Kertas Kerja (Bina Baru Dalam Negara)',
                                                             'kertas_kerja_bina_baru_luar_negara_path' => 'Kertas Kerja (Bina Baru Luar Negara)',
@@ -190,90 +302,83 @@
                                                             'pendaftaran_koperasi_path' => 'Pendaftaran Koperasi',
                                                             'profil_koperasi_path' => 'Profil Koperasi'
                                                         ];
-                                                    @endphp
-                                                    @foreach($wajibDocs as $doc => $label)
-                                                        @if(!empty($perakuan->$doc))
-                                                        <tr>
-                                                            <th width="200">{{ $label }}:</th>
-                                                            <td>
-                                                                        <a href="{{ route('appeals.viewDocument', ['appealId' => $appeal->id, 'field' => $doc]) }}" target="_blank" class="btn btn-sm btn-primary">
-                                                                    <i class="fas fa-search me-1" style="color: #fff;"></i>Lihat Dokumen
-                                                                </a>
-                                                            </td>
-                                                        </tr>
-                                                        @endif
-                                                    @endforeach
-                                                </table>
-                                            </div>
-                                        </div>
-
-                                                <!-- Dokumen Sokongan Sub-tab -->
-                                                <div class="tab-pane fade" id="dokumen-sokongan-sub" role="tabpanel">
-                                            <div class="table-responsive">
-                                                <table class="table table-bordered bg-white" style="color: #1a1a1a;">
-                                                    @php
-                                                        $hasDocuments = false;
-                                                    @endphp
-                                                    
-                                                    @if($dokumenSokongan && $dokumenSokongan->count() > 0)
-                                                        @foreach($dokumenSokongan as $dokumen)
-                                                            @php $hasDocuments = true; @endphp
-                                                            <tr>
-                                                                <th width="200">{{ ucfirst(str_replace('_', ' ', $dokumen->file_type)) }}:</th>
-                                                                <td>
-                                                                    <a href="{{ route('appeals.viewDokumenSokongan', $dokumen->id) }}" target="_blank" class="btn btn-sm btn-primary">
-                                                                        <i class="fas fa-search me-1" style="color: #fff;"></i>Lihat Dokumen
-                                                                    </a>
-                                                                    <small class="text-muted ms-2">{{ $dokumen->file_name }}</small>
-                                                                </td>
-                                                            </tr>
-                                                        @endforeach
-                                                    @endif
-                                                    
-                                                    @if($perakuan && $perakuan->type === 'kvp08' && !empty($perakuan->dokumen_sokongan_path))
-                                                        @php $hasDocuments = true; @endphp
-                                                        <tr>
-                                                            <th width="200">Dokumen Sokongan (KPV-08):</th>
-                                                            <td>
-                                                                <a href="{{ route('appeals.viewDocument', ['appealId' => $appeal->id, 'field' => 'dokumen_sokongan_path']) }}" target="_blank" class="btn btn-sm btn-primary">
-                                                                    <i class="fas fa-search me-1" style="color: #fff;"></i>Lihat Dokumen
-                                                                </a>
-                                                                <small class="text-muted ms-2">{{ basename($perakuan->dokumen_sokongan_path) }}</small>
-                                                            </td>
-                                                        </tr>
-                                                    @endif
-                                                    
-                                                    @if(!$hasDocuments)
-                                                        <tr>
-                                                            <td colspan="2" class="text-center text-muted">Tiada dokumen sokongan dijumpai</td>
-                                                        </tr>
-                                                    @endif
-                                                </table>
-                                            </div>
-                                        </div>
-
-                                                <!-- Dokumen Tambahan Sub-tab -->
-                                                <div class="tab-pane fade" id="dokumen-tambahan-sub" role="tabpanel">
-                                            <div class="table-responsive">
-                                        <table class="table table-bordered bg-white" style="color: #1a1a1a;">
-                                    @php
+                                                                    
+                                                                    foreach($wajibDocs as $doc => $label) {
+                                                                        if(!empty($perakuan->$doc)) {
+                                                                            $documents[] = [
+                                                                                'type' => $label,
+                                                                                'filename' => basename($perakuan->$doc),
+                                                                                'date' => $perakuan->updated_at ? $perakuan->updated_at->format('d M Y') : 'N/A',
+                                                                                'route' => route('appeals.viewDocument', ['appealId' => $appeal->id, 'field' => $doc])
+                                                                            ];
+                                                                        }
+                                                                    }
+                                                                    
+                                                                    // Add dokumen sokongan
+                                                                    if($dokumenSokongan && $dokumenSokongan->count() > 0) {
+                                                                        foreach($dokumenSokongan as $dokumen) {
+                                                                            $documents[] = [
+                                                                                'type' => ucfirst(str_replace('_', ' ', $dokumen->file_type)),
+                                                                                'filename' => $dokumen->file_name,
+                                                                                'date' => $dokumen->created_at ? $dokumen->created_at->format('d M Y') : 'N/A',
+                                                                                'route' => route('appeals.viewDokumenSokongan', $dokumen->id)
+                                                                            ];
+                                                                        }
+                                                                    }
+                                                                    
+                                                                    // Add KVP-08 dokumen sokongan
+                                                                    if($perakuan && $perakuan->type === 'kvp08' && !empty($perakuan->dokumen_sokongan_path)) {
+                                                                        $documents[] = [
+                                                                            'type' => 'Dokumen Sokongan (KPV-08)',
+                                                                            'filename' => basename($perakuan->dokumen_sokongan_path),
+                                                                            'date' => $perakuan->updated_at ? $perakuan->updated_at->format('d M Y') : 'N/A',
+                                                                            'route' => route('appeals.viewDocument', ['appealId' => $appeal->id, 'field' => 'dokumen_sokongan_path'])
+                                                                        ];
+                                                                    }
+                                                                    
+                                                                    // Add tambahan documents
                                                         $tambahanDocs = [
                                             'akuan_sumpah_bina_baru_path' => 'Akuan Sumpah (Bina Baru)',
                                                             'surat_kelulusan_kpp_path' => 'Surat Kelulusan KPP'
                                         ];
+                                                                    
+                                                                    foreach($tambahanDocs as $doc => $label) {
+                                                                        if(!empty($perakuan->$doc)) {
+                                                                            $documents[] = [
+                                                                                'type' => $label,
+                                                                                'filename' => basename($perakuan->$doc),
+                                                                                'date' => $perakuan->updated_at ? $perakuan->updated_at->format('d M Y') : 'N/A',
+                                                                                'route' => route('appeals.viewDocument', ['appealId' => $appeal->id, 'field' => $doc])
+                                                                            ];
+                                                                        }
+                                                                    }
                                     @endphp
-                                                    @foreach($tambahanDocs as $doc => $label)
-                                        @if(!empty($perakuan->$doc))
-                                        <tr>
-                                            <th width="200">{{ $label }}:</th>
-                                            <td>
-                                                                        <a href="{{ route('appeals.viewDocument', ['appealId' => $appeal->id, 'field' => $doc]) }}" target="_blank" class="btn btn-sm btn-primary">
-                                                                    <i class="fas fa-search me-1" style="color: #fff;"></i>Lihat Dokumen
-                                                                </a>
+                                                                
+                                                                @if(count($documents) > 0)
+                                                                    @foreach($documents as $index => $document)
+                                                                        <tr>
+                                                                            <td class="py-3 px-4">{{ $index + 1 }}</td>
+                                                                            <td class="py-3 px-4">{{ $document['type'] }}</td>
+                                                                            <td class="py-3 px-4">{{ $document['filename'] }}</td>
+                                                                            <td class="py-3 px-4">{{ $document['date'] }}</td>
+                                                                            <td class="py-3 px-4 text-center">
+                                                                                <div class="btn-group" role="group">
+                                                                                    <a href="{{ $document['route'] }}" target="_blank" class="btn btn-sm" style="background-color: #1E40AF; color: #fff; border: 1px solid #1E40AF; border-radius: 6px; padding: 6px 12px;" title="Lihat Dokumen">
+                                                                                        <i class="fas fa-search" style="color: #fff;"></i>
+                                                                                    </a>
+                                                                                    <a href="{{ $document['route'] }}" download class="btn btn-sm" style="background-color: #059669; color: #fff; border: 1px solid #059669; border-radius: 6px; padding: 6px 12px;" title="Muat Turun Dokumen">
+                                                                                        <i class="fas fa-download" style="color: #fff;"></i>
+                                                                                    </a>
+                                                                                </div>
                                             </td>
+                                                                        </tr>
+                                                                    @endforeach
+                                                                @else
+                                                                    <tr>
+                                                                        <td colspan="5" class="text-center text-muted py-4">Tiada dokumen dijumpai</td>
                                         </tr>
                                         @endif
-                                    @endforeach
+                                                            </tbody>
                                 </table>
                                         </div>
                                     </div>
@@ -291,18 +396,18 @@
                                             
                                             <!-- Hantar Permohonan Card -->
                                             <div class="card mb-3" style="border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); border: 1px solid #dee2e6;">
-                                                <div class="card-header d-flex justify-content-between align-items-center" style="background-color: #f8f9fa; border-bottom: 1px solid #dee2e6; padding: 12px 16px;">
+                                                <div class="card-header d-flex justify-content-between align-items-center" style="background-color: #f8f9fa; border-bottom: 1px solid #dee2e6; padding: 12px 16px; cursor: pointer;" onclick="toggleStatusCard(this)">
                                                     <div class="d-flex align-items-center">
                                                         <h6 class="mb-0 fw-bold" style="color: #343a40;">HANTAR PERMOHONAN</h6>
                                                     </div>
                                                     <div class="d-flex align-items-center ms-auto">
                                                         <span class="me-3" style="color: #343a40;">{{ $appeal->created_at ? $appeal->created_at->format('d M Y, h:i A') : '-' }}</span>
-                                                        <button class="btn btn-sm" style="border: 1px solid #ced4da; background-color: #fff; padding: 4px 8px;">
+                                                        <button class="btn btn-sm toggle-arrow" style="border: 1px solid #ced4da; background-color: #fff; padding: 4px 8px;" type="button">
                                                             <i class="fas fa-chevron-down" style="color: #343a40;"></i>
                                                         </button>
                                                     </div>
                                                 </div>
-                                                <div class="card-body" style="background-color: #fff; padding: 16px;">
+                                                <div class="card-body status-card-body" style="background-color: #fff; padding: 16px;">
                                                     <table class="table table-borderless" style="margin-bottom: 0;">
                                                         <tbody>
                                                             <tr>
@@ -330,38 +435,46 @@
 
                                         <!-- Tindakan Tab -->
                                         <div class="tab-pane fade" id="tindakan" role="tabpanel" aria-labelledby="tindakan-tab">
-                                            <h5 class="mb-3 fw-bold" style="color: #1a1a1a;">Tindakan Pegawai</h5>
+                                            <h5 class="mb-3 fw-bold" style="color: #1a1a1a;">Tindakan: Semakan Ulasan</h5>
+                                            <p class="text-muted mb-4">Bahagian ini membolehkan anda memilih dan mengemaskini status semakan dokumen permohonan yang telah diterima.</p>
                                             
-                            <!-- Review Form -->
-                            <div class="card border-0 shadow-sm rounded-3 mt-4">
+                                            <div class="card border-0 shadow-sm rounded-3">
                                 <div class="card-body bg-white">
-                                    <h6 class="fw-bold mb-0" style="color: #1976d2;">Semakan Permohonan</h6>
-                                    <div style="border-bottom: 3px solid #1976d2; margin-bottom: 24px; margin-top: 2px;"></div>
                                     <form method="POST" action="{{ route('appeals.ppl_submit', $appeal->id) }}" id="pplReviewForm">
                                         @csrf
-                                        <div class="mb-3 fw-bold">Maklumat dan Dokumen Permohonan <span class="text-danger">*</span> :</div>
-                                        <div class="mb-3">
-                                            <div class="form-check form-check-inline">
-                                                <input class="form-check-input" type="radio" name="status" id="lengkap" value="Lengkap">
-                                                <label class="form-check-label" for="lengkap">Lengkap</label>
+                                                        
+                                                        <!-- Semakan Section -->
+                                                        <div class="mb-4">
+                                                            <label class="form-label fw-bold" style="color: #1a1a1a;">Semakan <span class="text-danger">*</span></label>
+                                                            <p class="text-muted small mb-3">Sila pilih semakan untuk permohonan ini</p>
+                                                            <div class="d-flex gap-4">
+                                                                <div class="form-check">
+                                                                    <input class="form-check-input" type="radio" name="status" id="lengkap" value="Lengkap" {{ old('status', $appeal->ppl_status) == 'Lengkap' ? 'checked' : '' }}>
+                                                                    <label class="form-check-label fw-medium" for="lengkap" style="color: #1a1a1a;">Lengkap</label>
+                                                                </div>
+                                                                <div class="form-check">
+                                                                    <input class="form-check-input" type="radio" name="status" id="tidak_lengkap" value="Tidak Lengkap" {{ old('status', $appeal->ppl_status) == 'Tidak Lengkap' ? 'checked' : '' }}>
+                                                                    <label class="form-check-label fw-medium" for="tidak_lengkap" style="color: #1a1a1a;">Tidak Lengkap</label>
                                             </div>
-                                            <div class="form-check form-check-inline">
-                                                <input class="form-check-input" type="radio" name="status" id="tidak_lengkap" value="Tidak Lengkap">
-                                                <label class="form-check-label" for="tidak_lengkap">Tidak Lengkap</label>
                                             </div>
                                         </div>
-                                        <div class="mb-3 fw-bold">Ulasan <span class="text-danger">*</span></div>
-                                        <div class="mb-3">
-                                            <textarea class="form-control" name="comments" id="ulasanField" rows="3" placeholder="Masukkan ulasan anda...">{{ old('comments', $appeal->ppl_comments) }}</textarea>
+                                                        
+                                                        <!-- Ulasan Section -->
+                                                        <div class="mb-4">
+                                                            <label class="form-label fw-bold" style="color: #1a1a1a;">Ulasan <span class="text-danger">*</span></label>
+                                                            <p class="text-muted small mb-3">Sila nyatakan ulasan berkaitan dengan semakan ini</p>
+                                                            <textarea class="form-control" name="comments" id="ulasanField" rows="4" placeholder="Masukkan ulasan..." style="border: 1px solid #d1d5db; border-radius: 8px; padding: 12px;">{{ old('comments', $appeal->ppl_comments) }}</textarea>
                                         </div>
-                                        <div class="text-center mt-4 bg-white p-2" style="border-radius: 0 0 0.5rem 0.5rem;">
-                                            <button type="button" class="btn btn-sm" style="background-color: #282c34; color: #fff; border: 1px solid #282c34; border-radius: 8px;">
+                                                        
+                                                        <!-- Action Buttons -->
+                                                        <div class="d-flex justify-content-center gap-3 mt-4">
+                                                            <button type="button" class="btn btn-sm" style="background-color: #1E293B; color: #fff; border: 1px solid #1E293B; border-radius: 8px; padding: 8px 20px;">
                                                 <i class="fas fa-arrow-left me-2" style="color: #fff;"></i>Kembali
                                             </button>
-                                            <button type="button" class="btn btn-sm" style="background-color: #007BFF; color: #fff; border: 1px solid #007BFF; border-radius: 8px;">
+                                                            <button type="button" class="btn btn-sm" style="background-color: #007BFF; color: #fff; border: 1px solid #007BFF; border-radius: 8px; padding: 8px 20px;">
                                                 <i class="fas fa-save me-2" style="color: #fff;"></i>Simpan
                                             </button>
-                                            <button type="submit" class="btn btn-sm" style="background-color: #28a745; color: #fff; border: 1px solid #28a745; border-radius: 8px;" id="hantarBtn">
+                                                            <button type="submit" class="btn btn-sm" style="background-color: #198754; color: #fff; border: 1px solid #198754; border-radius: 8px; padding: 8px 20px;" id="hantarBtn">
                                                 <i class="fas fa-paper-plane me-2" style="color: #fff;"></i>Hantar
                                             </button>
                                         </div>
@@ -377,6 +490,22 @@
                                                 }
                                             });
                                         });
+
+                                                        // Toggle Status Card Function
+                                                        function toggleStatusCard(header) {
+                                                            const cardBody = header.nextElementSibling;
+                                                            const arrow = header.querySelector('.toggle-arrow i');
+                                                            
+                                                            if (cardBody.style.display === 'none') {
+                                                                cardBody.style.display = 'block';
+                                                                arrow.classList.remove('fa-chevron-right');
+                                                                arrow.classList.add('fa-chevron-down');
+                                                            } else {
+                                                                cardBody.style.display = 'none';
+                                                                arrow.classList.remove('fa-chevron-down');
+                                                                arrow.classList.add('fa-chevron-right');
+                                                            }
+                                                        }
 
                                         // Print Status Permohonan Function
                                         function printStatusPermohonan() {

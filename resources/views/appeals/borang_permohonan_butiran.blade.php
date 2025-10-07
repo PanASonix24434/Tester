@@ -28,7 +28,7 @@
     <div class="app-content-area">
         <div class="container">
             <div class="card border-0 shadow-lg rounded-4 mt-5">
-                <div class="card-header text-white fw-semibold rounded-top" style="background-color: #007bff;">
+                <div class="card-header text-white fw-semibold rounded-top" style="background-color: #3C2387;">
                     Permohonan
                 </div>
                 <div class="card-body">
@@ -789,11 +789,11 @@ function addDokumenSokongan(containerId, fieldName) {
     newItem.innerHTML = `
         <div class="input-group">
             <input type="file" class="form-control dokumen-sokongan-input" name="${fieldName}" accept=".pdf,.png,.jpg,.jpeg">
-            <button type="button" class="btn btn-outline-danger btn-remove-dokumen" onclick="removeDokumenSokongan(this)" title="Padam">
-                <i class="fas fa-times"></i>
+            <button type="button" class="btn btn-remove-dokumen" style="background-color: #dc3545; color: #fff; border: 1px solid #dc3545;" onclick="removeDokumenSokongan(this)" title="Padam">
+                <i class="fas fa-trash-alt" style="color: #fff;"></i>
             </button>
         </div>
-        <small class="form-text text-muted">Hanya PDF, PNG, JPG, atau JPEG. Saiz maksimum 5MB.</small>
+        <small class="form-text text-muted">Hanya PDF, PNG, JPG, atau JPEG. Saiz maksimum 10MB.</small>
     `;
     container.appendChild(newItem);
 }

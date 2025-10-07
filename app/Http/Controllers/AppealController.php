@@ -122,9 +122,9 @@ class AppealController extends Controller
                                         $fieldName => 'File mesti dalam format PDF, PNG, JPG, atau JPEG.'
                                     ])->withInput();
                                 }
-                                if ($singleFile->getSize() > 5120 * 1024) { // 5MB
+                                if ($singleFile->getSize() > 10240 * 1024) { // 10MB
                                     return redirect()->back()->withErrors([
-                                        $fieldName => 'Saiz file mesti kurang daripada 5MB.'
+                                        $fieldName => 'Saiz file mesti kurang daripada 10MB.'
                                     ])->withInput();
                                 }
                             }
@@ -137,9 +137,9 @@ class AppealController extends Controller
                                     $fieldName => 'File mesti dalam format PDF, PNG, JPG, atau JPEG.'
                                 ])->withInput();
                             }
-                            if ($file->getSize() > 5120 * 1024) { // 5MB
+                            if ($file->getSize() > 10240 * 1024) { // 10MB
                                 return redirect()->back()->withErrors([
-                                    $fieldName => 'Saiz file mesti kurang daripada 5MB.'
+                                    $fieldName => 'Saiz file mesti kurang daripada 10MB.'
                                 ])->withInput();
                             }
                         }
@@ -162,9 +162,9 @@ class AppealController extends Controller
                                     $arrayFieldName => 'File mesti dalam format PDF, PNG, JPG, atau JPEG.'
                                 ])->withInput();
                             }
-                            if ($file->getSize() > 5120 * 1024) { // 5MB
+                            if ($file->getSize() > 10240 * 1024) { // 10MB
                                 return redirect()->back()->withErrors([
-                                    $arrayFieldName => 'Saiz file mesti kurang daripada 5MB.'
+                                    $arrayFieldName => 'Saiz file mesti kurang daripada 10MB.'
                                 ])->withInput();
                             }
                         }
@@ -355,7 +355,7 @@ class AppealController extends Controller
                 $successMessage .= ' (Jumlah keseluruhan: ' . $totalFilesCount . ' dokumen)';
             }
             
-            return redirect()->route('senarai_permohonan.index')->with('success', $successMessage);
+            return redirect()->route('dashboard')->with('success', $successMessage);
             
         } catch (\Exception $e) {
             \Log::error('Error updating appeal: ' . $e->getMessage());
@@ -502,8 +502,9 @@ class AppealController extends Controller
         // Fetch dokumen sokongan from the new table
         $dokumenSokongan = \App\Models\DokumenSokongan::where('appeals_id', $appeal->id)->get();
         
-        $canEdit = true;
-        return view('appeals.pk_review', compact('appeal', 'perakuan', 'applicant', 'dokumenSokongan', 'canEdit'));
+        $canEdit = true; // For backward compatibility
+        $canSubmit = empty($appeal->pk_submitted_at); // PK can only save/submit if not yet submitted
+        return view('appeals.pk_review', compact('appeal', 'perakuan', 'applicant', 'dokumenSokongan', 'canEdit', 'canSubmit'));
     }
     
     public function redirectToRoleReview($id)
@@ -557,19 +558,34 @@ class AppealController extends Controller
                 return redirect()->back()->with('error', 'Perakuan tidak ditemui.');
             }
 
-            $pkStatus = $request->input('status');
+            $action = $request->input('action', 'submit');
+            $pkStatus = $request->input('decision');
+            $semakanStatus = $request->input('semakan_status');
             
-            // Server-side validation
-            if ($pkStatus === 'Diluluskan') {
-                if (!$request->hasFile('surat_kelulusan_kpp')) {
-                    return redirect()->back()->with('error', 'Surat Kelulusan KPP wajib dimuat naik jika permohonan diluluskan.');
+            // Check if PK has already submitted (only for submit action, not save)
+            if ($action === 'submit' && !empty($appeal->pk_submitted_at)) {
+                if ($request->ajax()) {
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'Permohonan ini telah dihantar sebelum ini. Anda hanya boleh menghantar sekali sahaja.'
+                    ], 403);
                 }
-                if (empty($request->input('no_rujukan_surat'))) {
-                    return redirect()->back()->with('error', 'No. Rujukan Surat Kelulusan KPP wajib diisi jika permohonan diluluskan.');
-                }
-            } elseif ($pkStatus === 'Tidak Diluluskan') {
-                if (empty($request->input('comments'))) {
-                    return redirect()->back()->with('error', 'Ulasan wajib diisi jika permohonan tidak diluluskan.');
+                return redirect()->back()->with('error', 'Permohonan ini telah dihantar sebelum ini. Anda hanya boleh menghantar sekali sahaja.');
+            }
+            
+            // Server-side validation only for submit action
+            if ($action === 'submit') {
+                if ($pkStatus === 'Diluluskan') {
+                    if (!$request->hasFile('surat_kelulusan_kpp')) {
+                        return redirect()->back()->with('error', 'Surat Kelulusan KPP wajib dimuat naik jika permohonan diluluskan.');
+                    }
+                    if (empty($request->input('no_rujukan_surat'))) {
+                        return redirect()->back()->with('error', 'No. Rujukan Surat Kelulusan KPP wajib diisi jika permohonan diluluskan.');
+                    }
+                } elseif ($pkStatus === 'Tidak Diluluskan') {
+                    if (empty($request->input('comments'))) {
+                        return redirect()->back()->with('error', 'Ulasan wajib diisi jika permohonan tidak diluluskan.');
+                    }
                 }
             }
             
@@ -583,13 +599,20 @@ class AppealController extends Controller
                 $finalStatus = 'pk_incomplete';
             }
             
-            // Update appeal status
+            // Update appeal data
             $updateData = [
-                'status' => $finalStatus,
                 'pk_status' => $pkStatus,
+                'pk_semakan_status' => $semakanStatus,
+                'pk_decision' => $pkStatus, // Save decision separately for auto-fill
                 'kpp_ref_no' => $request->input('no_rujukan_surat'),
                 'pk_reviewer_id' => auth()->id() // Set reviewer ID
             ];
+            
+            // Only update final status and timestamp if action is submit
+            if ($action === 'submit') {
+                $updateData['status'] = $finalStatus;
+                $updateData['pk_submitted_at'] = now(); // Record submission timestamp
+            }
             
             // Only update comments if provided and not empty
             if ($request->filled('comments')) {
@@ -617,13 +640,36 @@ class AppealController extends Controller
                 $appeal->update(['surat_kelulusan_kpp' => $path]);
             }
 
-            // Update perakuan status
-            $perakuan->update(['status' => $finalStatus]);
+            // Update perakuan status only if action is submit
+            if ($action === 'submit') {
+                $perakuan->update(['status' => $finalStatus]);
+            }
 
             event(new AppealUpdated($appeal));
-            return redirect()->route('appeals.amendment')->with('success', 'Keputusan PK berjaya disimpan!');
+            
+            $successMessage = $action === 'save' ? 'Data berjaya disimpan!' : 'Keputusan PK berjaya dihantar!';
+            
+            // Return JSON response for AJAX (save action)
+            if ($request->ajax() || $action === 'save') {
+                return response()->json([
+                    'success' => true,
+                    'message' => $successMessage
+                ]);
+            }
+            
+            // Regular redirect for submit action
+            return redirect()->route('appeals.amendment')->with('success', $successMessage);
         } catch (\Exception $e) {
             \Log::error('Error in pkSubmit: ' . $e->getMessage());
+            
+            // Return JSON error for AJAX requests
+            if ($request->ajax() || $request->input('action') === 'save') {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Ralat menyimpan keputusan PK: ' . $e->getMessage()
+                ], 500);
+            }
+            
             return redirect()->back()->with('error', 'Ralat menyimpan keputusan PK: ' . $e->getMessage());
         }
     }
@@ -979,14 +1025,14 @@ class AppealController extends Controller
 
         // Strict file validation for dokumen_sokongan uploads
         $validationRules = [
-            'dokumen_sokongan_terpakai' => 'nullable|file|mimes:pdf,png,jpg,jpeg|max:5120',
-            'dokumen_sokongan_bina_baru' => 'nullable|file|mimes:pdf,png,jpg,jpeg|max:5120',
-            'dokumen_sokongan_pangkalan' => 'nullable|file|mimes:pdf,png,jpg,jpeg|max:5120',
-            'dokumen_sokongan_bahan_binaan' => 'nullable|file|mimes:pdf,png,jpg,jpeg|max:5120',
+            'dokumen_sokongan_terpakai' => 'nullable|file|mimes:pdf,png,jpg,jpeg|max:10240',
+            'dokumen_sokongan_bina_baru' => 'nullable|file|mimes:pdf,png,jpg,jpeg|max:10240',
+            'dokumen_sokongan_pangkalan' => 'nullable|file|mimes:pdf,png,jpg,jpeg|max:10240',
+            'dokumen_sokongan_bahan_binaan' => 'nullable|file|mimes:pdf,png,jpg,jpeg|max:10240',
         ];
         $messages = [
             'mimes' => 'Dokumen Sokongan mesti dalam format PDF, PNG, JPG, atau JPEG.',
-            'max' => 'Dokumen Sokongan tidak boleh melebihi 5MB.',
+            'max' => 'Dokumen Sokongan tidak boleh melebihi 10MB.',
         ];
         $this->validate($request, $validationRules, $messages);
 

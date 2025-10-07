@@ -6,7 +6,7 @@
     <label for="dokumen_sokongan" class="col-sm-3 col-form-label fw-bold">Dokumen Sokongan</label>
     <div class="col-sm-9">
         <input type="file" class="form-control" id="dokumen_sokongan" name="dokumen_sokongan" accept=".pdf,.png,.jpg,.jpeg" required>
-        <small class="form-text text-muted">Hanya PDF, PNG, JPG, atau JPEG. Saiz maksimum 5MB.</small>
+        <small class="form-text text-muted">Hanya PDF, PNG, JPG, atau JPEG. Saiz maksimum 10MB.</small>
     </div>
 </div>
 
@@ -15,7 +15,10 @@
     <button type="button" class="btn btn-sm" style="background-color: #282c34; color: #fff; border: 1px solid #282c34; border-radius: 8px;" onclick="goToButiranTab()">
         <i class="fas fa-arrow-left me-2" style="color: #fff;"></i> Kembali
     </button>
-    <button type="button" class="btn btn-sm" style="background-color: #6f42c1; color: #fff; border: 1px solid #6f42c1; border-radius: 8px;" onclick="goToPerakuanTab()">
+    <button type="button" class="btn btn-sm" style="background-color: #28a745; color: #fff; border: 1px solid #28a745; border-radius: 8px;" onclick="saveDokumen()">
+        <i class="fas fa-save me-2" style="color: #fff;"></i> Simpan
+    </button>
+    <button type="button" class="btn btn-sm" style="background-color: #3c2387; color: #fff; border: 1px solid #6f42c1; border-radius: 8px;" onclick="goToPerakuanTab()">
         Seterusnya <i class="fas fa-arrow-right ms-2" style="color: #fff;"></i>
     </button>
 </div>

@@ -21,17 +21,24 @@ class Appeal extends Model
         'ppl_status',
         'kcl_status',
         'pk_status',
+        'pk_semakan_status',
+        'pk_decision',
         'ppl_comments',
         'kcl_comments',
         'pk_comments',
         'ppl_reviewer_id',
         'kcl_reviewer_id',
         'pk_reviewer_id',
+        'pk_submitted_at',
         'kpp_reviewer_id',
         'kpp_decision',
         'kpp_comments',
         'kpp_ref_no',
         'surat_kelulusan_kpp',
+    ];
+
+    protected $casts = [
+        'pk_submitted_at' => 'datetime',
     ];
 
     protected static function boot()
