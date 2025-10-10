@@ -370,7 +370,7 @@
                                                                             <td class="py-3 px-4">{{ $document['date'] }}</td>
                                                                             <td class="py-3 px-4 text-center">
                                                                                 <div class="btn-group" role="group">
-                                                                                    <a href="{{ $document['route'] }}" target="_blank" class="btn btn-sm" style="background-color: #1E40AF; color: #fff; border: 1px solid #1E40AF; border-radius: 6px; padding: 6px 12px;" title="Lihat Dokumen">
+                                                                                    <a href="{{ $document['route'] }}" target="_blank" class="btn btn-sm me-2" style="background-color: #1E40AF; color: #fff; border: 1px solid #1E40AF; border-radius: 6px; padding: 6px 12px;" title="Lihat Dokumen">
                                                                                         <i class="fas fa-search" style="color: #fff;"></i>
                                                                                     </a>
                                                                                     <a href="{{ $document['route'] }}" download class="btn btn-sm" style="background-color: #059669; color: #fff; border: 1px solid #059669; border-radius: 6px; padding: 6px 12px;" title="Muat Turun Dokumen">
@@ -531,30 +531,36 @@
 
                                         <!-- Tindakan Tab -->
                                         <div class="tab-pane fade" id="tindakan" role="tabpanel" aria-labelledby="tindakan-tab">
-                                            <!-- Jana dan Cetak Surat Section -->
-                                            <div class="card border-0 shadow-sm rounded-3 mb-4">
-                                                <div class="card-body" style="background-color: #fff;">
-                                                    <div class="text-start">
-                                                        @if($canEdit)
-                                                        <button type="button" class="btn btn-sm" style="background-color: #198754; color: #fff; border: 1px solid #198754; border-radius: 8px; font-weight: bold;" onclick="generateAndPrintLetter()" id="generateLetterBtn">
-                                                            <i class="fas fa-file-pdf me-2" style="color: #fff;"></i>Jana dan Cetak Surat Berserta Laporan
-                                        </button>
-                                @else
-                                                        <button type="button" class="btn btn-sm" style="background-color: #6c757d; color: #fff; border: 1px solid #ddd; border-radius: 6px;" disabled>
-                                                            <i class="fas fa-file-pdf me-2" style="color: #fff;"></i>Jana dan Cetak Surat Berserta Laporan
-                                                        </button>
-                                                        <small class="text-muted">(Tidak boleh diedit - Status bukan "Tidak Lengkap")</small>
-                                @endif
-                                </div>
-                        </div>
-                    </div>
-                    
                                             <h5 class="mb-3 fw-bold" style="color: #1a1a1a;">Tindakan: Keputusan</h5>
                                             <p class="text-muted mb-4">Pilih hasil semakan dan nyatakan ulasan. Keputusan hanya diperlukan jika semakan adalah lengkap.</p>
+                                            
                                             <div class="card border-0 shadow-sm rounded-3">
                         <div class="card-body bg-white">
                             <form method="POST" action="{{ route('appeals.pk_submit', $appeal->id) }}" enctype="multipart/form-data" id="pkReviewForm">
                                         @csrf
+                                                        
+                                                        <!-- Jana dan Cetak Surat Section -->
+                                                        <div class="mb-4 p-3" style="background-color: #f8f9fa; border-radius: 8px; border-left: 4px solid #198754;">
+                                                            <h6 class="fw-bold mb-2" style="color: #1a1a1a;">
+                                                                <i class="fas fa-file-pdf me-2 text-success"></i>Surat Kelulusan KPP Berserta Laporan
+                                                            </h6>
+                                                            <p class="text-muted small mb-3">
+                                                                Klik butang di bawah untuk menjana nombor rujukan dan cetak Surat Kelulusan KPP berserta laporan permohonan. 
+                                                                Surat ini perlu diserahkan kepada KPP untuk ditandatangani.
+                                                            </p>
+                                                            <div class="text-start">
+                                                                @if($canSubmit)
+                                                                <button type="button" class="btn btn-sm" style="background-color: #198754; color: #fff; border: 1px solid #198754; border-radius: 8px; font-weight: bold;" onclick="generateAndPrintLetter()" id="generateLetterBtn">
+                                                                    <i class="fas fa-file-pdf me-2" style="color: #fff;"></i>Jana dan Cetak Surat Kelulusan KPP Berserta Laporan
+                                                                </button>
+                                                                @else
+                                                                <button type="button" class="btn btn-sm" style="background-color: #6c757d; color: #fff; border: 1px solid #ddd; border-radius: 6px;" disabled title="Permohonan telah dihantar pada {{ $appeal->pk_submitted_at ? $appeal->pk_submitted_at->format('d M Y, h:i A') : '' }}">
+                                                                    <i class="fas fa-file-pdf me-2" style="color: #fff;"></i>Jana dan Cetak Surat Kelulusan KPP Berserta Laporan
+                                                                </button>
+                                                                <small class="text-muted d-block mt-2">(Permohonan telah dihantar)</small>
+                                                                @endif
+                                                            </div>
+                                                        </div>
                                                         
                                                         <!-- Semakan Section -->
                                                         <div class="mb-4">
@@ -590,8 +596,13 @@
                                                         
                                                         <!-- Surat Kelulusan KPP Section -->
                                                         <div class="mb-4">
-                                                            <label class="form-label fw-bold" style="color: #1a1a1a;">Surat Kelulusan KPP <span class="text-danger">*</span></label>
-                                                            <p class="text-muted small mb-3">Sila muat naik surat kelulusan KPP</p>
+                                                            <label class="form-label fw-bold" style="color: #1a1a1a;">Surat Kelulusan KPP (Yang Telah Ditandatangani) <span class="text-danger">*</span></label>
+                                                            <p class="text-muted small mb-3">
+                                                                <i class="fas fa-info-circle text-info me-1"></i>
+                                                                Muat naik surat kelulusan KPP yang telah ditandatangani oleh KPP. 
+                                                                Surat ini adalah surat yang telah dicetak menggunakan butang "Jana dan Cetak Surat" di atas, 
+                                                                diserahkan kepada KPP untuk ditandatangani, dan dikembalikan kepada anda.
+                                                            </p>
                                                             @if(!empty($appeal->surat_kelulusan_kpp))
                                                             <div class="alert alert-success mb-2" style="border-radius: 8px;">
                                                                 <i class="fas fa-file-check me-2"></i>
@@ -616,8 +627,17 @@
                                                         <!-- No. Rujukan Section -->
                                                         <div class="mb-4">
                                                             <label class="form-label fw-bold" style="color: #1a1a1a;">No. Rujukan Surat Kelulusan KPP <span class="text-danger">*</span></label>
-                                                            <p class="text-muted small mb-3">Sila masukkan nombor rujukan surat kelulusan</p>
-                                                            <input type="text" class="form-control" name="no_rujukan_surat" id="noRujukanSurat" value="{{ old('no_rujukan_surat', $appeal->kpp_ref_no) }}" style="border: 1px solid #d1d5db; border-radius: 8px; padding: 12px;" {{ !$canSubmit ? 'readonly' : '' }}>
+                                                            <p class="text-muted small mb-3">
+                                                                <i class="fas fa-info-circle text-info me-1"></i>
+                                                                Nombor rujukan ini dijana secara automatik apabila anda klik butang "Jana dan Cetak Surat" di atas. 
+                                                                Nombor rujukan yang sama akan tertera pada surat yang dicetak.
+                                                            </p>
+                                                            <input type="text" class="form-control" name="no_rujukan_surat" id="noRujukanSurat" value="{{ old('no_rujukan_surat', $appeal->kpp_ref_no) }}" style="border: 1px solid #d1d5db; border-radius: 8px; padding: 12px;" {{ !$canSubmit ? 'readonly' : '' }} readonly>
+                                                            @if(!empty($appeal->kpp_ref_no))
+                                                            <small class="text-success mt-1 d-block">
+                                                                <i class="fas fa-check-circle me-1"></i>Nombor rujukan telah dijana: <strong>{{ $appeal->kpp_ref_no }}</strong>
+                                                            </small>
+                                                            @endif
                                                         </div>
                                                         
                                                         <!-- Ulasan Section -->

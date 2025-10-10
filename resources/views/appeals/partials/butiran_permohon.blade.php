@@ -359,59 +359,144 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Load existing draft data if available
     @if(isset($existingDraft) && $existingDraft)
-        // Populate form fields with draft data
-        document.getElementById('jenis_pindaan_syarat').value = '{{ $existingDraft->jenis_pindaan_syarat }}';
-        document.getElementById('jenis_bahan_binaan_vesel').value = '{{ $existingDraft->jenis_bahan_binaan_vesel }}';
-        document.getElementById('nyatakan').value = '{{ $existingDraft->nyatakan }}';
-        document.getElementById('jenis_perolehan').value = '{{ $existingDraft->jenis_perolehan }}';
-        document.getElementById('nama_limbungan_baru').value = '{{ $existingDraft->nama_limbungan_baru }}';
-        document.getElementById('negeri_limbungan_baru').value = '{{ $existingDraft->negeri_limbungan_baru }}';
-        document.getElementById('daerah_baru').value = '{{ $existingDraft->daerah_baru }}';
-        document.getElementById('alamat_baru').value = '{{ $existingDraft->alamat_baru }}';
-        document.getElementById('poskod_baru').value = '{{ $existingDraft->poskod_baru }}';
-        document.getElementById('pernah_berdaftar').value = '{{ $existingDraft->pernah_berdaftar }}';
-        document.getElementById('no_pendaftaran_vesel').value = '{{ $existingDraft->no_pendaftaran_vesel }}';
-        document.getElementById('negeri_asal_vesel').value = '{{ $existingDraft->negeri_asal_vesel }}';
-        document.getElementById('pelabuhan_pangkalan').value = '{{ $existingDraft->pelabuhan_pangkalan }}';
-        document.getElementById('pangkalan_asal').value = '{{ $existingDraft->pangkalan_asal }}';
-        document.getElementById('pangkalan_baru').value = '{{ $existingDraft->pangkalan_baru }}';
-        document.getElementById('justifikasi_pindaan').value = '{{ $existingDraft->justifikasi_pindaan }}';
-        document.getElementById('justifikasi_perolehan').value = '{{ $existingDraft->justifikasi_perolehan }}';
+        console.log('Loading existing draft data...');
+        
+        // Populate form fields with draft data - only if values exist and are not empty
+        if ('{{ $existingDraft->jenis_pindaan_syarat }}' && '{{ $existingDraft->jenis_pindaan_syarat }}'.trim() !== '') {
+            document.getElementById('jenis_pindaan_syarat').value = '{{ $existingDraft->jenis_pindaan_syarat }}';
+        }
+        if ('{{ $existingDraft->jenis_bahan_binaan_vesel }}') {
+            document.getElementById('jenis_bahan_binaan_vesel').value = '{{ $existingDraft->jenis_bahan_binaan_vesel }}';
+        }
+        if ('{{ $existingDraft->nyatakan }}') {
+            document.getElementById('nyatakan').value = '{{ $existingDraft->nyatakan }}';
+        }
+        if ('{{ $existingDraft->jenis_perolehan }}') {
+            document.getElementById('jenis_perolehan').value = '{{ $existingDraft->jenis_perolehan }}';
+        }
+        if ('{{ $existingDraft->nama_limbungan_baru }}') {
+            document.getElementById('nama_limbungan_baru').value = '{{ $existingDraft->nama_limbungan_baru }}';
+        }
+        if ('{{ $existingDraft->negeri_limbungan_baru }}') {
+            document.getElementById('negeri_limbungan_baru').value = '{{ $existingDraft->negeri_limbungan_baru }}';
+        }
+        if ('{{ $existingDraft->daerah_baru }}') {
+            document.getElementById('daerah_baru').value = '{{ $existingDraft->daerah_baru }}';
+        }
+        if ('{{ $existingDraft->alamat_baru }}') {
+            document.getElementById('alamat_baru').value = '{{ $existingDraft->alamat_baru }}';
+        }
+        if ('{{ $existingDraft->poskod_baru }}') {
+            document.getElementById('poskod_baru').value = '{{ $existingDraft->poskod_baru }}';
+        }
+        if ('{{ $existingDraft->pernah_berdaftar }}') {
+            document.getElementById('pernah_berdaftar').value = '{{ $existingDraft->pernah_berdaftar }}';
+        }
+        if ('{{ $existingDraft->no_pendaftaran_vesel }}') {
+            document.getElementById('no_pendaftaran_vesel').value = '{{ $existingDraft->no_pendaftaran_vesel }}';
+        }
+        if ('{{ $existingDraft->negeri_asal_vesel }}') {
+            document.getElementById('negeri_asal_vesel').value = '{{ $existingDraft->negeri_asal_vesel }}';
+        }
+        if ('{{ $existingDraft->pelabuhan_pangkalan }}') {
+            document.getElementById('pelabuhan_pangkalan').value = '{{ $existingDraft->pelabuhan_pangkalan }}';
+        }
+        if ('{{ $existingDraft->pangkalan_asal }}') {
+            document.getElementById('pangkalan_asal').value = '{{ $existingDraft->pangkalan_asal }}';
+        }
+        if ('{{ $existingDraft->pangkalan_baru }}') {
+            document.getElementById('pangkalan_baru').value = '{{ $existingDraft->pangkalan_baru }}';
+        }
+        if ('{{ $existingDraft->justifikasi_pindaan }}') {
+            document.getElementById('justifikasi_pindaan').value = '{{ $existingDraft->justifikasi_pindaan }}';
+        }
+        if ('{{ $existingDraft->justifikasi_perolehan }}') {
+            document.getElementById('justifikasi_perolehan').value = '{{ $existingDraft->justifikasi_perolehan }}';
+        }
         
         // New fields for Vesel Bina Baru Luar Negara
-        document.getElementById('alamat_limbungan_luar_negara').value = '{{ $existingDraft->alamat_limbungan_luar_negara }}';
-        document.getElementById('negara_limbungan').value = '{{ $existingDraft->negara_limbungan }}';
+        if ('{{ $existingDraft->alamat_limbungan_luar_negara }}') {
+            document.getElementById('alamat_limbungan_luar_negara').value = '{{ $existingDraft->alamat_limbungan_luar_negara }}';
+        }
+        if ('{{ $existingDraft->negara_limbungan }}') {
+            document.getElementById('negara_limbungan').value = '{{ $existingDraft->negara_limbungan }}';
+        }
         
         // New fields for equipment change
-        document.getElementById('no_permit_peralatan').value = '{{ $existingDraft->no_permit_peralatan }}';
-        document.getElementById('jenis_peralatan_asal').value = '{{ $existingDraft->jenis_peralatan_asal }}';
-        document.getElementById('jenis_peralatan_baru').value = '{{ $existingDraft->jenis_peralatan_baru }}';
-        document.getElementById('justifikasi_tukar_peralatan').value = '{{ $existingDraft->justifikasi_tukar_peralatan }}';
+        if ('{{ $existingDraft->no_permit_peralatan }}') {
+            document.getElementById('no_permit_peralatan').value = '{{ $existingDraft->no_permit_peralatan }}';
+        }
+        if ('{{ $existingDraft->jenis_peralatan_asal }}') {
+            document.getElementById('jenis_peralatan_asal').value = '{{ $existingDraft->jenis_peralatan_asal }}';
+        }
+        if ('{{ $existingDraft->jenis_peralatan_baru }}') {
+            document.getElementById('jenis_peralatan_baru').value = '{{ $existingDraft->jenis_peralatan_baru }}';
+        }
+        if ('{{ $existingDraft->justifikasi_tukar_peralatan }}') {
+            document.getElementById('justifikasi_tukar_peralatan').value = '{{ $existingDraft->justifikasi_tukar_peralatan }}';
+        }
         
         // New fields for company name change
-        document.getElementById('no_pendaftaran_perniagaan').value = '{{ $existingDraft->no_pendaftaran_perniagaan }}';
-        document.getElementById('tarikh_pendaftaran_syarikat').value = '{{ $existingDraft->tarikh_pendaftaran_syarikat }}';
-        document.getElementById('tarikh_luput_pendaftaran').value = '{{ $existingDraft->tarikh_luput_pendaftaran }}';
-        document.getElementById('status_perniagaan').value = '{{ $existingDraft->status_perniagaan }}';
-        document.getElementById('nama_syarikat_baru').value = '{{ $existingDraft->nama_syarikat_baru }}';
-        document.getElementById('justifikasi_tukar_nama').value = '{{ $existingDraft->justifikasi_tukar_nama }}';
-        
-        // Trigger change events to show appropriate sections
-        selectJenisPindaan.dispatchEvent(new Event('change'));
-        if (selectJenisPerolehan) {
-            selectJenisPerolehan.dispatchEvent(new Event('change'));
+        if ('{{ $existingDraft->no_pendaftaran_perniagaan }}') {
+            document.getElementById('no_pendaftaran_perniagaan').value = '{{ $existingDraft->no_pendaftaran_perniagaan }}';
         }
-        if (selectNoPermit) {
+        if ('{{ $existingDraft->tarikh_pendaftaran_syarikat }}') {
+            document.getElementById('tarikh_pendaftaran_syarikat').value = '{{ $existingDraft->tarikh_pendaftaran_syarikat }}';
+        }
+        if ('{{ $existingDraft->tarikh_luput_pendaftaran }}') {
+            document.getElementById('tarikh_luput_pendaftaran').value = '{{ $existingDraft->tarikh_luput_pendaftaran }}';
+        }
+        if ('{{ $existingDraft->status_perniagaan }}') {
+            document.getElementById('status_perniagaan').value = '{{ $existingDraft->status_perniagaan }}';
+        }
+        if ('{{ $existingDraft->nama_syarikat_baru }}') {
+            document.getElementById('nama_syarikat_baru').value = '{{ $existingDraft->nama_syarikat_baru }}';
+        }
+        if ('{{ $existingDraft->justifikasi_tukar_nama }}') {
+            document.getElementById('justifikasi_tukar_nama').value = '{{ $existingDraft->justifikasi_tukar_nama }}';
+        }
+        
+        // IMPORTANT: Trigger change events to properly show appropriate sections
+        // This ensures the form behaves as if the user actually made the selections
+        console.log('Triggering change events for draft data...');
+        
+        // Trigger jenis pindaan syarat change event
+        if (selectJenisPindaan && selectJenisPindaan.value) {
+            selectJenisPindaan.dispatchEvent(new Event('change'));
+            console.log('Triggered jenis_pindaan_syarat change event');
+        }
+        
+        // Trigger jenis perolehan change event if applicable
+        if (selectJenisPerolehan && selectJenisPerolehan.value) {
+            selectJenisPerolehan.dispatchEvent(new Event('change'));
+            console.log('Triggered jenis_perolehan change event');
+        }
+        
+        // Trigger other change events
+        if (selectNoPermit && selectNoPermit.value) {
             selectNoPermit.dispatchEvent(new Event('change'));
         }
-        if (selectLimbungan) {
+        if (selectLimbungan && selectLimbungan.value) {
             selectLimbungan.dispatchEvent(new Event('change'));
         }
         
         // Trigger document section update
-        if (typeof updateDocumentSectionVisibility === 'function') {
+        if (typeof updateDocumentSectionVisibility === 'function' && selectJenisPindaan && selectJenisPindaan.value) {
             updateDocumentSectionVisibility(selectJenisPindaan.value);
+            console.log('Updated document section visibility');
         }
+        
+        // IMPORTANT: Also handle kelulusan perolehan selection if it exists in draft
+        // This ensures the permit selection section appears when it should
+        const kelulusanSelect = document.getElementById('kelulusan_perolehan_id');
+        if (kelulusanSelect && '{{ $existingDraft->kelulusan_perolehan_id }}' && '{{ $existingDraft->kelulusan_perolehan_id }}'.trim() !== '') {
+            kelulusanSelect.value = '{{ $existingDraft->kelulusan_perolehan_id }}';
+            // Trigger the change event to load permits
+            kelulusanSelect.dispatchEvent(new Event('change'));
+            console.log('Triggered kelulusan_perolehan_id change event');
+        }
+        
+        console.log('Draft data loading completed');
     @endif
 });
 </script>

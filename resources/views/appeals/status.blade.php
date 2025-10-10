@@ -21,6 +21,7 @@
             
             <div class="row justify-content-center">
                 <div class="col-lg-10">
+                    <!-- Status Information Card -->
                     <div class="bg-white border rounded-3 shadow-sm p-4 mb-4">
                         <div class="d-flex justify-content-between align-items-center mb-2">
                             <span class="fw-bold">{{ \Carbon\Carbon::parse($appeal->created_at)->format('d M Y') }}</span>
@@ -35,19 +36,49 @@
                             <div class="col-md-9">
                                 :
                                 @php
-                                    $statusLabels = [
-                                        'submitted' => 'MENUNGGU SEMAKAN PEGAWAI PERIKANAN',
-                                        'ppl_review' => 'DALAM SEMAKAN PEGAWAI PERIKANAN',
-                                        'ppl_incomplete' => 'TIDAK LENGKAP (PEGAWAI PERIKANAN)',
-                                        'kcl_review' => 'DALAM SEMAKAN KETUA CAWANGAN',
-                                        'kcl_incomplete' => 'TIDAK LENGKAP (KETUA CAWANGAN)',
-                                        'pk_review' => 'DALAM SEMAKAN PENGARAH KANAN',
-                                        'pk_incomplete' => 'TIDAK LENGKAP (PENGARAH KANAN)',
-                                        'kpp_decision' => 'MENUNGGU KEPUTUSAN KPP',
-                                        'approved' => 'KEPUTUSAN PERMOHONAN - DILULUSKAN',
-                                        'rejected' => 'KEPUTUSAN PERMOHONAN - TIDAK DILULUSKAN',
-                                        'draft' => 'DRAFT',
-                                    ];
+                                    // Determine the tindakan (action) based on appeal type
+                                    // For appeals, it's always "Rayuan", for new applications it's "Permohonan"
+                                    $tindakan = 'Rayuan'; // Since this is an appeals system
+                                    
+                                    // Determine the peringkat (level) based on current status
+                                    $peringkat = '';
+                                    $status = $appeal->status;
+                                    
+                                    switch ($status) {
+                                        case 'submitted':
+                                        case 'ppl_review':
+                                        case 'ppl_incomplete':
+                                            $peringkat = 'PPL';
+                                            break;
+                                        case 'kcl_review':
+                                        case 'kcl_incomplete':
+                                        case 'kcl_rejected':
+                                            $peringkat = 'KCL';
+                                            break;
+                                        case 'pk_review':
+                                        case 'pk_incomplete':
+                                        case 'kpp_decision':
+                                            $peringkat = 'PK';
+                                            break;
+                                        case 'approved':
+                                        case 'rejected':
+                                            $peringkat = 'KPP';
+                                            break;
+                                        default:
+                                            $peringkat = 'SISTEM';
+                                    }
+                                    
+                                    // Determine if it's a decision or review action
+                                    $isDecision = in_array($status, ['approved', 'rejected', 'kpp_decision']);
+                                    $actionType = $isDecision ? 'Keputusan' : 'Semakan';
+                                    
+                                    // For applicant view, show: "Pemohon → Rayuan Dihantar"
+                                    $applicantStatus = "Pemohon → {$tindakan} Dihantar";
+                                    
+                                    // For officer view (if needed), show: "→ Semakan - PPL" or "→ Keputusan - PK"
+                                    $officerStatus = "→ {$actionType} - {$peringkat}";
+                                    
+                                    // Status colors
                                     $statusColors = [
                                         'approved' => 'success',
                                         'rejected' => 'danger',
@@ -61,93 +92,53 @@
                                         'pk_incomplete' => 'warning',
                                         'kpp_decision' => 'primary',
                                     ];
-                                    $status = $appeal->status;
-                                    $label = $statusLabels[$status] ?? strtoupper(str_replace('_', ' ', $status));
                                     $color = $statusColors[$status] ?? 'secondary';
                                 @endphp
                                 <span class="badge bg-{{ $color }} fs-6 fw-bold text-uppercase px-3 py-2" style="font-size: 1rem;">
-                                    {{ $label }}
+                                    {{ $applicantStatus }}
                                 </span>
                             </div>
                         </div>
-                        <!-- Ulasan PPL - Only show if status requires comments -->
-                        @if(!empty($appeal->ppl_comments) && $appeal->ppl_status === 'Tidak Lengkap')
-                            <div class="row mb-2">
-                                <div class="col-md-3 fw-bold">Ulasan Pegawai Perikanan Negeri</div>
-                                <div class="col-md-9">:
-                                    <div class="mt-2 border rounded bg-light p-2" style="min-height: 60px;">
-                                        {{ $appeal->ppl_comments }}
-                                    </div>
-                                </div>
-                            </div>
-                        @endif
-
-                        <!-- Ulasan KCL - Only show if status requires comments -->
-                        @if(!empty($appeal->kcl_comments) && ($appeal->kcl_status === 'Tidak Disokong' || $appeal->kcl_status === 'Tidak Lengkap'))
-                            <div class="row mb-2">
-                                <div class="col-md-3 fw-bold">Ulasan Ketua Cawangan</div>
-                                <div class="col-md-9">:
-                                    <div class="mt-2 border rounded bg-light p-2" style="min-height: 60px;">
-                                        {{ $appeal->kcl_comments }}
-                                    </div>
-                                </div>
-                            </div>
-                        @endif
-
-                        <!-- Ulasan PK - Only show if status requires comments -->
-                        @if(!empty($appeal->pk_comments) && $appeal->pk_status === 'Tidak Diluluskan')
-                            <div class="row mb-2">
-                                <div class="col-md-3 fw-bold">Ulasan Pengarah Kanan</div>
-                                <div class="col-md-9">:
-                                    <div class="mt-2 border rounded bg-light p-2" style="min-height: 60px;">
-                                        {{ $appeal->pk_comments }}
-                                    </div>
-                                </div>
-                            </div>
-                        @endif
-
-                        <!-- Ulasan KPP -->
-                        @if(!empty($appeal->kpp_comments))
-                            <div class="row mb-2">
-                                <div class="col-md-3 fw-bold">Ulasan KPP</div>
-                                <div class="col-md-9">:
-                                    <div class="mt-2 border rounded bg-light p-2" style="min-height: 60px;">
-                                        {{ $appeal->kpp_comments }}
-                                    </div>
-                                </div>
-                            </div>
-                        @endif
-
-                        <!-- Tiada ulasan jika semua kosong -->
-                        @if(empty($appeal->ppl_comments) && empty($appeal->kcl_comments) && empty($appeal->pk_comments) && empty($appeal->kpp_comments))
-                            <div class="row mb-2">
-                                <div class="col-md-3 fw-bold">Ulasan</div>
-                                <div class="col-md-9">:
-                                    <div class="mt-2 border rounded bg-light p-2" style="min-height: 60px;">
-                                        Tiada ulasan.
-                                    </div>
-                                </div>
-                            </div>
-                        @endif
-                        @if(!empty($appeal->surat_kelulusan_kpp) || !empty($appeal->kpp_ref_no))
-                            <div class="row mb-2 align-items-center">
-                                <div class="col-md-3 fw-bold">Surat Kelulusan KPP</div>
-                                <div class="col-md-9">:
-                                    @if(!empty($appeal->surat_kelulusan_kpp))
-                                        <a href="{{ route('appeals.viewSuratKelulusanKpp', $appeal->id) }}" target="_blank" class="btn btn-sm" style="background-color: #17A2B8; color: #000; border: 1px solid #ddd; border-radius: 6px;">Lihat / Muat Turun</a>
-                                    @else
-                                        <span class="text-muted">Tiada dokumen dimuat naik.</span>
-                                    @endif
-                                </div>
-                            </div>
-                            <div class="row mb-2">
-                                <div class="col-md-3 fw-bold">No. Rujukan Surat Kelulusan KPP</div>
-                                <div class="col-md-9">:
-                                    <input type="text" class="form-control mt-2" value="{{ $appeal->kpp_ref_no ?? '-' }}" readonly>
-                                </div>
-                            </div>
-                        @endif
                     </div>
+
+                    <!-- Form Details Card -->
+                    <div class="card shadow-sm">
+                        <div class="card-header bg-primary text-white">
+                            <h5 class="mb-0 text-white"><i class="fas fa-file-alt me-2 text-white"></i>Butiran Permohonan</h5>
+                        </div>
+                        <div class="card-body">
+                            <!-- Bootstrap Tab Navigation -->
+                            <ul class="nav nav-tabs mb-4" id="statusTab" role="tablist">
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link active" id="butiran-status-tab" data-bs-toggle="tab" data-bs-target="#butiran-status" type="button" role="tab" aria-controls="butiran-status" aria-selected="true">Butiran Permohonan</button>
+                                </li>
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link" id="dokumen-status-tab" data-bs-toggle="tab" data-bs-target="#dokumen-status" type="button" role="tab" aria-controls="dokumen-status" aria-selected="false">Dokumen Permohonan</button>
+                                </li>
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link" id="perakuan-status-tab" data-bs-toggle="tab" data-bs-target="#perakuan-status" type="button" role="tab" aria-controls="perakuan-status" aria-selected="false">Perakuan</button>
+                                </li>
+                            </ul>
+
+                            <div class="tab-content" id="statusTabContent">
+                                <!-- Butiran Permohonan Tab -->
+                                <div class="tab-pane fade show active" id="butiran-status" role="tabpanel" aria-labelledby="butiran-status-tab">
+                                    @include('appeals.partials.status_butiran_permohon', ['perakuan' => $perakuan])
+                                </div>
+
+                                <!-- Dokumen Permohonan Tab -->
+                                <div class="tab-pane fade" id="dokumen-status" role="tabpanel" aria-labelledby="dokumen-status-tab">
+                                    @include('appeals.partials.status_dokumen_pemohon', ['appeal' => $appeal])
+                                </div>
+
+                                <!-- Perakuan Tab -->
+                                <div class="tab-pane fade" id="perakuan-status" role="tabpanel" aria-labelledby="perakuan-status-tab">
+                                    @include('appeals.partials.status_perakuan', ['perakuan' => $perakuan])
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                     <!-- Action Message -->
                     @if(in_array($appeal->status, ['ppl_incomplete', 'kcl_incomplete', 'pk_incomplete', 'rejected']))
                         <div class="alert alert-warning mt-4">
@@ -165,6 +156,7 @@
                         </div>
                     @endif
 
+                    <!-- Navigation Buttons -->
                     <div class="text-center mt-4">
                         <!-- Show Edit button only if application is rejected or incomplete -->
                         @if(in_array($appeal->status, ['ppl_incomplete', 'kcl_incomplete', 'pk_incomplete', 'rejected']))
@@ -173,9 +165,6 @@
                             </a>
                         @endif
                         
-                        <a href="{{ route('appeals.amendment') }}" class="btn btn-secondary btn-lg px-5">
-                            <i class="fas fa-arrow-left me-2"></i> Kembali
-                        </a>
                     </div>
                 </div>
             </div>

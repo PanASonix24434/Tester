@@ -333,8 +333,8 @@
         <button type="button" class="btn btn-sm" style="background-color: #007BFF; color: #fff; border: 1px solid #007BFF; border-radius: 8px;" id="simpan-draft">
             <i class="fas fa-save me-2" style="color: #fff;"></i>Simpan
         </button>
-        <button type="button" class="btn btn-sm" style="background-color: #6f42c1; color: #fff; border: 1px solid #6f42c1; border-radius: 8px;" onclick="nextTab('perakuan-tab')">
-            Seterusnya <i class="fas fa-arrow-right ms-2" style="color: #fff;"></i>
+        <button type="button" class="btn btn-sm" style="background-color: #3c2387; color: #fff; border: 1px solid #3c2387; border-radius: 8px;" onclick="nextTab('perakuan-tab')">
+            Teruskan <i class="fas fa-arrow-right ms-2" style="color: #fff;"></i>
         </button>
     </div>
 </div>

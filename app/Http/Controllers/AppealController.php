@@ -379,8 +379,9 @@ class AppealController extends Controller
         $dokumenSokongan = \App\Models\DokumenSokongan::where('appeals_id', $appeal->id)->get();
         
         $canEdit = true;
+        $canSubmit = empty($appeal->ppl_submitted_at); // PPL can only submit if not yet submitted
         
-        return view('appeals.ppl_review', compact('appeal', 'perakuan', 'applicant', 'dokumenSokongan', 'canEdit'));
+        return view('appeals.ppl_review', compact('appeal', 'perakuan', 'applicant', 'dokumenSokongan', 'canEdit', 'canSubmit'));
     }
     public function pplSubmit(Request $request, $id)
     {
@@ -401,7 +402,8 @@ class AppealController extends Controller
         $updateData = [
             'ppl_status' => $status,
             'status' => $status === 'Lengkap' ? 'kcl_review' : 'ppl_incomplete',
-            'ppl_reviewer_id' => auth()->id() // Set reviewer ID
+            'ppl_reviewer_id' => auth()->id(), // Set reviewer ID
+            'ppl_submitted_at' => now() // Record submission timestamp
         ];
         
         // Only update comments if provided and not empty
@@ -441,30 +443,45 @@ class AppealController extends Controller
         $dokumenSokongan = \App\Models\DokumenSokongan::where('appeals_id', $appeal->id)->get();
         
         $canEdit = true;
-        return view('appeals.kcl_review', compact('appeal', 'perakuan', 'applicant', 'dokumenSokongan', 'canEdit'));
+        $canSubmit = empty($appeal->kcl_submitted_at); // KCL can only submit if not yet submitted
+        return view('appeals.kcl_review', compact('appeal', 'perakuan', 'applicant', 'dokumenSokongan', 'canEdit', 'canSubmit'));
     }
     public function kclSubmit(Request $request, $id)
     {
-        $status = $request->input('status');
+        $status = $request->input('status'); // Lengkap or Tidak Lengkap
+        $support = $request->input('support'); // Sokong or Tidak Sokong
         
         // Validation rules
         $rules = [
             'status' => 'required',
+            'support' => 'required',
         ];
         $messages = [];
-        if ($status === 'Tidak Disokong') {
+        if ($support === 'Tidak Sokong' || $status === 'Tidak Lengkap') {
             $rules['comments'] = 'required|string|min:3';
-            $messages['comments.required'] = 'Ulasan wajib diisi jika permohonan tidak disokong.';
+            $messages['comments.required'] = 'Ulasan wajib diisi jika permohonan tidak lengkap atau tidak disokong.';
         }
         $validated = $request->validate($rules, $messages);
         
         $appeal = Appeal::findOrFail($id);
         
+        // Determine overall status based on both semakan and sokongan
+        $overallStatus = 'kcl_incomplete'; // Default
+        if ($status === 'Lengkap' && $support === 'Sokong') {
+            $overallStatus = 'pk_review'; // Move to PK review
+        } elseif ($status === 'Tidak Lengkap') {
+            $overallStatus = 'kcl_incomplete'; // Incomplete
+        } elseif ($support === 'Tidak Sokong') {
+            $overallStatus = 'kcl_rejected'; // Not supported
+        }
+        
         // Only update comments if provided, otherwise keep existing
         $updateData = [
-            'kcl_status' => $status,
-            'status' => $status === 'Disokong' ? 'pk_review' : 'kcl_incomplete',
-            'kcl_reviewer_id' => auth()->id() // Set reviewer ID
+            'kcl_status' => $status, // Store semakan status (Lengkap/Tidak Lengkap)
+            'kcl_support' => $support, // Store sokongan status (Sokong/Tidak Sokong)
+            'status' => $overallStatus,
+            'kcl_reviewer_id' => auth()->id(), // Set reviewer ID
+            'kcl_submitted_at' => now() // Record submission timestamp
         ];
         
         // Only update comments if provided and not empty
@@ -475,6 +492,8 @@ class AppealController extends Controller
         // Debug: Log what's happening
         \Log::info('KCL Submit Debug', [
             'status' => $status,
+            'support' => $support,
+            'overall_status' => $overallStatus,
             'comments_provided' => $request->has('comments'),
             'comments_filled' => $request->filled('comments'),
             'comments_value' => $request->input('comments'),

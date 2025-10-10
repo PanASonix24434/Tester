@@ -20,6 +20,7 @@ class Appeal extends Model
         'status',
         'ppl_status',
         'kcl_status',
+        'kcl_support',
         'pk_status',
         'pk_semakan_status',
         'pk_decision',
@@ -27,7 +28,9 @@ class Appeal extends Model
         'kcl_comments',
         'pk_comments',
         'ppl_reviewer_id',
+        'ppl_submitted_at',
         'kcl_reviewer_id',
+        'kcl_submitted_at',
         'pk_reviewer_id',
         'pk_submitted_at',
         'kpp_reviewer_id',
@@ -38,6 +41,8 @@ class Appeal extends Model
     ];
 
     protected $casts = [
+        'ppl_submitted_at' => 'datetime',
+        'kcl_submitted_at' => 'datetime',
         'pk_submitted_at' => 'datetime',
     ];
 

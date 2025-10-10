@@ -136,25 +136,29 @@
                     <td>{{ $app->created_at ? $app->created_at->format('d/m/Y') : '-' }}</td>
                     <td>
                         @php
-                            // Enhanced status configuration matching the image
-                            $enhancedStatusConfig = [
-                                'submitted' => ['text' => 'Semakan Dokumen', 'class' => 'success'],
-                                'ppl_review' => ['text' => 'Semakan Dokumen', 'class' => 'success'],
-                                'kcl_review' => ['text' => 'Semakan Dokumen', 'class' => 'success'],
-                                'pk_review' => ['text' => 'Semakan Dokumen', 'class' => 'success'],
-                                'ppl_incomplete' => ['text' => 'Tidak Lengkap - Semakan Dokumen', 'class' => 'danger'],
-                                'kcl_incomplete' => ['text' => 'Tidak Lengkap - Semakan Dokumen', 'class' => 'danger'],
-                                'pk_incomplete' => ['text' => 'Tidak Lengkap - Semakan Dokumen', 'class' => 'danger'],
-                                'approved' => ['text' => 'Diluluskan', 'class' => 'success'],
-                                'rejected' => ['text' => 'Tidak Diluluskan', 'class' => 'danger'],
-                                'draft' => ['text' => 'Draft', 'class' => 'secondary']
+                            // New status format based on the image: "Pemohon → {{Tindakan}} Dihantar"
+                            // For appeals, tindakan is always "Rayuan"
+                            $tindakan = 'Rayuan'; // Since this is an appeals system
+                            $applicantStatus = "Pemohon → {$tindakan} Dihantar";
+                            
+                            // Status colors remain the same
+                            $statusColors = [
+                                'submitted' => 'info',
+                                'ppl_review' => 'info',
+                                'kcl_review' => 'info',
+                                'pk_review' => 'info',
+                                'ppl_incomplete' => 'warning',
+                                'kcl_incomplete' => 'warning',
+                                'pk_incomplete' => 'warning',
+                                'approved' => 'success',
+                                'rejected' => 'danger',
+                                'draft' => 'secondary'
                             ];
                             
-                            $enhancedStatus = $enhancedStatusConfig[$app->status] ?? 
-                                             ['text' => ucfirst(str_replace('_', ' ', $app->status)), 'class' => 'secondary'];
+                            $color = $statusColors[$app->status] ?? 'secondary';
                         @endphp
-                        <span class="badge bg-{{ $enhancedStatus['class'] }} text-white" style="border-radius: 4px;">
-                            {{ $enhancedStatus['text'] }}
+                        <span class="badge bg-{{ $color }} text-white" style="border-radius: 4px;">
+                            {{ $applicantStatus }}
                         </span>
                     </td>
                     <td class="text-center">

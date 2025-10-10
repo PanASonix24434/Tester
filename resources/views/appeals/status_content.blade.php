@@ -33,20 +33,10 @@
                             <div class="col-md-9">
                                 :
                                 @php
-                                    $statusLabels = [
-                                        'submitted' => 'MENUNGGU SEMAKAN PEGAWAI PERIKANAN',
-                                        'ppl_review' => 'DALAM SEMAKAN PEGAWAI PERIKANAN',
-                                        'ppl_incomplete' => 'TIDAK LENGKAP (PEGAWAI PERIKANAN)',
-                                        'kcl_review' => 'DALAM SEMAKAN KETUA CAWANGAN',
-                                        'kcl_incomplete' => 'TIDAK LENGKAP (KETUA CAWANGAN)',
-                                        'pk_review' => 'DALAM SEMAKAN PENGARAH KANAN',
-                                        'pk_incomplete' => 'TIDAK LENGKAP (PENGARAH KANAN)',
-                                        'kpp_decision' => 'MENUNGGU KEPUTUSAN KPP',
-                                        'approved' => 'KEPUTUSAN PERMOHONAN - DILULUSKAN',
-                                        'rejected' => 'KEPUTUSAN PERMOHONAN - TIDAK DILULUSKAN',
-                                        'draft' => 'DRAFT',
-                                    ];
-                                    $currentStatus = $statusLabels[$appeal->status] ?? strtoupper($appeal->status);
+                                    // New status format based on the image: "Pemohon → {{Tindakan}} Dihantar"
+                                    // For appeals, tindakan is always "Rayuan"
+                                    $tindakan = 'Rayuan'; // Since this is an appeals system
+                                    $currentStatus = "Pemohon → {$tindakan} Dihantar";
                                     $statusClass = in_array($appeal->status, ['approved']) ? 'success' : 
                                                   (in_array($appeal->status, ['rejected', 'ppl_incomplete', 'kcl_incomplete', 'pk_incomplete']) ? 'danger' : 'primary');
                                 @endphp

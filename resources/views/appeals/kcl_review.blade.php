@@ -371,7 +371,7 @@
                                                                             <td class="py-3 px-4">{{ $document['date'] }}</td>
                                                                             <td class="py-3 px-4 text-center">
                                                                                 <div class="btn-group" role="group">
-                                                                                    <a href="{{ $document['route'] }}" target="_blank" class="btn btn-sm" style="background-color: #1E40AF; color: #fff; border: 1px solid #1E40AF; border-radius: 6px; padding: 6px 12px;" title="Lihat Dokumen">
+                                                                                    <a href="{{ $document['route'] }}" target="_blank" class="btn btn-sm me-2" style="background-color: #1E40AF; color: #fff; border: 1px solid #1E40AF; border-radius: 6px; padding: 6px 12px;" title="Lihat Dokumen">
                                                                                         <i class="fas fa-search" style="color: #fff;"></i>
                                                                                     </a>
                                                                                     <a href="{{ $document['route'] }}" download class="btn btn-sm" style="background-color: #059669; color: #fff; border: 1px solid #059669; border-radius: 6px; padding: 6px 12px;" title="Muat Turun Dokumen">
@@ -497,11 +497,11 @@
                                                             <p class="text-muted small mb-3">Sila pilih semakan untuk permohonan ini</p>
                                                             <div class="d-flex gap-4">
                                                             <div class="form-check">
-                                                                    <input class="form-check-input" type="radio" name="status" id="lengkap" value="Lengkap" {{ old('status', $appeal->kcl_status) == 'Lengkap' ? 'checked' : '' }}>
+                                                                    <input class="form-check-input" type="radio" name="status" id="lengkap" value="Lengkap" {{ old('status', $appeal->kcl_status) == 'Lengkap' ? 'checked' : '' }} {{ !$canSubmit ? 'disabled' : '' }}>
                                                                     <label class="form-check-label fw-medium" for="lengkap" style="color: #1a1a1a;">Lengkap</label>
                                                             </div>
                                                             <div class="form-check">
-                                                                    <input class="form-check-input" type="radio" name="status" id="tidak_lengkap" value="Tidak Lengkap" {{ old('status', $appeal->kcl_status) == 'Tidak Lengkap' ? 'checked' : '' }}>
+                                                                    <input class="form-check-input" type="radio" name="status" id="tidak_lengkap" value="Tidak Lengkap" {{ old('status', $appeal->kcl_status) == 'Tidak Lengkap' ? 'checked' : '' }} {{ !$canSubmit ? 'disabled' : '' }}>
                                                                     <label class="form-check-label fw-medium" for="tidak_lengkap" style="color: #1a1a1a;">Tidak Lengkap</label>
                                                                 </div>
                                                             </div>
@@ -513,11 +513,11 @@
                                                             <p class="text-muted small mb-3">Sila berikan sokongan anda untuk permohonan ini</p>
                                                             <div class="d-flex gap-4">
                                                                 <div class="form-check">
-                                                                    <input class="form-check-input" type="radio" name="support" id="sokong" value="Sokong" {{ old('support', $appeal->kcl_support) == 'Sokong' ? 'checked' : '' }}>
+                                                                    <input class="form-check-input" type="radio" name="support" id="sokong" value="Sokong" {{ old('support', $appeal->kcl_support) == 'Sokong' ? 'checked' : '' }} {{ !$canSubmit ? 'disabled' : '' }}>
                                                                     <label class="form-check-label fw-medium" for="sokong" style="color: #1a1a1a;">Sokong</label>
                                                             </div>
                                                             <div class="form-check">
-                                                                    <input class="form-check-input" type="radio" name="support" id="tidak_sokong" value="Tidak Sokong" {{ old('support', $appeal->kcl_support) == 'Tidak Sokong' ? 'checked' : '' }}>
+                                                                    <input class="form-check-input" type="radio" name="support" id="tidak_sokong" value="Tidak Sokong" {{ old('support', $appeal->kcl_support) == 'Tidak Sokong' ? 'checked' : '' }} {{ !$canSubmit ? 'disabled' : '' }}>
                                                                     <label class="form-check-label fw-medium" for="tidak_sokong" style="color: #1a1a1a;">Tidak Sokong</label>
                                                                 </div>
                                                             </div>
@@ -527,7 +527,7 @@
                                                         <div class="mb-4">
                                                             <label class="form-label fw-bold" style="color: #1a1a1a;">Ulasan <span class="text-danger">*</span></label>
                                                             <p class="text-muted small mb-3">Sila nyatakan ulasan berkaitan dengan semakan/sokongan ini</p>
-                                                            <textarea class="form-control" name="comments" id="ulasanField" rows="4" placeholder="Masukkan ulasan..." style="border: 1px solid #d1d5db; border-radius: 8px; padding: 12px;">{{ old('comments', $appeal->kcl_comments) }}</textarea>
+                                                            <textarea class="form-control" name="comments" id="ulasanField" rows="4" placeholder="Masukkan ulasan..." style="border: 1px solid #d1d5db; border-radius: 8px; padding: 12px;" {{ !$canSubmit ? 'readonly' : '' }}>{{ old('comments', $appeal->kcl_comments) }}</textarea>
                                                         </div>
                                                         
                                                         <!-- Action Buttons -->
@@ -535,13 +535,28 @@
                                                             <button type="button" class="btn btn-sm" style="background-color: #1E293B; color: #fff; border: 1px solid #1E293B; border-radius: 8px; padding: 8px 20px;">
                                                                 <i class="fas fa-arrow-left me-2" style="color: #fff;"></i>Kembali
                                                             </button>
+                                                            @if($canSubmit)
                                                             <button type="button" class="btn btn-sm" style="background-color: #007BFF; color: #fff; border: 1px solid #007BFF; border-radius: 8px; padding: 8px 20px;">
                                                                     <i class="fas fa-save me-2" style="color: #fff;"></i>Simpan
                                                                 </button>
                                                             <button type="submit" class="btn btn-sm" style="background-color: #198754; color: #fff; border: 1px solid #198754; border-radius: 8px; padding: 8px 20px;" id="hantarBtn">
                                                                     <i class="fas fa-paper-plane me-2" style="color: #fff;"></i>Hantar
                                                                 </button>
+                                                            @else
+                                                            <button type="button" class="btn btn-sm" style="background-color: #6c757d; color: #fff; border: 1px solid #6c757d; border-radius: 8px; padding: 8px 20px;" disabled title="Permohonan telah dihantar pada {{ $appeal->kcl_submitted_at ? $appeal->kcl_submitted_at->format('d M Y, h:i A') : '' }}">
+                                                                <i class="fas fa-check-circle me-2" style="color: #fff;"></i>Telah Dihantar
+                                                            </button>
+                                                            @endif
                                                         </div>
+                                                        
+                                                        @if(!$canSubmit)
+                                                        <div class="alert alert-info mt-3 text-center" style="border-radius: 8px;">
+                                                            <i class="fas fa-info-circle me-2"></i>
+                                                            <strong>Permohonan telah dihantar pada {{ $appeal->kcl_submitted_at ? $appeal->kcl_submitted_at->format('d M Y, h:i A') : '' }}</strong>
+                                                            <br>
+                                                            <small>Butang "Simpan" dan "Hantar" telah dilumpuhkan kerana permohonan ini telah dihantar.</small>
+                                                        </div>
+                                                        @endif
                                                     </form>
                                                     <script>
                                                         document.addEventListener('DOMContentLoaded', function() {
