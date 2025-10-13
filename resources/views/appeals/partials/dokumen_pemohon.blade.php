@@ -330,14 +330,17 @@
         <button type="button" class="btn btn-sm" style="background-color: #282c34; color: #fff; border: 1px solid #282c34; border-radius: 8px;" onclick="previousTab('butiran-tab')">
             <i class="fas fa-arrow-left me-2" style="color: #fff;"></i> Kembali
         </button>
-        <button type="button" class="btn btn-sm" style="background-color: #007BFF; color: #fff; border: 1px solid #007BFF; border-radius: 8px;" id="simpan-draft">
+        <button type="button" class="btn btn-sm" style="background-color: #007BFF; color: #fff; border: 1px solid #007BFF; border-radius: 8px;" id="simpan-draft" onclick="showSaveModal(saveDraft)">
             <i class="fas fa-save me-2" style="color: #fff;"></i>Simpan
         </button>
-        <button type="button" class="btn btn-sm" style="background-color: #3c2387; color: #fff; border: 1px solid #3c2387; border-radius: 8px;" onclick="nextTab('perakuan-tab')">
-            Teruskan <i class="fas fa-arrow-right ms-2" style="color: #fff;"></i>
+        <button type="button" class="btn btn-sm" style="background-color: #F0F4F5; color: #000; border: 1px solid #F0F4F5; border-radius: 8px;" onclick="nextTab('perakuan-tab')">
+            Seterusnya <i class="fas fa-arrow-right ms-2" style="color: #000;"></i>
         </button>
     </div>
 </div>
+
+<!-- Include Modal Component -->
+@include('components.modal_confirm')
 
 @push('scripts')
 <script>

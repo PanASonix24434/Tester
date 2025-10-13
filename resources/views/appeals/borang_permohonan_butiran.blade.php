@@ -40,7 +40,7 @@
                         <!-- Bootstrap Tab Navigation -->
                         <ul class="nav nav-tabs mb-4" id="permohonanTab" role="tablist">
                             <li class="nav-item" role="presentation">
-                                <button class="nav-link active" id="butiran-tab" data-bs-toggle="tab" data-bs-target="#butiran" type="button" role="tab" aria-controls="butiran" aria-selected="true">Butiran Permohonan</button>
+                                <button class="nav-link active" id="butiran-tab" data-bs-toggle="tab" data-bs-target="#butiran" type="button" role="tab" aria-controls="butiran" aria-selected="true">Maklumat Permohonan</button>
                             </li>
                             <li class="nav-item" role="presentation">
                                 <button class="nav-link" id="dokumen-tab" data-bs-toggle="tab" data-bs-target="#dokumen" type="button" role="tab" aria-controls="dokumen" aria-selected="false">Dokumen Permohonan</button>
@@ -66,7 +66,10 @@
                             <div class="tab-pane fade" id="perakuan" role="tabpanel" aria-labelledby="perakuan-tab">
                                 @include('appeals.partials.perakuan')
                                 <div class="text-center mt-4">
-                                    <button type="submit" class="btn btn-sm" style="background-color: #28a745; color: #fff; border: 1px solid #28a745; border-radius: 8px;" id="hantar-btn" disabled>
+                                    <button type="button" class="btn btn-sm" style="background-color: #282c34; color: #fff; border: 1px solid #282c34; border-radius: 8px;" onclick="previousTab('dokumen-tab')">
+                                        <i class="fas fa-arrow-left me-2" style="color: #fff;"></i> Kembali
+                                    </button>
+                                    <button type="button" class="btn btn-sm" style="background-color: #28a745; color: #fff; border: 1px solid #28a745; border-radius: 8px;" id="hantar-btn" disabled onclick="showSubmitModal(submitForm)">
                                         <i class="fas fa-paper-plane me-2" style="color: #fff;"></i>Hantar
                                     </button>
                                 </div>
@@ -863,4 +866,34 @@ function loadPermits(kelulusanId) {
         });
 }
 </script>
+
+<!-- Include Modal Component -->
+@include('components.modal_confirm')
+
+<script>
+// Form submission function
+function submitForm() {
+    const form = document.getElementById('butiran-form');
+    if (form) {
+        // Use the existing savePerakuan route which handles submission
+        form.action = "{{ route('appeals.savePerakuan') }}";
+        
+        // Submit the form
+        form.submit();
+    }
+}
+
+// Handle form submission response
+document.addEventListener('DOMContentLoaded', function() {
+    // Check for success/error messages from server
+    @if(session('success'))
+        showSuccessModal(); // Will navigate to index page since no appeal ID provided
+    @endif
+    
+    @if(session('error'))
+        showErrorModal();
+    @endif
+});
+</script>
+
 @endsection

@@ -11,7 +11,7 @@
                         </div>
                         <div class="card-body">
                             <!-- Basic Info Section -->
-                            <div class="card border-0 shadow-sm rounded-3 mb-4">
+                            <div class="card border-0  rounded-3 mb-4">
                                 <div class="card-body">
                                     <h5 class="mb-3 fw-bold" style="color: #1a1a1a;">Basic Info</h5>
                                     <div class="row">
@@ -60,7 +60,7 @@
                             </div>
 
                             <!-- Tab Navigation for Officer View -->
-                            <div class="card border-0 shadow-sm rounded-3 mb-4">
+                            <div class="card border-0  rounded-3 mb-4">
                                 <div class="card-body">
                                     <ul class="nav nav-tabs mb-4" id="officerTab" role="tablist">
                                         <li class="nav-item" role="presentation">
@@ -266,7 +266,7 @@
                                             <h5 class="mb-3 fw-bold" style="color: #1a1a1a;">Maklumat Dokumen</h5>
                                             <p class="text-muted mb-4">Senarai dokumen sokongan yang dimuat naik oleh pemohon</p>
                                             
-                                            <div class="card border-0 shadow-sm rounded-3">
+                                            <div class="card border-0  rounded-3">
                                                 <div class="card-body p-0">
                                             <div class="table-responsive">
                                                         <table class="table table-hover mb-0" style="color: #1a1a1a;">
@@ -438,8 +438,6 @@
                                             <h5 class="mb-3 fw-bold" style="color: #1a1a1a;">Tindakan: Semakan Ulasan</h5>
                                             <p class="text-muted mb-4">Bahagian ini membolehkan anda memilih dan mengemaskini status semakan dokumen permohonan yang telah diterima.</p>
                                             
-                                            <div class="card border-0 shadow-sm rounded-3">
-                                <div class="card-body bg-white">
                                     <form method="POST" action="{{ route('appeals.ppl_submit', $appeal->id) }}" id="pplReviewForm">
                                         @csrf
                                                         
@@ -472,12 +470,12 @@
                                                 <i class="fas fa-arrow-left me-2" style="color: #fff;"></i>Kembali
                                             </button>
                                                             @if($canSubmit)
-                                                            <button type="button" class="btn btn-sm" style="background-color: #007BFF; color: #fff; border: 1px solid #007BFF; border-radius: 8px; padding: 8px 20px;">
+                                                            <button type="button" class="btn btn-sm" style="background-color: #007BFF; color: #fff; border: 1px solid #007BFF; border-radius: 8px; padding: 8px 20px;" onclick="showSaveModal(savePplForm)">
                                                 <i class="fas fa-save me-2" style="color: #fff;"></i>Simpan
                                             </button>
-                                                            <button type="submit" class="btn btn-sm" style="background-color: #198754; color: #fff; border: 1px solid #198754; border-radius: 8px; padding: 8px 20px;" id="hantarBtn">
-                                                <i class="fas fa-paper-plane me-2" style="color: #fff;"></i>Hantar
-                                            </button>
+                                                            <button type="button" class="btn btn-sm" style="background-color: #198754; color: #fff; border: 1px solid #198754; border-radius: 8px; padding: 8px 20px;" id="hantarBtn" onclick="showSubmitModal(submitPplForm)">
+                                                                <i class="fas fa-paper-plane me-2" style="color: #fff;"></i>Hantar
+                                                            </button>
                                             @else
                                             <button type="button" class="btn btn-sm" style="background-color: #6c757d; color: #fff; border: 1px solid #6c757d; border-radius: 8px; padding: 8px 20px;" disabled title="Permohonan telah dihantar pada {{ $appeal->ppl_submitted_at ? $appeal->ppl_submitted_at->format('d M Y, h:i A') : '' }}">
                                                 <i class="fas fa-check-circle me-2" style="color: #fff;"></i>Telah Dihantar
@@ -485,14 +483,14 @@
                                             @endif
                                         </div>
                                         
-                                        @if(!$canSubmit)
+                                        {{-- @if(!$canSubmit)
                                         <div class="alert alert-info mt-3 text-center" style="border-radius: 8px;">
                                             <i class="fas fa-info-circle me-2"></i>
                                             <strong>Permohonan telah dihantar pada {{ $appeal->ppl_submitted_at ? $appeal->ppl_submitted_at->format('d M Y, h:i A') : '' }}</strong>
                                             <br>
                                             <small>Butang "Simpan" dan "Hantar" telah dilumpuhkan kerana permohonan ini telah dihantar.</small>
                                         </div>
-                                        @endif
+                                        @endif --}}
                                     </form>
                                     <script>
                                         document.addEventListener('DOMContentLoaded', function() {
@@ -749,8 +747,6 @@
                                             }, 500);
                                         }
                                     </script>
-                                                </div>
-                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -762,4 +758,34 @@
         </div>
     </div>
 </div>
+<!-- Include Modal Component -->
+@include('components.modal_confirm')
+
+<script>
+// Form submission functions for PPL
+function submitPplForm() {
+    const form = document.getElementById('pplReviewForm');
+    if (form) {
+        form.submit();
+    }
+}
+
+function savePplForm() {
+    // For now, just show a message that save is not implemented
+    alert('Fungsi simpan akan diimplementasikan kemudian.');
+}
+
+// Handle form submission response
+document.addEventListener('DOMContentLoaded', function() {
+    // Check for success/error messages from server
+    @if(session('success'))
+        showSuccessModal();
+    @endif
+    
+    @if(session('error'))
+        showErrorModal();
+    @endif
+});
+</script>
+
 @endsection 
