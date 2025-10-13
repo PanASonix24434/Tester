@@ -339,11 +339,36 @@
     </div>
 </div>
 
-<!-- Include Modal Component -->
-@include('components.modal_confirm')
-
 @push('scripts')
 <script>
+// Make saveDraft function global so it can be accessed by the modal
+function saveDraft() {
+    var draftData = {};
+    var form = document.getElementById('butiran-form');
+    var formData = new FormData(form);
+    // Save all form fields except files
+    form.querySelectorAll('input, select, textarea').forEach(function(input) {
+        if (input.type === 'checkbox') {
+            draftData[input.name] = input.checked;
+        } else if (input.type !== 'file') {
+            draftData[input.name] = input.value;
+        }
+    });
+    // Save file info (not the file itself)
+    form.querySelectorAll('input[type="file"]').forEach(function(input) {
+        if (input.files.length > 0) {
+            draftData[input.name + '_fileName'] = input.files[0].name;
+        }
+    });
+    localStorage.setItem('appeal_draft', JSON.stringify(draftData));
+    // Show success message
+    var successMsg = document.createElement('div');
+    successMsg.className = 'alert alert-success mt-3';
+    successMsg.textContent = 'Draft berjaya disimpan!';
+    document.getElementById('dokumen-permohonan-section').appendChild(successMsg);
+    setTimeout(function() { successMsg.remove(); }, 3000);
+}
+
 document.addEventListener('DOMContentLoaded', function () {
     var jenisPerolehan = document.getElementById('jenis_perolehan');
     var jenisPindaan = document.getElementById('jenis_pindaan_syarat');
@@ -447,34 +472,6 @@ document.addEventListener('DOMContentLoaded', function () {
         updateRequirementsSummary(jpValue, jprValue);
     }
 
-    // Function to save draft to localStorage
-    function saveDraft() {
-        var draftData = {};
-        var form = document.getElementById('butiran-form');
-        var formData = new FormData(form);
-        // Save all form fields except files
-        form.querySelectorAll('input, select, textarea').forEach(function(input) {
-            if (input.type === 'checkbox') {
-                draftData[input.name] = input.checked;
-            } else if (input.type !== 'file') {
-                draftData[input.name] = input.value;
-            }
-        });
-        // Save file info (not the file itself)
-        form.querySelectorAll('input[type="file"]').forEach(function(input) {
-            if (input.files.length > 0) {
-                draftData[input.name + '_fileName'] = input.files[0].name;
-            }
-        });
-        localStorage.setItem('appeal_draft', JSON.stringify(draftData));
-        // Show success message
-        var successMsg = document.createElement('div');
-        successMsg.className = 'alert alert-success mt-3';
-        successMsg.textContent = 'Draft berjaya disimpan!';
-        document.getElementById('dokumen-permohonan-section').appendChild(successMsg);
-        setTimeout(function() { successMsg.remove(); }, 3000);
-    }
-
     // Function to load draft from localStorage
     function loadDraft() {
         var draftData = localStorage.getItem('appeal_draft');
@@ -511,12 +508,7 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    // Attach to Simpan button
-    if (simpanBtn) {
-        simpanBtn.addEventListener('click', function() {
-            saveDraft();
-        });
-    }
+    // Note: Simpan button now uses modal (showSaveModal) via onclick attribute
 
     // Monitor changes in the "Jenis Pindaan" and "Jenis Perolehan" fields to show the corresponding sections
     if (jenisPerolehan) {
