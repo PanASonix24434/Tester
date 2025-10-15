@@ -101,10 +101,56 @@
                         $roleType = 'pk';
                     }
                     
-                    // Get status display
-                    $statusDisplay = $statusConfig[$app->status][$roleType] ?? 
-                                   $statusConfig[$app->status]['all'] ?? 
-                                   ['text' => ucfirst(str_replace('_', ' ', $app->status)), 'class' => 'secondary'];
+                    // Use new dual status system
+                    // Show pegawai_status for officers, workflow-based status for applicants
+                    if ($isOfficer) {
+                        $statusText = $app->pegawai_status ?? 'Permohonan Diterima';
+                    } else {
+                        // Determine status based on workflow stages for applicant role
+                        $pkSemakanStatus = $app->pk_semakan_status ?? '';
+                        $pkDecision = $app->pk_decision ?? '';
+                        $kclStatus = $app->kcl_status ?? '';
+                        $kclSupport = $app->kcl_support ?? '';
+                        $pplStatus = $app->ppl_status ?? '';
+                        
+                        // Priority order: Final decisions first, then current stage decisions, then workflow progress
+                        if ($pkDecision === 'Diluluskan') {
+                            $statusText = 'DILULUSKAN';
+                        } elseif ($pkDecision === 'Tidak Diluluskan') {
+                            $statusText = 'TIDAK LULUS';
+                        } elseif ($kclSupport === 'Tidak Sokong') {
+                            $statusText = 'TIDAK DISOKONG';
+                        } elseif ($pplStatus === 'Tidak Lengkap') {
+                            $statusText = 'TIDAK LENGKAP';
+                        } elseif (!empty($app->pk_submitted_at)) {
+                            // PK stage completed but no decision yet
+                            $statusText = 'DIPROSES NEGERI';
+                        } elseif (!empty($app->kcl_submitted_at)) {
+                            // KCL stage completed, now in PK stage
+                            $statusText = 'DIPROSES NEGERI';
+                        } elseif (!empty($app->ppl_submitted_at)) {
+                            // PPL stage completed, now in KCL stage
+                            $statusText = 'DIPROSES DAERAH';
+                        } elseif (!empty($app->submitted_at)) {
+                            // Application submitted, now in PPL stage
+                            $statusText = 'DIHANTAR';
+                        } else {
+                            // Default status
+                            $statusText = 'DIHANTAR';
+                        }
+                    }
+                    
+                    // Determine status class based on status text
+                    $statusClass = 'primary'; // default
+                    if (in_array($statusText, ['DILULUSKAN', 'Diluluskan'])) {
+                        $statusClass = 'success';
+                    } elseif (in_array($statusText, ['TIDAK LULUS', 'TIDAK DISOKONG', 'TIDAK LENGKAP', 'TIDAK LULUS', 'Ditolak', 'Tidak Diluluskan', 'Perlu dikemaskini'])) {
+                        $statusClass = 'danger';
+                    } elseif (strpos($statusText, 'Semakan') !== false || strpos($statusText, 'Diproses') !== false || strpos($statusText, 'DIHANTAR') !== false) {
+                        $statusClass = 'primary';
+                    }
+                    
+                    $statusDisplay = ['text' => $statusText, 'class' => $statusClass];
                 @endphp
                 
                 <tr class="align-middle hover-row">
@@ -114,12 +160,12 @@
                             $daysSinceReceived = $app->created_at->diffInDays(now());
                             $indicatorClass = '';
                             
-                            if ($daysSinceReceived >= 10) {
-                                $indicatorClass = 'dc3545'; // red
-                            } elseif ($daysSinceReceived >= 5) {
-                                $indicatorClass = 'ffc107'; // yellow
+                            if ($daysSinceReceived > 14) {
+                                $indicatorClass = 'dc3545'; // red - >14 days
+                            } elseif ($daysSinceReceived >= 8) {
+                                $indicatorClass = 'ffc107'; // warning - 8-14 days
                             } else {
-                                $indicatorClass = '6c757d'; // gray
+                                $indicatorClass = '6c757d'; // gray - 0-7 days
                             }
                         @endphp
                         <div class="d-flex align-items-center justify-content-center gap-2">
@@ -135,30 +181,8 @@
                     <td>{{ $namaPermohonan }}</td>
                     <td>{{ $app->created_at ? $app->created_at->format('d/m/Y') : '-' }}</td>
                     <td>
-                        @php
-                            // New status format based on the image: "Pemohon → {{Tindakan}} Dihantar"
-                            // For appeals, tindakan is always "Rayuan"
-                            $tindakan = 'Rayuan'; // Since this is an appeals system
-                            $applicantStatus = "Pemohon → {$tindakan} Dihantar";
-                            
-                            // Status colors remain the same
-                            $statusColors = [
-                                'submitted' => 'info',
-                                'ppl_review' => 'info',
-                                'kcl_review' => 'info',
-                                'pk_review' => 'info',
-                                'ppl_incomplete' => 'warning',
-                                'kcl_incomplete' => 'warning',
-                                'pk_incomplete' => 'warning',
-                                'approved' => 'success',
-                                'rejected' => 'danger',
-                                'draft' => 'secondary'
-                            ];
-                            
-                            $color = $statusColors[$app->status] ?? 'secondary';
-                        @endphp
-                        <span class="badge bg-{{ $color }} text-white" style="border-radius: 4px;">
-                            {{ $applicantStatus }}
+                        <span class="badge bg-{{ $statusDisplay['class'] }} text-white" style="border-radius: 4px;">
+                            {{ $statusDisplay['text'] }}
                         </span>
                     </td>
                     <td class="text-center">

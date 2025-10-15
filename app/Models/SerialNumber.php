@@ -46,4 +46,22 @@ class SerialNumber extends Model
         return str_pad($runningNumberInt, 7,'0',STR_PAD_LEFT);
     }
 
+    public function generateAppealSerialNumber($user_id, $ref_number)
+    {
+        $applicationType = 'appeal';
+        $runningNumberInt = SerialNumber::where('application_type',$applicationType)->max('running_number') + 1;
+
+        $sn = new SerialNumber();
+        $sn->application_type = $applicationType;
+        $sn->prefix = 'KPP';
+        $sn->running_number = $runningNumberInt;
+        $sn->suffix = date('Y'); // Add year as suffix
+        $sn->created_by = $user_id;
+        $sn->updated_by = $user_id;
+        $sn->save();
+
+        // Format: KPP/YYYY/NNNNNN (e.g., KPP/2025/000001)
+        return 'KPP/' . date('Y') . '/' . str_pad($runningNumberInt, 6, '0', STR_PAD_LEFT);
+    }
+
 }

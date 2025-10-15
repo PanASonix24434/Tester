@@ -18,6 +18,8 @@ class Appeal extends Model
         'ref_number',
         'applicant_id',
         'status',
+        'pemohon_status',
+        'pegawai_status',
         'ppl_status',
         'kcl_status',
         'kcl_support',
@@ -37,6 +39,8 @@ class Appeal extends Model
         'kpp_decision',
         'kpp_comments',
         'kpp_ref_no',
+        'no_siri',
+        'zon',
         'surat_kelulusan_kpp',
     ];
 
@@ -59,6 +63,25 @@ class Appeal extends Model
             if (empty($model->ref_number)) {
                 $count = static::count() + 1;
                 $model->ref_number = 'APP-' . str_pad($count, 6, '0', STR_PAD_LEFT);
+            }
+            
+            // Set default zone to C2 if not provided
+            if (empty($model->zon)) {
+                $model->zon = 'C2';
+            }
+        });
+
+        static::saving(function ($model) {
+            // Validate zone field - only allow C1 and C2
+            if (!empty($model->zon) && !in_array($model->zon, ['C1', 'C2'])) {
+                throw new \InvalidArgumentException('Zone must be either C1 or C2 only.');
+            }
+        });
+
+        static::updating(function ($model) {
+            // Validate zone field - only allow C1 and C2
+            if (!empty($model->zon) && !in_array($model->zon, ['C1', 'C2'])) {
+                throw new \InvalidArgumentException('Zone must be either C1 or C2 only.');
             }
         });
     }

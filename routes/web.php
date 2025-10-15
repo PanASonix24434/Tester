@@ -153,6 +153,11 @@ Route::group(['middleware' => ['auth', 'verified'], 'prefix' => config('app.url_
         // Print Letter for Appeal
         Route::get('/{id}/print-letter', [AppealController::class, 'printLetter'])->name('print_letter');  // Route to print the letter
         Route::get('/{id}/download-letter-pdf', [AppealController::class, 'downloadLetterPDF'])->name('download_letter_pdf');  // Route to download PDF
+        
+        // KPP Letter Routes (for PK review tindakan tab)
+        Route::get('/{id}/KPP-letter', [AppealController::class, 'KPPLetter'])->name('KPP_letter');  // Route to print KPP letter
+        Route::get('/{id}/KPP-letter-pdf', [AppealController::class, 'KPPLetterPDF'])->name('KPP_letter_pdf');  // Route to download KPP PDF
+        
         Route::post('/{id}/update-reference', [AppealController::class, 'updateReference'])->name('update_reference');  // Route to update reference number
 
         // Senarai Permohonan Landing Page

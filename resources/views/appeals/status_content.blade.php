@@ -33,12 +33,18 @@
                             <div class="col-md-9">
                                 :
                                 @php
-                                    // New status format based on the image: "Pemohon → {{Tindakan}} Dihantar"
-                                    // For appeals, tindakan is always "Rayuan"
-                                    $tindakan = 'Rayuan'; // Since this is an appeals system
-                                    $currentStatus = "Pemohon → {$tindakan} Dihantar";
-                                    $statusClass = in_array($appeal->status, ['approved']) ? 'success' : 
-                                                  (in_array($appeal->status, ['rejected', 'ppl_incomplete', 'kcl_incomplete', 'pk_incomplete']) ? 'danger' : 'primary');
+                                    // Use new dual status system - show pemohon_status for applicants
+                                    $currentStatus = $appeal->pemohon_status ?? 'Permohonan Dihantar';
+                                    
+                                    // Determine badge color based on status
+                                    $statusClass = 'primary'; // default
+                                    if (in_array($currentStatus, ['Diluluskan'])) {
+                                        $statusClass = 'success';
+                                    } elseif (in_array($currentStatus, ['Ditolak', 'Tidak Diluluskan'])) {
+                                        $statusClass = 'danger';
+                                    } elseif (in_array($currentStatus, ['Diproses Ibupejabat', 'Permohonan Dihantar'])) {
+                                        $statusClass = 'primary';
+                                    }
                                 @endphp
                                 <span class="badge bg-{{ $statusClass }} text-white px-3 py-2 rounded-pill">
                                     {{ $currentStatus }}

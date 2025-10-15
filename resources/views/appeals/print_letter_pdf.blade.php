@@ -261,6 +261,9 @@
 
         <div class="reference">
             <p><strong>Ruj. Kami:</strong> {{ $appeal->kpp_ref_no ?? 'Prk. ML.50/8 (LD) 921 (14)' }}</p>
+            @if($appeal->no_siri)
+            <p><strong>No. Siri:</strong> {{ $appeal->no_siri }}</p>
+            @endif
             <p><strong>Tarikh:</strong> {{ date('d F Y') }}</p>
         </div>
 
@@ -293,7 +296,7 @@
 
             @if($perakuan && $perakuan->type === 'kvp08')
                 {{-- KVP08: Lanjut Tempoh Sah Kelulusan Perolehan --}}
-                <p><strong>PERMOHONAN LANJUTAN TEMPOH SAH KELULUSAN PEROLEHAN VESEL DAN PERALATAN MENANGKAP IKAN LAUT DALAM (ZON C2) UNIT BAHARU BAGI TUJUAN PELESENAN - NO. SIRI: 1178</strong></p>
+                <p><strong>PERMOHONAN LANJUTAN TEMPOH SAH KELULUSAN PEROLEHAN VESEL DAN PERALATAN MENANGKAP IKAN LAUT DALAM (ZON C2) UNIT BAHARU BAGI TUJUAN PELESENAN{{ $appeal->no_siri ? ' - NO. SIRI: ' . $appeal->no_siri : '' }}</strong></p>
                 
                 <p>Dengan hormatnya, saya merujuk perkara di atas.</p>
                 
@@ -309,7 +312,7 @@
                 
             @elseif($perakuan && $perakuan->jenis_pindaan_syarat === 'Jenis bahan binaan vesel')
                 {{-- Jenis Bahan Binaan Vesel --}}
-                <p><strong>PERMOHONAN MEMINDA SYARAT KELULUSAN (JENIS BAHAN BINAAN VESEL) BAGI SIJIL KELULUSAN PEROLEHAN VESEL DAN PERALATAN MENANGKAP IKAN LAUT DALAM (ZON C2) UNIT BAHARU BAGI TUJUAN PELESENAN - NO. SIRI: 1178</strong></p>
+                <p><strong>PERMOHONAN MEMINDA SYARAT KELULUSAN (JENIS BAHAN BINAAN VESEL) BAGI SIJIL KELULUSAN PEROLEHAN VESEL DAN PERALATAN MENANGKAP IKAN LAUT DALAM ({{ $appeal->zon ? 'ZON ' . $appeal->zon : 'ZON C2' }}) UNIT BAHARU BAGI TUJUAN PELESENAN{{ $appeal->no_siri ? ' - NO. SIRI: ' . $appeal->no_siri : '' }}</strong></p>
                 
                 <p>Dengan hormatnya, saya merujuk perkara di atas.</p>
                 
@@ -325,7 +328,7 @@
                 
             @elseif($perakuan && $perakuan->jenis_pindaan_syarat === 'Tukar Jenis Peralatan')
                 {{-- Tukar Jenis Peralatan --}}
-                <p><strong>PERMOHONAN MEMINDA SYARAT KELULUSAN (PERTUKARAN PERALATAN MENANGKAP IKAN) BAGI SIJIL KELULUSAN PEROLEHAN VESEL DAN PERALATAN MENANGKAP IKAN LAUT DALAM (ZON C2) UNIT BAHARU BAGI TUJUAN PELESENAN - NO. SIRI: 1162</strong></p>
+                <p><strong>PERMOHONAN MEMINDA SYARAT KELULUSAN (PERTUKARAN PERALATAN MENANGKAP IKAN) BAGI SIJIL KELULUSAN PEROLEHAN VESEL DAN PERALATAN MENANGKAP IKAN LAUT DALAM ({{ $appeal->zon ? 'ZON ' . $appeal->zon : 'ZON C2' }}) UNIT BAHARU BAGI TUJUAN PELESENAN{{ $appeal->no_siri ? ' - NO. SIRI: ' . $appeal->no_siri : '' }}</strong></p>
                 
                 <p>Dengan segala hormatnya, saya merujuk perkara di atas.</p>
                 
@@ -347,7 +350,7 @@
                 
             @else
                 {{-- Fallback content --}}
-                <p><strong>PERMOHONAN MEMINDA SYARAT KELULUSAN BAGI SIJIL KELULUSAN PEROLEHAN VESEL DAN PERALATAN MENANGKAP IKAN LAUT DALAM (ZON C2) UNIT BAHARU BAGI TUJUAN PELESENAN - NO. SIRI: 1178</strong></p>
+                <p><strong>PERMOHONAN MEMINDA SYARAT KELULUSAN BAGI SIJIL KELULUSAN PEROLEHAN VESEL DAN PERALATAN MENANGKAP IKAN LAUT DALAM ({{ $appeal->zon ? 'ZON ' . $appeal->zon : 'ZON C2' }}) UNIT BAHARU BAGI TUJUAN PELESENAN{{ $appeal->no_siri ? ' - NO. SIRI: ' . $appeal->no_siri : '' }}</strong></p>
                 
                 <p>Dengan hormatnya, saya merujuk perkara di atas.</p>
                 

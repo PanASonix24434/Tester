@@ -23,6 +23,8 @@ class AppealController extends Controller
             
             'applicant_id' => auth()->id(),
             'status' => 'submitted',
+            'pemohon_status' => 'Permohonan Dihantar',
+            'pegawai_status' => 'Permohonan Diterima',
         ]);
         event(new AppealUpdated($appeal));
         return redirect()->route('appeals.status', $appeal->id);
@@ -328,9 +330,27 @@ class AppealController extends Controller
                 'behavior' => 'ADDITIVE - New files added without replacing existing ones'
             ]);
             
-            // Update appeal status
+            // Update appeal status and reset workflow timestamps when edited
         $appeal->status = 'submitted';
             $appeal->updated_at = now(); // Update timestamp
+        
+        // Reset workflow timestamps and decisions when application is edited
+        $appeal->ppl_submitted_at = null;
+        $appeal->kcl_submitted_at = null;
+        $appeal->pk_submitted_at = null;
+        $appeal->ppl_reviewer_id = null;
+        $appeal->kcl_reviewer_id = null;
+        $appeal->pk_reviewer_id = null;
+        // Reset all status and decision fields - workflow starts fresh after edit
+        $appeal->ppl_status = null;
+        $appeal->kcl_status = null;
+        $appeal->kcl_support = null;
+        $appeal->pk_semakan_status = null;
+        $appeal->pk_decision = null;
+        $appeal->ppl_comments = null;
+        $appeal->kcl_comments = null;
+        $appeal->pk_comments = null;
+        
         $appeal->save();
             
             \Log::info('Appeal updated successfully', [
@@ -341,6 +361,53 @@ class AppealController extends Controller
             ]);
             
         event(new \App\Events\AppealUpdated($appeal));
+        
+        // Handle new documents from edit form (ADDITIVE - don't replace existing)
+        if ($request->hasFile('documents') && $request->has('document_names')) {
+            $documentNames = $request->input('document_names', []);
+            $documents = $request->file('documents', []);
+            
+            \Log::info('Processing new documents from edit form', [
+                'appeal_id' => $appeal->id,
+                'document_names_count' => count($documentNames),
+                'documents_count' => count($documents),
+                'document_names' => $documentNames
+            ]);
+            
+            foreach ($documents as $index => $document) {
+                if ($document && $document->isValid()) {
+                    $documentName = $documentNames[$index] ?? 'Dokumen Sokongan ' . ($index + 1);
+                    
+                    // Generate unique filename
+                    $originalName = $document->getClientOriginalName();
+                    $extension = $document->getClientOriginalExtension();
+                    $filename = time() . '_' . $index . '_' . $originalName;
+                    
+                    // Store file
+                    $path = $document->storeAs('appeals/documents', $filename, 'public');
+                    
+                    // Save to database
+                    \App\Models\DokumenSokongan::create([
+                        'appeals_id' => $appeal->id,
+                        'file_type' => 'dokumen_sokongan_tambahan',
+                        'file_name' => $documentName,
+                        'file_path' => $path,
+                        'original_name' => $originalName,
+                        'file_size' => $document->getSize(),
+                        'mime_type' => $document->getMimeType(),
+                        'created_at' => now(),
+                        'updated_at' => now()
+                    ]);
+                    
+                    \Log::info('New document saved', [
+                        'appeal_id' => $appeal->id,
+                        'document_name' => $documentName,
+                        'file_path' => $path,
+                        'original_name' => $originalName
+                    ]);
+                }
+            }
+        }
             
             // Count new files added (ADDITIVE BEHAVIOR)
             $newFilesCount = \App\Models\DokumenSokongan::where('appeals_id', $appeal->id)
@@ -351,7 +418,7 @@ class AppealController extends Controller
             
             $successMessage = 'Permohonan berjaya dikemaskini dan dihantar semula.';
             if ($newFilesCount > 0) {
-                $successMessage .= ' ' . $newFilesCount . ' dokumen sokongan baru telah ditambah.';
+                $successMessage .= ' ' . $newFilesCount . ' dokumen sokongan baru telah ditambah (dokumen sedia ada dikekalkan).';
                 $successMessage .= ' (Jumlah keseluruhan: ' . $totalFilesCount . ' dokumen)';
             }
             
@@ -379,7 +446,10 @@ class AppealController extends Controller
         $dokumenSokongan = \App\Models\DokumenSokongan::where('appeals_id', $appeal->id)->get();
         
         $canEdit = true;
-        $canSubmit = empty($appeal->ppl_submitted_at); // PPL can only submit if not yet submitted
+        
+        // PPL can submit if not yet submitted by PPL
+        // When application is edited, workflow timestamps are reset, so PPL can submit again
+        $canSubmit = empty($appeal->ppl_submitted_at);
         
         return view('appeals.ppl_review', compact('appeal', 'perakuan', 'applicant', 'dokumenSokongan', 'canEdit', 'canSubmit'));
     }
@@ -402,6 +472,8 @@ class AppealController extends Controller
         $updateData = [
             'ppl_status' => $status,
             'status' => $status === 'Lengkap' ? 'kcl_review' : 'ppl_incomplete',
+            'pemohon_status' => 'Diproses Ibupejabat',
+            'pegawai_status' => 'Semakan Ulasan - Ibupejabat',
             'ppl_reviewer_id' => auth()->id(), // Set reviewer ID
             'ppl_submitted_at' => now() // Record submission timestamp
         ];
@@ -480,6 +552,8 @@ class AppealController extends Controller
             'kcl_status' => $status, // Store semakan status (Lengkap/Tidak Lengkap)
             'kcl_support' => $support, // Store sokongan status (Sokong/Tidak Sokong)
             'status' => $overallStatus,
+            'pemohon_status' => 'Diproses Ibupejabat',
+            'pegawai_status' => 'Semakan Sokongan - Ibupejabat',
             'kcl_reviewer_id' => auth()->id(), // Set reviewer ID
             'kcl_submitted_at' => now() // Record submission timestamp
         ];
@@ -612,7 +686,7 @@ class AppealController extends Controller
             $finalStatus = '';
             if ($pkStatus === 'Diluluskan') {
                 $finalStatus = 'approved';
-            } elseif ($pkStatus === 'Ditolak') {
+            } elseif ($pkStatus === 'Tidak Diluluskan') {
                 $finalStatus = 'rejected';
             } else {
                 $finalStatus = 'pk_incomplete';
@@ -626,6 +700,23 @@ class AppealController extends Controller
                 'kpp_ref_no' => $request->input('no_rujukan_surat'),
                 'pk_reviewer_id' => auth()->id() // Set reviewer ID
             ];
+            
+            // Update dual statuses based on PK decision
+            if ($pkStatus === 'Diluluskan') {
+                $updateData['pemohon_status'] = 'Diluluskan';
+                $updateData['pegawai_status'] = 'Diluluskan';
+                
+                // Set serial number same as reference number when approved (only if not already generated)
+                if (empty($appeal->no_siri) && $action === 'submit') {
+                    $updateData['no_siri'] = $appeal->ref_number;
+                }
+            } elseif ($pkStatus === 'Tidak Diluluskan') {
+                $updateData['pemohon_status'] = 'Ditolak';
+                $updateData['pegawai_status'] = 'Ditolak';
+            } else {
+                $updateData['pemohon_status'] = 'Diproses Ibupejabat';
+                $updateData['pegawai_status'] = 'Semakan PK - Ibupejabat';
+            }
             
             // Only update final status and timestamp if action is submit
             if ($action === 'submit') {
@@ -774,10 +865,16 @@ class AppealController extends Controller
         // Get applicant details
         $applicant = \App\Models\User::find($appeal->applicant_id);
         
+        // Get PK reviewer details (the one who made the decision)
+        $pkReviewer = null;
+        if ($appeal->pk_reviewer_id) {
+            $pkReviewer = \App\Models\User::find($appeal->pk_reviewer_id);
+        }
+        
         // Get the perakuan data
         $perakuan = $appeal->perakuan;
         
-        return view('appeals.print_letter', compact('appeal', 'approver', 'applicant', 'perakuan'));
+        return view('appeals.print_letter', compact('appeal', 'approver', 'applicant', 'perakuan', 'pkReviewer'));
     }
 
     // Download letter as PDF
@@ -799,6 +896,45 @@ class AppealController extends Controller
         // Generate filename
         $refNumber = $appeal->kpp_ref_no ?? 'KPP-' . date('Ymd') . '-' . str_pad(rand(1, 999), 3, '0', STR_PAD_LEFT);
         $filename = 'Surat_Kelulusan_' . preg_replace('/[^a-zA-Z0-9]/', '_', $refNumber) . '.pdf';
+        
+        return $pdf->download($filename);
+    }
+
+    // KPP Letter (for PK review tindakan tab)
+    public function KPPLetter($id) {
+        $appeal = Appeal::with('perakuan')->findOrFail($id);
+        
+        // Get the current user (the one who is approving)
+        $approver = auth()->user();
+        
+        // Get applicant details
+        $applicant = \App\Models\User::find($appeal->applicant_id);
+        
+        // Get the perakuan data
+        $perakuan = $appeal->perakuan;
+        
+        return view('appeals.KPP_letter', compact('appeal', 'approver', 'applicant', 'perakuan'));
+    }
+
+    // KPP Letter PDF (for PK review tindakan tab)
+    public function KPPLetterPDF($id) {
+        $appeal = Appeal::with('perakuan')->findOrFail($id);
+        
+        // Get the current user (the one who is approving)
+        $approver = auth()->user();
+        
+        // Get applicant details
+        $applicant = \App\Models\User::find($appeal->applicant_id);
+        
+        // Get the perakuan data
+        $perakuan = $appeal->perakuan;
+        
+        // Generate PDF using DomPDF
+        $pdf = PDF::loadView('appeals.KPP_letter_pdf', compact('appeal', 'approver', 'applicant', 'perakuan'));
+        
+        // Generate filename
+        $refNumber = $appeal->kpp_ref_no ?? 'KPP-' . date('Ymd') . '-' . str_pad(rand(1, 999), 3, '0', STR_PAD_LEFT);
+        $filename = 'Surat_Kelulusan_KPP_' . preg_replace('/[^a-zA-Z0-9]/', '_', $refNumber) . '.pdf';
         
         return $pdf->download($filename);
     }
@@ -1178,6 +1314,9 @@ class AppealController extends Controller
                 'status_perniagaan' => $request->input('status_perniagaan'),
                 'nama_syarikat_baru' => $request->input('nama_syarikat_baru'),
                 'justifikasi_tukar_nama' => $request->input('justifikasi_tukar_nama'),
+                // Kelulusan Perolehan fields
+                'kelulusan_perolehan_id' => $request->input('kelulusan_perolehan_id'),
+                'selected_permits' => json_encode($request->input('selected_permits', [])),
                 'status' => 'submitted',
             ];
 
@@ -1436,11 +1575,19 @@ class AppealController extends Controller
                 'status_perniagaan',
                 'nama_syarikat_baru',
                 'justifikasi_tukar_nama',
+                // Kelulusan Perolehan fields
+                'kelulusan_perolehan_id',
+                'selected_permits',
             ];
             
             foreach ($fields as $field) {
                 if ($request->has($field)) {
-                    $data[$field] = $request->input($field);
+                    if ($field === 'selected_permits') {
+                        // Handle array input for selected_permits
+                        $data[$field] = json_encode($request->input($field, []));
+                    } else {
+                        $data[$field] = $request->input($field);
+                    }
                 }
             }
             

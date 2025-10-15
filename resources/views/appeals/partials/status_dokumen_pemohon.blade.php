@@ -12,49 +12,48 @@
     <div class="mb-4">
         <h6 class="text-primary font-weight-bold mb-3" style="border-bottom:1px solid #007bff;">Semua Dokumen Yang Dimuat Naik</h6>
         <div class="table-responsive">
-            <table class="table table-bordered">
-                <thead class="table-light">
+            <table class="table table-hover mb-0" style="color: #1a1a1a;">
+                <thead style="background-color: #E6E6FA;">
                     <tr>
-                        <th>Bil</th>
-                        <th>Nama Dokumen</th>
-                        <th>Jenis Dokumen</th>
-                        <th>Saiz Fail</th>
-                        <th>Tarikh Muat Naik</th>
-                        <th>Status</th>
-                        <th>Tindakan</th>
+                        <th class="border-0 py-3 px-4 fw-bold" style="width: 60px;">Bil.</th>
+                        <th class="border-0 py-3 px-4 fw-bold">Jenis Dokumen</th>
+                        <th class="border-0 py-3 px-4 fw-bold">Nama Fail</th>
+                        <th class="border-0 py-3 px-4 fw-bold">Tarikh Muat Naik</th>
+                        <th class="border-0 py-3 px-4 fw-bold text-center" style="width: 120px;">Tindakan</th>
                     </tr>
                 </thead>
                 <tbody>
                     @foreach($allDocuments as $index => $doc)
                         <tr>
-                            <td>{{ $index + 1 }}</td>
-                            <td>{{ $doc->file_name }}</td>
-                            <td>
+                            <td class="py-3 px-4">{{ $index + 1 }}</td>
+                            <td class="py-3 px-4">
                                 @php
                                     $typeLabels = [
                                         'bina_baru' => 'Vesel Bina Baru',
                                         'bina_baru_luar_negara' => 'Vesel Bina Baru Luar Negara',
                                         'terpakai' => 'Vesel Terpakai',
                                         'pangkalan' => 'Pangkalan',
-                                        'bahan_binaan' => 'Bahan Binaan Vesel',
+                                        'bahan_binaan' => 'Bahan binaan',
                                         'tukar_peralatan' => 'Tukar Peralatan'
                                     ];
                                 @endphp
-                                <span class="badge bg-secondary">{{ $typeLabels[$doc->file_type] ?? ucfirst($doc->file_type) }}</span>
+                                {{ $typeLabels[$doc->file_type] ?? ucfirst(str_replace('_', ' ', $doc->file_type)) }}
                             </td>
-                            <td>{{ $doc->getFileSizeInMB() }} MB</td>
-                            <td>{{ $doc->upload_date ? $doc->upload_date->format('d/m/Y H:i') : '-' }}</td>
-                            <td>
-                                <span class="badge bg-success">Dimuat Naik</span>
-                            </td>
-                            <td>
-                                @if($doc->file_path)
-                                    <a href="{{ asset('storage/' . $doc->file_path) }}" target="_blank" class="btn btn-sm btn-info">
-                                        <i class="fas fa-eye"></i> Lihat
-                                    </a>
-                                @else
-                                    <span class="text-muted">Tiada pautan</span>
-                                @endif
+                            <td class="py-3 px-4">{{ $doc->file_name }}</td>
+                            <td class="py-3 px-4">{{ $doc->created_at ? $doc->created_at->format('d M Y') : 'N/A' }}</td>
+                            <td class="py-3 px-4 text-center">
+                                <div class="btn-group" role="group">
+                                    @if($doc->file_path)
+                                        <a href="{{ asset('storage/' . $doc->file_path) }}" target="_blank" class="btn btn-sm me-2" style="background-color: #1E40AF; color: #fff; border: 1px solid #1E40AF; border-radius: 6px; padding: 6px 12px;" title="Lihat Dokumen">
+                                            <i class="fas fa-search" style="color: #fff;"></i>
+                                        </a>
+                                        <a href="{{ asset('storage/' . $doc->file_path) }}" download class="btn btn-sm" style="background-color: #059669; color: #fff; border: 1px solid #059669; border-radius: 6px; padding: 6px 12px;" title="Muat Turun Dokumen">
+                                            <i class="fas fa-download" style="color: #fff;"></i>
+                                        </a>
+                                    @else
+                                        <span class="text-muted">Tiada pautan</span>
+                                    @endif
+                                </div>
                             </td>
                         </tr>
                     @endforeach
@@ -74,8 +73,8 @@
     <button type="button" class="btn btn-sm" style="background-color: #282c34; color: #fff; border: 1px solid #282c34; border-radius: 8px;" onclick="prevTab('butiran-status-tab')">
         <i class="fas fa-arrow-left ms-2" style="color: #fff;"></i> Kembali
     </button>
-    <button type="button" class="btn btn-sm" style="background-color: #3c2387; color: #fff; border: 1px solid #3c2387; border-radius: 8px;" onclick="nextTab('perakuan-status-tab')">
-        Seterusnya <i class="fas fa-arrow-right ms-2" style="color: #fff;"></i>
+    <button type="button" class="btn btn-sm" style="background-color: #F0F4F5; color: #000; border: 1px solid #F0F4F5; border-radius: 8px;" onclick="nextTab('perakuan-status-tab')">
+        Seterusnya <i class="fas fa-arrow-right ms-2" style="color: #000;"></i>
     </button>
 </div>
 

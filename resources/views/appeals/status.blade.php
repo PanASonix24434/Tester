@@ -19,98 +19,22 @@
                 </div>
             @endif
             
-            <div class="row justify-content-center">
-                <div class="col-lg-10">
-                    <!-- Status Information Card -->
-                    <div class="bg-white border rounded-3 shadow-sm p-4 mb-4">
-                        <div class="d-flex justify-content-between align-items-center mb-2">
-                            <span class="fw-bold">{{ \Carbon\Carbon::parse($appeal->created_at)->format('d M Y') }}</span>
-                            <span class="text-muted small"><i class="far fa-clock"></i> {{ \Carbon\Carbon::parse($appeal->created_at)->format('H:i') }}</span>
-                        </div>
-                        <div class="row mb-2">
-                            <div class="col-md-3 fw-bold">Nama</div>
-                            <div class="col-md-9">: {{ $reviewerName ?? '-' }}</div>
-                        </div>
-                        <div class="row mb-2 align-items-center">
-                            <div class="col-md-3 fw-bold">Status</div>
-                            <div class="col-md-9">
-                                :
-                                @php
-                                    // Determine the tindakan (action) based on appeal type
-                                    // For appeals, it's always "Rayuan", for new applications it's "Permohonan"
-                                    $tindakan = 'Rayuan'; // Since this is an appeals system
-                                    
-                                    // Determine the peringkat (level) based on current status
-                                    $peringkat = '';
-                                    $status = $appeal->status;
-                                    
-                                    switch ($status) {
-                                        case 'submitted':
-                                        case 'ppl_review':
-                                        case 'ppl_incomplete':
-                                            $peringkat = 'PPL';
-                                            break;
-                                        case 'kcl_review':
-                                        case 'kcl_incomplete':
-                                        case 'kcl_rejected':
-                                            $peringkat = 'KCL';
-                                            break;
-                                        case 'pk_review':
-                                        case 'pk_incomplete':
-                                        case 'kpp_decision':
-                                            $peringkat = 'PK';
-                                            break;
-                                        case 'approved':
-                                        case 'rejected':
-                                            $peringkat = 'KPP';
-                                            break;
-                                        default:
-                                            $peringkat = 'SISTEM';
-                                    }
-                                    
-                                    // Determine if it's a decision or review action
-                                    $isDecision = in_array($status, ['approved', 'rejected', 'kpp_decision']);
-                                    $actionType = $isDecision ? 'Keputusan' : 'Semakan';
-                                    
-                                    // For applicant view, show: "Pemohon → Rayuan Dihantar"
-                                    $applicantStatus = "Pemohon → {$tindakan} Dihantar";
-                                    
-                                    // For officer view (if needed), show: "→ Semakan - PPL" or "→ Keputusan - PK"
-                                    $officerStatus = "→ {$actionType} - {$peringkat}";
-                                    
-                                    // Status colors
-                                    $statusColors = [
-                                        'approved' => 'success',
-                                        'rejected' => 'danger',
-                                        'draft' => 'secondary',
-                                        'submitted' => 'info',
-                                        'ppl_review' => 'info',
-                                        'ppl_incomplete' => 'warning',
-                                        'kcl_review' => 'info',
-                                        'kcl_incomplete' => 'warning',
-                                        'pk_review' => 'info',
-                                        'pk_incomplete' => 'warning',
-                                        'kpp_decision' => 'primary',
-                                    ];
-                                    $color = $statusColors[$status] ?? 'secondary';
-                                @endphp
-                                <span class="badge bg-{{ $color }} fs-6 fw-bold text-uppercase px-3 py-2" style="font-size: 1rem;">
-                                    {{ $applicantStatus }}
-                                </span>
-                            </div>
-                        </div>
-                    </div>
+            <div class="row">
+                <div class="col-12">
 
                     <!-- Form Details Card -->
                     <div class="card shadow-sm">
                         <div class="card-header bg-primary text-white">
-                            <h5 class="mb-0 text-white"><i class="fas fa-file-alt me-2 text-white"></i>Butiran Permohonan</h5>
+                            <h5 class="mb-0 text-white"><i class="fas fa-file-alt me-2 text-white"></i>Maklumat Permohonan</h5>
                         </div>
                         <div class="card-body">
                             <!-- Bootstrap Tab Navigation -->
                             <ul class="nav nav-tabs mb-4" id="statusTab" role="tablist">
                                 <li class="nav-item" role="presentation">
-                                    <button class="nav-link active" id="butiran-status-tab" data-bs-toggle="tab" data-bs-target="#butiran-status" type="button" role="tab" aria-controls="butiran-status" aria-selected="true">Butiran Permohonan</button>
+                                    <button class="nav-link active" id="pemohon-status-tab" data-bs-toggle="tab" data-bs-target="#pemohon-status" type="button" role="tab" aria-controls="pemohon-status" aria-selected="true">Maklumat Pemohon</button>
+                                </li>
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link" id="butiran-status-tab" data-bs-toggle="tab" data-bs-target="#butiran-status" type="button" role="tab" aria-controls="butiran-status" aria-selected="false">Maklumat Permohonan</button>
                                 </li>
                                 <li class="nav-item" role="presentation">
                                     <button class="nav-link" id="dokumen-status-tab" data-bs-toggle="tab" data-bs-target="#dokumen-status" type="button" role="tab" aria-controls="dokumen-status" aria-selected="false">Dokumen Permohonan</button>
@@ -118,11 +42,19 @@
                                 <li class="nav-item" role="presentation">
                                     <button class="nav-link" id="perakuan-status-tab" data-bs-toggle="tab" data-bs-target="#perakuan-status" type="button" role="tab" aria-controls="perakuan-status" aria-selected="false">Perakuan</button>
                                 </li>
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link" id="keputusan-status-tab" data-bs-toggle="tab" data-bs-target="#keputusan-status" type="button" role="tab" aria-controls="keputusan-status" aria-selected="false">Keputusan</button>
+                                </li>
                             </ul>
 
                             <div class="tab-content" id="statusTabContent">
-                                <!-- Butiran Permohonan Tab -->
-                                <div class="tab-pane fade show active" id="butiran-status" role="tabpanel" aria-labelledby="butiran-status-tab">
+                                <!-- Maklumat Pemohon Tab -->
+                                <div class="tab-pane fade show active" id="pemohon-status" role="tabpanel" aria-labelledby="pemohon-status-tab">
+                                    @include('appeals.partials.status_maklumat_pemohon', ['applicant' => $applicant])
+                                </div>
+
+                                <!-- Maklumat Permohonan Tab -->
+                                <div class="tab-pane fade" id="butiran-status" role="tabpanel" aria-labelledby="butiran-status-tab">
                                     @include('appeals.partials.status_butiran_permohon', ['perakuan' => $perakuan])
                                 </div>
 
@@ -134,6 +66,11 @@
                                 <!-- Perakuan Tab -->
                                 <div class="tab-pane fade" id="perakuan-status" role="tabpanel" aria-labelledby="perakuan-status-tab">
                                     @include('appeals.partials.status_perakuan', ['perakuan' => $perakuan])
+                                </div>
+
+                                <!-- Keputusan Tab -->
+                                <div class="tab-pane fade" id="keputusan-status" role="tabpanel" aria-labelledby="keputusan-status-tab">
+                                    @include('appeals.partials.status_keputusan', ['appeal' => $appeal, 'perakuan' => $perakuan])
                                 </div>
                             </div>
                         </div>
@@ -171,4 +108,24 @@
         </div>
 </div>
 </div>
+
+<script>
+// Tab Navigation Functions
+function nextTab(tabId) {
+    const tabButton = document.querySelector(`#${tabId}`);
+    if (tabButton) {
+        const tab = new bootstrap.Tab(tabButton);
+        tab.show();
+    }
+}
+
+function prevTab(tabId) {
+    const tabButton = document.querySelector(`#${tabId}`);
+    if (tabButton) {
+        const tab = new bootstrap.Tab(tabButton);
+        tab.show();
+    }
+}
+</script>
+
 @endsection

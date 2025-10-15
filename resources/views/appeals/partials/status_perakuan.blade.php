@@ -12,14 +12,25 @@
 
 <!-- Navigation Buttons -->
 <div class="text-center mt-4">
-    <button type="button" class="btn btn-sm" style="background-color: #282c34; color: #fff; border: 1px solid #282c34; border-radius: 8px;" onclick="prevTab('dokumen-status-tab')">
-        <i class="fas fa-arrow-left ms-2" style="color: #fff;"></i> Kembali
+    <button type="button" class="btn btn-sm me-3" style="background-color: #282c34; color: #fff; border: 1px solid #282c34; border-radius: 8px;" onclick="prevTab('dokumen-status-tab')">
+        <i class="fas fa-arrow-left me-2" style="color: #fff;"></i> Kembali
+    </button>
+    <button type="button" class="btn btn-sm" style="background-color: #F0F4F5; color: #000; border: 1px solid #F0F4F5; border-radius: 8px;" onclick="nextTab('keputusan-status-tab')">
+        Seterusnya <i class="fas fa-arrow-right ms-2" style="color: #000;"></i>
     </button>
 </div>
 
 <script>
 // Tab Navigation Functions
 function prevTab(tabId) {
+    const tabButton = document.querySelector(`#${tabId}`);
+    if (tabButton) {
+        const tab = new bootstrap.Tab(tabButton);
+        tab.show();
+    }
+}
+
+function nextTab(tabId) {
     const tabButton = document.querySelector(`#${tabId}`);
     if (tabButton) {
         const tab = new bootstrap.Tab(tabButton);

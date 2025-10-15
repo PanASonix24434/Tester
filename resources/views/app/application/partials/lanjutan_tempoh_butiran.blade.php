@@ -76,7 +76,7 @@
 
 <!-- Navigation Button -->
 <div class="text-center mt-4">
-    <button type="button" class="btn btn-sm" style="background-color: #3c2387; color: #fff; border: 1px solid #6f42c1; border-radius: 8px;" onclick="goToDokumenTab()" id="next-btn">
-        Teruskan <i class="fas fa-arrow-right ms-2" style="color: #fff;"></i>
+    <button type="button" class="btn btn-sm" style="background-color: #F0F4F5; color: #000; border: 1px solid #F0F4F5; border-radius: 8px;" onclick="goToDokumenTab()" id="next-btn">
+        Seterusnya <i class="fas fa-arrow-right ms-2" style="color: #000;"></i>
     </button>
 </div>

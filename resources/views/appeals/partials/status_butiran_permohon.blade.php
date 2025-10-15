@@ -13,7 +13,7 @@
                     {{ $kelulusan->no_rujukan }} - {{ $kelulusan->jenis_permohonan === 'kvp07' ? 'Rayuan Pindaan Syarat' : 'Lanjut Tempoh' }}
                 </option>
             @else
-                <option value="" selected disabled>Pilih Kelulusan Perolehan</option>
+                <option value="" selected disabled>Kelulusan not found (ID: {{ $perakuan->kelulusan_perolehan_id }})</option>
             @endif
         @else
             <option value="" selected disabled>Pilih Kelulusan Perolehan</option>
@@ -433,7 +433,10 @@
 
 <!-- Navigation Button -->
 <div class="text-center mt-4">
-    <button type="button" class="btn btn-sm" style="background-color: #3c2387; color: #fff; border: 1px solid #3c2387; border-radius: 8px;" onclick="nextTab('dokumen-status-tab')">
-        Seterusnya <i class="fas fa-arrow-right ms-2" style="color: #fff;"></i>
+    <button type="button" class="btn btn-sm me-3" style="background-color: #282c34; color: #fff; border: 1px solid #282c34; border-radius: 8px;" onclick="prevTab('pemohon-status-tab')">
+        <i class="fas fa-arrow-left me-2" style="color: #fff;"></i> Kembali
+    </button>
+    <button type="button" class="btn btn-sm" style="background-color: #F0F4F5; color: #000; border: 1px solid #F0F4F5; border-radius: 8px;" onclick="nextTab('dokumen-status-tab')">
+        Seterusnya <i class="fas fa-arrow-right ms-2" style="color: #000;"></i>
     </button>
 </div>

@@ -32,15 +32,15 @@
                         <span class="fw-bold text-dark">Petunjuk:</span>
                         <div class="d-flex align-items-center gap-2">
                             <div class="rounded-circle" style="width: 12px; height: 12px; background-color: #6c757d;"></div>
-                            <span class="text-muted small">0-4 hari</span>
+                            <span class="text-muted small">0-7 hari</span>
                         </div>
                         <div class="d-flex align-items-center gap-2">
                             <div class="rounded-circle" style="width: 12px; height: 12px; background-color: #ffc107;"></div>
-                            <span class="text-muted small">≥ 5 hari</span>
+                            <span class="text-muted small">8-14 hari</span>
                         </div>
                         <div class="d-flex align-items-center gap-2">
                             <div class="rounded-circle" style="width: 12px; height: 12px; background-color: #dc3545;"></div>
-                            <span class="text-muted small">≥ 10 hari</span>
+                            <span class="text-muted small">>14 hari</span>
                         </div>
                     </div>
                 </div>

@@ -105,18 +105,20 @@
                 <label class="form-check-label" for="berdaftar_tidak">Tidak</label>
             </div>
         </div>
-        <div class="form-group">
-            <label class="font-weight-bold" for="no_pendaftaran_vesel">No Tetap Vesel/No. Pendaftaran Vesel <span class="text-danger">*</span></label>
-            <input type="text" class="form-control" id="no_pendaftaran_vesel" name="no_pendaftaran_vesel">
-        </div>
-        <div class="form-row">
-            <div class="form-group col-md-6">
-                <label class="font-weight-bold" for="negeri_asal_vesel">Negeri Asal Vesel Didafarkan <span class="text-danger">*</span></label>
-                <input type="text" class="form-control" id="negeri_asal_vesel" name="negeri_asal_vesel">
+        <div id="vessel-registration-fields" style="display:none;">
+            <div class="form-group">
+                <label class="font-weight-bold" for="no_pendaftaran_vesel">No Tetap Vesel/No. Pendaftaran Vesel <span class="text-danger">*</span></label>
+                <input type="text" class="form-control" id="no_pendaftaran_vesel" name="no_pendaftaran_vesel">
             </div>
-            <div class="form-group col-md-6">
-                <label class="font-weight-bold" for="pelabuhan_pangkalan">Pelabuhan/Pangkalan <span class="text-danger">*</span></label>
-                <input type="text" class="form-control" id="pelabuhan_pangkalan" name="pelabuhan_pangkalan">
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    <label class="font-weight-bold" for="negeri_asal_vesel">Negeri Asal Vesel Didafarkan <span class="text-danger">*</span></label>
+                    <input type="text" class="form-control" id="negeri_asal_vesel" name="negeri_asal_vesel">
+                </div>
+                <div class="form-group col-md-6">
+                    <label class="font-weight-bold" for="pelabuhan_pangkalan">Pelabuhan/Pangkalan <span class="text-danger">*</span></label>
+                    <input type="text" class="form-control" id="pelabuhan_pangkalan" name="pelabuhan_pangkalan">
+                </div>
             </div>
         </div>
     </div>
@@ -251,8 +253,8 @@
 
 <!-- Navigation Button -->
 <div class="text-center mt-4">
-    <button type="button" class="btn btn-sm" style="background-color: #3c2387; color: #fff; border: 1px solid #3c2387; border-radius: 8px;" onclick="nextTab('dokumen-tab')">
-        Teruskan <i class="fas fa-arrow-right ms-2" style="color: #fff;"></i>
+    <button type="button" class="btn btn-sm" style="background-color: #F0F4F5; color: #000; border: 1px solid #F0F4F5; border-radius: 8px;" onclick="nextTab('dokumen-tab')">
+        Seterusnya <i class="fas fa-arrow-right ms-2" style="color: #000;"></i>
     </button>
 </div>
 
@@ -295,6 +297,74 @@ document.addEventListener('DOMContentLoaded', function() {
     if (selectJenisPerolehan) {
         selectJenisPerolehan.addEventListener('change', showPerolehanSubSection);
         showPerolehanSubSection();
+    }
+
+    // Handle "Pernah Berdaftar" radio button changes
+    var berdaftarYa = document.getElementById('berdaftar_ya');
+    var berdaftarTidak = document.getElementById('berdaftar_tidak');
+    var vesselRegistrationFields = document.getElementById('vessel-registration-fields');
+
+    function toggleVesselRegistrationFields() {
+        if (berdaftarYa && berdaftarYa.checked) {
+            vesselRegistrationFields.style.display = '';
+        } else {
+            vesselRegistrationFields.style.display = 'none';
+        }
+    }
+
+    if (berdaftarYa) {
+        berdaftarYa.addEventListener('change', toggleVesselRegistrationFields);
+    }
+    if (berdaftarTidak) {
+        berdaftarTidak.addEventListener('change', toggleVesselRegistrationFields);
+    }
+
+    // Handle kelulusan perolehan selection to load permits
+    var kelulusanSelect = document.getElementById('kelulusan_perolehan_id');
+    var permitSection = document.getElementById('permit-selection-section');
+    var permitCheckboxes = document.getElementById('permit-checkboxes');
+    
+    function loadPermits(kelulusanId) {
+        if (!kelulusanId) {
+            permitSection.style.display = 'none';
+            return;
+        }
+        
+        // Show permit section
+        permitSection.style.display = 'block';
+        
+        // Fetch permits for this kelulusan
+        fetch(`/get-permits/${kelulusanId}`)
+            .then(response => response.json())
+            .then(data => {
+                const permits = data.permits || [];
+                permitCheckboxes.innerHTML = '';
+                
+                permits.forEach(permit => {
+                    const checkboxDiv = document.createElement('div');
+                    checkboxDiv.className = 'form-check mb-2';
+                    checkboxDiv.innerHTML = `
+                        <input class="form-check-input" type="checkbox" name="selected_permits[]" value="${permit.id}" id="permit_${permit.id}">
+                        <label class="form-check-label" for="permit_${permit.id}">
+                            <strong>${permit.no_permit}</strong> - ${permit.jenis_peralatan}
+                            <span class="badge bg-${permit.status === 'ada_kemajuan' ? 'success' : 'warning'}">
+                                ${permit.status === 'ada_kemajuan' ? 'Ada kemajuan' : 'Tiada kemajuan'}
+                            </span>
+                        </label>
+                    `;
+                    permitCheckboxes.appendChild(checkboxDiv);
+                });
+            })
+            .catch(error => {
+                console.error('Error loading permits:', error);
+                permitCheckboxes.innerHTML = '<div class="alert alert-warning">Error loading permits</div>';
+            });
+    }
+    
+    if (kelulusanSelect) {
+        kelulusanSelect.addEventListener('change', function() {
+            loadPermits(this.value);
+        });
     }
 
     // Handle permit number selection for equipment change
@@ -390,7 +460,13 @@ document.addEventListener('DOMContentLoaded', function() {
             document.getElementById('poskod_baru').value = '{{ $existingDraft->poskod_baru }}';
         }
         if ('{{ $existingDraft->pernah_berdaftar }}') {
-            document.getElementById('pernah_berdaftar').value = '{{ $existingDraft->pernah_berdaftar }}';
+            var berdaftarValue = '{{ $existingDraft->pernah_berdaftar }}';
+            if (berdaftarValue === 'ya') {
+                document.getElementById('berdaftar_ya').checked = true;
+            } else if (berdaftarValue === 'tidak') {
+                document.getElementById('berdaftar_tidak').checked = true;
+            }
+            toggleVesselRegistrationFields(); // Show/hide fields based on selection
         }
         if ('{{ $existingDraft->no_pendaftaran_vesel }}') {
             document.getElementById('no_pendaftaran_vesel').value = '{{ $existingDraft->no_pendaftaran_vesel }}';
@@ -491,8 +567,31 @@ document.addEventListener('DOMContentLoaded', function() {
         const kelulusanSelect = document.getElementById('kelulusan_perolehan_id');
         if (kelulusanSelect && '{{ $existingDraft->kelulusan_perolehan_id }}' && '{{ $existingDraft->kelulusan_perolehan_id }}'.trim() !== '') {
             kelulusanSelect.value = '{{ $existingDraft->kelulusan_perolehan_id }}';
-            // Trigger the change event to load permits
-            kelulusanSelect.dispatchEvent(new Event('change'));
+            
+            // Load permits and restore selected permits
+            const kelulusanId = '{{ $existingDraft->kelulusan_perolehan_id }}';
+            const selectedPermits = '{{ $existingDraft->selected_permits }}';
+            
+            // Load permits first
+            loadPermits(kelulusanId);
+            
+            // Restore selected permits after a short delay to ensure permits are loaded
+            setTimeout(() => {
+                if (selectedPermits && selectedPermits !== 'null' && selectedPermits !== '') {
+                    try {
+                        const permitIds = JSON.parse(selectedPermits);
+                        permitIds.forEach(permitId => {
+                            const checkbox = document.querySelector(`input[name="selected_permits[]"][value="${permitId}"]`);
+                            if (checkbox) {
+                                checkbox.checked = true;
+                            }
+                        });
+                    } catch (e) {
+                        console.error('Error parsing selected permits:', e);
+                    }
+                }
+            }, 500);
+            
             console.log('Triggered kelulusan_perolehan_id change event');
         }
         

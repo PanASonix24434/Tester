@@ -31,7 +31,7 @@
                                             <div class="mb-3">
                                                 <label class="form-label fw-bold" style="color: #1a1a1a;">No. Rujukan</label>
                                                 <div class="form-control-plaintext bg-light rounded p-2" style="color: #495057;">
-                                                    {{ $appeal->id ?? 'RUJ-2025-001' }}
+                                                    {{ $appeal->ref_number ?? 'APP-000001' }}
                                                 </div>
                                             </div>
                                         </div>
