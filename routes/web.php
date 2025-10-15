@@ -3009,3 +3009,4 @@ Route::get('/keputusan_status/download_dokumen_kelulusan_kpp', [KeputusanStatusC
 
 // Define the route
 Route::post('/button-action', [AppointmentController::class, 'handleButton'])->name('button.action');
+

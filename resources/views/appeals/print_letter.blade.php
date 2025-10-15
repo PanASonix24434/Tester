@@ -450,27 +450,13 @@
         </div>
 
         <div class="footer">
-            <div class="footer-content">
-                <div class="quality-logos">
-                    <div class="cert-logo">
-                        <img src="{{ asset('images/sirim_logo.png') }}" alt="SIRIM Certified" class="cert-image">
-                        <p class="cert-text">SIRIM CERTIFIED TO ISO 9001:2015<br>CERT. NO.: QMS 03900</p>
-                    </div>
-                    <div class="cert-logo">
-                        <img src="{{ asset('images/ukas_logo.png') }}" alt="UKAS" class="cert-image">
-                        <p class="cert-text">SIRIM CERTIFIED TO ISO 9001:2015<br>CERT. NO.: QMS 03900</p>
-                    </div>
-                    <div class="cert-logo">
-                        <img src="{{ asset('images/iqnet_logo.png') }}" alt="IQNET" class="cert-image">
-                        <p class="cert-text">SIRIM CERTIFIED TO ISO 9001:2015<br>CERT. NO.: QMS 03900</p>
-                    </div>
-                </div>
-                <div class="department-motto">
-                    <p class="motto-main">PERIKANAN PRODUKTIF MENJANA TRANSFORMASI</p>
-                    <p class="motto-english">PRODUCTIVE FISHERIES TOWARDS TRANSFORMATION</p>
-                    <div class="mydof-logo">
-                        <span class="mydof-text">myDOF</span>
-                        <p class="mydof-tagline">Peneraju Perikanan</p>
+            <div class="footer-content" style="display: flex; flex-direction: column; align-items: center; justify-content: center;">
+                <div class="department-motto" style="text-align: center;">
+                    <p class="motto-main" style="text-align: center;">PERIKANAN PRODUKTIF MENJANA TRANSFORMASI</p>
+                    <p class="motto-english" style="text-align: center;">PRODUCTIVE FISHERIES TOWARDS TRANSFORMATION</p>
+                    <div class="mydof-logo" style="text-align: center;">
+                        <img src="{{ asset('images/dof_logo.jpg') }}" alt="DOF Logo" class="dof-logo-image" style="width: 80px; height: auto; display: block; margin: 0 auto;">
+                        <p class="mydof-tagline" style="text-align: center;">Peneraju Perikanan</p>
                     </div>
                 </div>
             </div>

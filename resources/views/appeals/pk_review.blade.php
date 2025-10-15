@@ -684,28 +684,46 @@
                                             // Auto-fill reference number if approved
                                             autoFillAfterSubmission();
                                             
-                                            var status = document.querySelector('input[name="decision"]:checked');
+                                            var semakanStatus = document.querySelector('input[name="semakan_status"]:checked');
+                                            var keputusan = document.querySelector('input[name="decision"]:checked');
                                             var ulasan = document.getElementById('ulasanField').value.trim();
                                             var suratKelulusan = document.getElementById('suratKelulusanKpp').value.trim();
                                             var noRujukan = document.getElementById('noRujukanSurat').value.trim();
                                             
                                             // Only validate for submit action, not save
                                             if (action === 'submit') {
-                                            if (status && status.value === 'Tidak Diluluskan' && ulasan === '') {
-                                                alert('Ulasan wajib diisi jika permohonan tidak diluluskan.');
-                                                e.preventDefault();
-                                                    return;
-                                            }
-                                            if (status && status.value === 'Diluluskan') {
-                                                if (!suratKelulusan) {
-                                                    alert('Sila muat naik Surat Kelulusan KPP.');
+                                                // Check if Semakan is selected
+                                                if (!semakanStatus) {
+                                                    alert('Sila pilih status Semakan (Lengkap atau Tidak Lengkap).');
                                                     e.preventDefault();
                                                     return;
                                                 }
-                                                if (!noRujukan) {
-                                                    alert('Sila masukkan No. Rujukan Surat Kelulusan KPP.');
+                                                
+                                                // Check if Keputusan is selected
+                                                if (!keputusan) {
+                                                    alert('Sila pilih Keputusan (Diluluskan atau Tidak Diluluskan).');
                                                     e.preventDefault();
                                                     return;
+                                                }
+                                                
+                                                // Check if Ulasan is filled
+                                                if (ulasan === '') {
+                                                    alert('Ulasan wajib diisi.');
+                                                    e.preventDefault();
+                                                    return;
+                                                }
+                                                
+                                                // Additional validation for approved applications
+                                                if (keputusan.value === 'Diluluskan') {
+                                                    if (!suratKelulusan) {
+                                                        alert('Sila muat naik Surat Kelulusan KPP.');
+                                                        e.preventDefault();
+                                                        return;
+                                                    }
+                                                    if (!noRujukan) {
+                                                        alert('Sila masukkan No. Rujukan Surat Kelulusan KPP.');
+                                                        e.preventDefault();
+                                                        return;
                                                     }
                                                 }
                                             }

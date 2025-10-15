@@ -757,6 +757,42 @@ class AppealController extends Controller
 
             event(new AppealUpdated($appeal));
             
+            // Send email notification to applicant when PK submits decision
+            if ($action === 'submit') {
+                try {
+                    $applicant = \App\Models\User::find($appeal->applicant_id);
+                    if ($applicant && $applicant->email) {
+                        $resultDetails = [
+                            'applicant_name' => $applicant->name,
+                            'no_rujukan' => $appeal->kpp_ref_no ?? 'N/A',
+                            'application_type' => $perakuan->type ?? 'Permohonan Rayuan',
+                            'ulasan' => $request->input('comments', 'Tiada ulasan'),
+                            'office_address' => 'Jabatan Perikanan Malaysia, Putrajaya',
+                            'decision' => $pkStatus,
+                            'status' => $finalStatus,
+                            'appeal_id' => $appeal->id // Add appeal ID for PDF generation
+                        ];
+                        
+                        // Create email with PDF attachment
+                        $email = new \App\Mail\ApplicationResultNotification($resultDetails);
+                        
+                        // Generate PDF content for attachment
+                        $pdfContent = $this->generateLetterPDF($appeal->id);
+                        if ($pdfContent) {
+                            $email->attachData($pdfContent, 'Surat_Keputusan_Permohonan_' . ($appeal->kpp_ref_no ?? $appeal->id) . '.pdf', [
+                                'mime' => 'application/pdf',
+                            ]);
+                        }
+                        
+                        \Mail::to($applicant->email)->send($email);
+                        \Log::info('Email notification with PDF attachment sent to applicant: ' . $applicant->email . ' for appeal ID: ' . $appeal->id);
+                    }
+                } catch (\Exception $emailException) {
+                    \Log::error('Failed to send email notification: ' . $emailException->getMessage());
+                    // Don't fail the entire process if email fails
+                }
+            }
+            
             $successMessage = $action === 'save' ? 'Data berjaya disimpan!' : 'Keputusan PK berjaya dihantar!';
             
             // Return JSON response for AJAX (save action)
@@ -781,6 +817,148 @@ class AppealController extends Controller
             }
             
             return redirect()->back()->with('error', 'Ralat menyimpan keputusan PK: ' . $e->getMessage());
+        }
+    }
+
+    /**
+     * Generate PDF content for the decision letter
+     */
+    private function generateLetterPDF($appealId)
+    {
+        try {
+            $appeal = Appeal::with('perakuan')->findOrFail($appealId);
+            $applicant = \App\Models\User::find($appeal->applicant_id);
+            $perakuan = $appeal->perakuan;
+            
+            // Get PK reviewer details
+            $pkReviewer = null;
+            if ($appeal->pk_reviewer_id) {
+                $pkReviewer = \App\Models\User::find($appeal->pk_reviewer_id);
+            }
+            
+            // Try to generate PDF using DomPDF if available
+            if (class_exists('\PDF')) {
+                $pdf = \PDF::loadView('appeals.print_letter_pdf', compact('appeal', 'applicant', 'perakuan', 'pkReviewer'));
+                return $pdf->output();
+            } else {
+                // Fallback: Generate simple PDF content
+                $pdfContent = "%PDF-1.4
+1 0 obj
+<<
+/Type /Catalog
+/Pages 2 0 R
+>>
+endobj
+2 0 obj
+<<
+/Type /Pages
+/Kids [3 0 R]
+/Count 1
+>>
+endobj
+3 0 obj
+<<
+/Type /Page
+/Parent 2 0 R
+/MediaBox [0 0 612 792]
+/Contents 4 0 R
+>>
+endobj
+4 0 obj
+<<
+/Length 200
+>>
+stream
+BT
+/F1 16 Tf
+72 720 Td
+(Surat Keputusan Permohonan) Tj
+0 -30 Td
+/F1 12 Tf
+(No. Rujukan: " . ($appeal->kpp_ref_no ?? 'N/A') . ") Tj
+0 -20 Td
+(Jenis Permohonan: " . ($perakuan->type ?? 'Permohonan Rayuan') . ") Tj
+0 -20 Td
+(Keputusan: " . ($appeal->pk_decision ?? 'N/A') . ") Tj
+0 -20 Td
+(Pemohon: " . ($applicant->name ?? 'N/A') . ") Tj
+0 -20 Td
+(Tarikh: " . now()->format('d/m/Y') . ") Tj
+ET
+endstream
+endobj
+xref
+0 5
+0000000000 65535 f 
+0000000009 00000 n 
+0000000058 00000 n 
+0000000115 00000 n 
+0000000204 00000 n 
+trailer
+<<
+/Size 5
+/Root 1 0 R
+>>
+startxref
+450
+%%EOF";
+                return $pdfContent;
+            }
+            
+        } catch (\Exception $e) {
+            \Log::error('Failed to generate PDF for appeal ID ' . $appealId . ': ' . $e->getMessage());
+            
+            // Fallback: Return simple PDF content
+            $pdfContent = "%PDF-1.4
+1 0 obj
+<<
+/Type /Catalog
+/Pages 2 0 R
+>>
+endobj
+2 0 obj
+<<
+/Type /Pages
+/Kids [3 0 R]
+/Count 1
+>>
+endobj
+3 0 obj
+<<
+/Type /Page
+/Parent 2 0 R
+/MediaBox [0 0 612 792]
+/Contents 4 0 R
+>>
+endobj
+4 0 obj
+<<
+/Length 44
+>>
+stream
+BT
+/F1 12 Tf
+72 720 Td
+(Surat Keputusan Permohonan) Tj
+ET
+endstream
+endobj
+xref
+0 5
+0000000000 65535 f 
+0000000009 00000 n 
+0000000058 00000 n 
+0000000115 00000 n 
+0000000204 00000 n 
+trailer
+<<
+/Size 5
+/Root 1 0 R
+>>
+startxref
+297
+%%EOF";
+            return $pdfContent;
         }
     }
 
